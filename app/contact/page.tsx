@@ -3,12 +3,9 @@ import type { Metadata } from "next";
 import ContactOptions from "@/components/contact/ContactOptions";
 import { RequestCallForm } from "@/components/enquiry/RequestCallForm";
 import EditorialHero from "@/components/ui/EditorialHero";
+import { metadataForPath } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "Contact Our Travel Planners | Gamya Sanchari",
-  description: "Call, email or message Gamya Sanchari to begin planning a personalized journey.",
-  alternates: { canonical: "/contact/" },
-};
+export const metadata: Metadata = metadataForPath("/contact/");
 
 export default function ContactPage() {
   return (

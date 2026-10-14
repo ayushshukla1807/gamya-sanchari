@@ -1,0 +1,53 @@
+import sitemap from "@/app/sitemap";
+import { travelAgencySchema } from "@/app/siteMetadata";
+import { BRAND } from "@/constants/brand";
+import {
+  buildBreadcrumbSchema,
+  buildPageMetadata,
+  getPublishedPages,
+} from "@/lib/metadata";
+
+describe("published metadata", () => {
+  test("every route has unique complete metadata and one canonical origin", () => {
+    const pages = getPublishedPages();
+    const metadata = pages.map(buildPageMetadata);
+
+    expect(new Set(pages.map(({ path }) => path)).size).toBe(pages.length);
+    expect(new Set(metadata.map(({ title }) => title)).size).toBe(pages.length);
+    expect(new Set(metadata.map(({ description }) => description)).size).toBe(pages.length);
+    expect(new Set(metadata.map(({ alternates }) => alternates?.canonical)).size).toBe(pages.length);
+
+    for (const entry of metadata) {
+      expect(String(entry.alternates?.canonical)).toMatch(new RegExp(`^${BRAND.siteUrl}`));
+      expect(entry.openGraph?.title).toBeTruthy();
+      expect(entry.openGraph?.description).toBeTruthy();
+      expect(entry.openGraph?.url).toBe(entry.alternates?.canonical);
+    }
+  });
+
+  test("sitemap includes every published route with a trailing slash", () => {
+    const expected = getPublishedPages().map(({ path }) => `${BRAND.siteUrl}${path}`);
+    const urls = sitemap().map(({ url }) => url);
+    expect(urls).toEqual(expected);
+    expect(urls.every((url) => url.endsWith("/"))).toBe(true);
+  });
+
+  test("structured data contains only supported organization and breadcrumb facts", () => {
+    expect(travelAgencySchema["@type"]).toBe("TravelAgency");
+    expect(travelAgencySchema.url).toBe(BRAND.siteUrl);
+    const serializedAgency = JSON.stringify(travelAgencySchema);
+    for (const unsupported of ["aggregateRating", "ratingValue", "priceRange", "offers", "availability"]) {
+      expect(serializedAgency).not.toContain(unsupported);
+    }
+
+    const breadcrumbs = buildBreadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Destinations", path: "/destinations/" },
+      { name: "Kerala", path: "/destinations/kerala/" },
+    ]);
+    expect(breadcrumbs["@type"]).toBe("BreadcrumbList");
+    expect(breadcrumbs.itemListElement.at(-1)?.item).toBe(
+      `${BRAND.siteUrl}/destinations/kerala/`,
+    );
+  });
+});

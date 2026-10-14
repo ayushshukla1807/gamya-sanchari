@@ -3,10 +3,12 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
+import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
 import CtaGroup from "@/components/ui/CtaGroup";
 import Stamp from "@/components/ui/Stamp";
 import { JOURNAL_ARTICLES } from "@/constants/travel";
 import { getArticle, getDestination } from "@/lib/travel-content";
+import { metadataForPath } from "@/lib/metadata";
 
 export function generateStaticParams() {
   return JOURNAL_ARTICLES.map(({ slug }) => ({ slug }));
@@ -15,12 +17,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const article = getArticle(params.slug);
   if (!article) return { title: "Guide not found | Gamya Sanchari" };
-  return {
-    title: `${article.title} | Gamya Sanchari`,
-    description: article.excerpt,
-    alternates: { canonical: `/journal/${article.slug}/` },
-    openGraph: { title: article.title, description: article.excerpt, images: [{ url: article.image }] },
-  };
+  return metadataForPath(`/journal/${article.slug}/`);
 }
 
 export default function ArticlePage({ params }: { params: { slug: string } }) {
@@ -70,6 +67,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
           </div>
         </section>
       ) : null}
+      <BreadcrumbJsonLd items={[{ name: "Home", path: "/" }, { name: "Journal", path: "/journal/" }, { name: article.title, path: `/journal/${article.slug}/` }]} />
     </main>
   );
 }

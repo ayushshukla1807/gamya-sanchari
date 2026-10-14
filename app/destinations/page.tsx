@@ -1,11 +1,9 @@
 import DestinationFilters from "@/components/destinations/DestinationFilters";
 import EditorialHero from "@/components/ui/EditorialHero";
 import { DESTINATIONS } from "@/constants/travel";
+import { metadataForPath } from "@/lib/metadata";
 
-export const metadata = {
-  title: "Destinations | Gamya Sanchari",
-  description: "Explore thoughtful domestic and international destination ideas, then shape one around your people and pace.",
-};
+export const metadata = metadataForPath("/destinations/");
 
 export default function DestinationsPage() {
   return (

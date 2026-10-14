@@ -3,12 +3,9 @@ import type { Metadata } from "next";
 import ArticleCard from "@/components/journal/ArticleCard";
 import EditorialHero from "@/components/ui/EditorialHero";
 import { JOURNAL_ARTICLES } from "@/constants/travel";
+import { metadataForPath } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "Travel Journal | Gamya Sanchari",
-  description: "Evergreen, practical guides for planning better-paced journeys in India and beyond.",
-  alternates: { canonical: "/journal/" },
-};
+export const metadata: Metadata = metadataForPath("/journal/");
 
 export default function JournalPage() {
   return (

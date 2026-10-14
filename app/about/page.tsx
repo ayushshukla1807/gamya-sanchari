@@ -2,12 +2,9 @@ import type { Metadata } from "next";
 
 import EditorialHero from "@/components/ui/EditorialHero";
 import { BRAND } from "@/constants/brand";
+import { metadataForPath } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "About Our Travel Planning | Gamya Sanchari",
-  description: "Meet Gamya Sanchari and the thoughtful method behind our personalized journeys from Bengaluru.",
-  alternates: { canonical: "/about/" },
-};
+export const metadata: Metadata = metadataForPath("/about/");
 
 const METHOD = [
   { title: "Listen", copy: "We begin with your people, priorities, pace and the feeling you want from the journey." },

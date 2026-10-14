@@ -68,7 +68,9 @@ describe("supporting routes", () => {
     const article = JOURNAL_ARTICLES[0];
     const metadata = await generateMetadata({ params: { slug: article.slug } });
     expect(metadata.title).toContain(article.title);
-    expect(metadata.alternates?.canonical).toBe(`/journal/${article.slug}/`);
+    expect(metadata.alternates?.canonical).toBe(
+      `https://gamya-sanchari.vercel.app/journal/${article.slug}/`,
+    );
 
     render(<ArticlePage params={{ slug: article.slug }} />);
 
