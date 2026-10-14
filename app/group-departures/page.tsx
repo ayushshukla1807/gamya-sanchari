@@ -1,6 +1,9 @@
 import JourneyCollection from "@/components/journeys/JourneyCollection";
 import EditorialHero from "@/components/ui/EditorialHero";
 import { getJourneysByCategory } from "@/lib/travel-content";
+import { metadataForPath } from "@/lib/metadata";
+
+export const metadata = metadataForPath("/group-departures/");
 
 const SUPPORT = [
   ["Transport", "Coordinated movement shaped around the route and group."],

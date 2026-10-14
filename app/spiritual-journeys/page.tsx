@@ -1,6 +1,9 @@
 import JourneyCollection from "@/components/journeys/JourneyCollection";
 import EditorialHero from "@/components/ui/EditorialHero";
 import { getJourneysByCategory } from "@/lib/travel-content";
+import { metadataForPath } from "@/lib/metadata";
+
+export const metadata = metadataForPath("/spiritual-journeys/");
 
 const FAQS = [
   { question: "What physical demands should we expect?", answer: "We explain likely walking, climbs, altitude and transfer length before you commit, then help you judge whether the pace suits your group." },

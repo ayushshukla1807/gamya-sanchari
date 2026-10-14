@@ -7,6 +7,7 @@ import JourneyStatusBadge from "@/components/journeys/JourneyStatusBadge";
 import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import ItineraryAccordion from "@/components/packages/ItineraryAccordion";
 import BreadcrumbJsonLd from "@/components/seo/BreadcrumbJsonLd";
+import JourneyJsonLd from "@/components/seo/JourneyJsonLd";
 import RouteLine from "@/components/ui/RouteLine";
 import { DESTINATIONS, JOURNEYS } from "@/constants/travel";
 import { getJourney } from "@/lib/travel-content";
@@ -81,6 +82,7 @@ export default function JourneyPage({ params }: { params: { slug: string } }) {
         <div className="fixed inset-x-0 bottom-0 z-30 border-t border-[#0b1633]/10 bg-white/95 p-3 backdrop-blur lg:hidden"><JourneyAction className={`${buttonClass} mx-auto flex max-w-md`} journey={journey} /></div>
       </main>
       <BreadcrumbJsonLd items={[{ name: "Home", path: "/" }, { name: "Packages", path: "/packages/" }, { name: journey.title, path: `/packages/${journey.slug}/` }]} />
+      <JourneyJsonLd journey={journey} />
     </>
   );
 }
