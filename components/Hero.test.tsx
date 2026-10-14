@@ -30,8 +30,9 @@ beforeEach(() => {
     () => new Promise(() => undefined),
   );
 });
-afterEach(() => {
+afterEach(async () => {
   cleanup();
+  await Promise.resolve();
   vi.useRealTimers();
   vi.restoreAllMocks();
   window.sessionStorage.clear();

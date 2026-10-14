@@ -5,6 +5,7 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react";
+import { StrictMode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import WelcomeSound from "./WelcomeSound";
@@ -20,8 +21,9 @@ beforeEach(() => {
   );
 });
 
-afterEach(() => {
+afterEach(async () => {
   cleanup();
+  await Promise.resolve();
   vi.restoreAllMocks();
   window.sessionStorage.clear();
 });
@@ -78,6 +80,86 @@ describe("WelcomeSound", () => {
 
     await waitFor(() => expect(play).toHaveBeenCalledTimes(4));
     expect(screen.getByRole("button", { name: "Mute sound" })).toBeVisible();
+  });
+
+  it("keeps permission rejection recoverable across more than one gesture", async () => {
+    const blocked = new DOMException("Autoplay blocked", "NotAllowedError");
+    const play = vi
+      .spyOn(window.HTMLMediaElement.prototype, "play")
+      .mockRejectedValue(blocked);
+
+    render(
+      <>
+        <WelcomeSound active />
+        <button type="button">Explore trips</button>
+      </>,
+    );
+
+    await screen.findByRole("button", { name: "Start sound" });
+    fireEvent.click(screen.getByRole("button", { name: "Explore trips" }));
+    await waitFor(() => expect(play).toHaveBeenCalledTimes(4));
+    expect(screen.getByRole("button", { name: "Start sound" })).toBeVisible();
+
+    play.mockResolvedValue(undefined);
+    fireEvent.click(screen.getByRole("button", { name: "Explore trips" }));
+    await waitFor(() => expect(play).toHaveBeenCalledTimes(6));
+    expect(screen.getByRole("button", { name: "Mute sound" })).toBeVisible();
+  });
+
+  it("allows immediate mute when one channel starts and the other keeps buffering", async () => {
+    let resolveNarration: (() => void) | undefined;
+    vi.spyOn(window.HTMLMediaElement.prototype, "play").mockImplementation(
+      function play(this: HTMLMediaElement) {
+        if (mediaName(this) === "ambient-music-audio") return Promise.resolve();
+        return new Promise<void>((resolve) => {
+          resolveNarration = resolve;
+        });
+      },
+    );
+
+    render(<WelcomeSound active />);
+
+    const mute = await screen.findByRole("button", { name: "Mute sound" });
+    fireEvent.click(mute);
+    expect(screen.getByRole("button", { name: "Turn sound on" })).toBeVisible();
+    expect(sessionStorage.getItem("gamya-sanchari-sound")).toBe("muted");
+
+    resolveNarration?.();
+    await Promise.resolve();
+    expect(screen.getByRole("button", { name: "Turn sound on" })).toBeVisible();
+    expect(sessionStorage.getItem("gamya-sanchari-welcome-played")).toBeNull();
+  });
+
+  it("survives Strict Mode effect replay without overlapping or labelling paused media active", async () => {
+    const playing = new Map<string, boolean>();
+    let overlapped = false;
+    vi.spyOn(window.HTMLMediaElement.prototype, "play").mockImplementation(
+      function play(this: HTMLMediaElement) {
+        const name = mediaName(this) ?? "unknown";
+        if (playing.get(name)) overlapped = true;
+        playing.set(name, true);
+        return Promise.resolve();
+      },
+    );
+    vi.mocked(window.HTMLMediaElement.prototype.pause).mockImplementation(
+      function pause(this: HTMLMediaElement) {
+        playing.set(mediaName(this) ?? "unknown", false);
+      },
+    );
+
+    render(
+      <StrictMode>
+        <WelcomeSound active />
+      </StrictMode>,
+    );
+
+    await screen.findByRole("button", { name: "Mute sound" });
+    expect(overlapped).toBe(false);
+    expect(playing.get("ambient-music-audio")).toBe(true);
+    expect(playing.get("host-introduction-audio")).toBe(true);
+    expect(sessionStorage.getItem("gamya-sanchari-welcome-played")).toBe(
+      "played",
+    );
   });
 
   it("plays the narration only once per session while allowing music to resume", async () => {
@@ -170,6 +252,6 @@ describe("WelcomeSound", () => {
     await waitFor(() => expect(play).toHaveBeenCalledTimes(2));
     pause.mockClear();
     unmount();
-    expect(pause).toHaveBeenCalledTimes(2);
+    await waitFor(() => expect(pause).toHaveBeenCalledTimes(2));
   });
 });

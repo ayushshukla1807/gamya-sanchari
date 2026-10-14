@@ -55,94 +55,141 @@ export default function WelcomeSound({
 }: WelcomeSoundProps) {
   const musicRef = useRef<HTMLAudioElement>(null);
   const narrationRef = useRef<HTMLAudioElement>(null);
-  const attemptedRef = useRef(false);
-  const startingRef = useRef(false);
+  const attemptRef = useRef(0);
+  const lifecycleRef = useRef(0);
   const musicFailedRef = useRef(false);
   const narrationFailedRef = useRef(false);
+  const soundStateRef = useRef<SoundState>("idle");
+  const introductionStateRef = useRef<IntroductionState>("pending");
   const [soundState, setSoundState] = useState<SoundState>("idle");
   const [introductionState, setIntroductionState] =
     useState<IntroductionState>("pending");
 
-  const startExperience = useCallback(async (userInitiated = false) => {
-    const music = musicRef.current;
-    const narration = narrationRef.current;
-    if (!music || !narration || startingRef.current) return;
-
-    startingRef.current = true;
-    setSoundState("starting");
-    const introductionPlayed = readSession(INTRO_PLAYED_KEY) === "played";
-    if (introductionPlayed) setIntroductionState("played");
-
-    music.volume = introductionPlayed
-      ? RESTING_MUSIC_VOLUME
-      : DUCKED_MUSIC_VOLUME;
-    narration.volume = 1;
-
-    const channels: Array<{
-      kind: "music" | "narration";
-      media: HTMLAudioElement;
-      promise: Promise<void>;
-    }> = [];
-
-    if (!musicFailedRef.current) {
-      channels.push({ kind: "music", media: music, promise: music.play() });
-    }
-    if (!introductionPlayed && !narrationFailedRef.current) {
-      narration.currentTime = 0;
-      channels.push({
-        kind: "narration",
-        media: narration,
-        promise: narration.play(),
-      });
-    }
-
-    const results = await Promise.allSettled(
-      channels.map(({ promise }) => promise),
-    );
-    const rejected = results.some((result) => result.status === "rejected");
-
-    if (rejected && !userInitiated) {
-      channels.forEach(({ media }) => media.pause());
-      setSoundState("blocked");
-      startingRef.current = false;
-      return;
-    }
-
-    results.forEach((result, index) => {
-      const channel = channels[index];
-      if (result.status === "fulfilled" && channel.kind === "narration") {
-        writeSession(INTRO_PLAYED_KEY, "played");
-        setIntroductionState("playing");
-      }
-      if (result.status === "rejected" && channel.kind === "music") {
-        musicFailedRef.current = true;
-      }
-      if (result.status === "rejected" && channel.kind === "narration") {
-        narrationFailedRef.current = true;
-        setIntroductionState("error");
-      }
-    });
-
-    setSoundState(
-      musicFailedRef.current && narrationFailedRef.current ? "error" : "playing",
-    );
-    startingRef.current = false;
+  const transitionSound = useCallback((next: SoundState) => {
+    soundStateRef.current = next;
+    setSoundState(next);
   }, []);
 
+  const transitionIntroduction = useCallback((next: IntroductionState) => {
+    introductionStateRef.current = next;
+    setIntroductionState(next);
+  }, []);
+
+  const startExperience = useCallback(
+    ({ forceNarration = false }: { forceNarration?: boolean } = {}) => {
+      const music = musicRef.current;
+      const narration = narrationRef.current;
+      if (!music || !narration) return;
+
+      const attempt = ++attemptRef.current;
+      const introductionPlayed =
+        !forceNarration && readSession(INTRO_PLAYED_KEY) === "played";
+      const shouldNarrate =
+        !introductionPlayed && !narrationFailedRef.current;
+      const shouldStartMusic =
+        !musicFailedRef.current && soundStateRef.current !== "playing";
+
+      if (introductionPlayed) transitionIntroduction("played");
+      music.volume = shouldNarrate
+        ? DUCKED_MUSIC_VOLUME
+        : RESTING_MUSIC_VOLUME;
+      narration.volume = 1;
+      transitionSound("starting");
+
+      const blockAttempt = () => {
+        if (attempt !== attemptRef.current) return;
+        attemptRef.current += 1;
+        music.pause();
+        narration.pause();
+        if (introductionStateRef.current === "playing") {
+          removeSession(INTRO_PLAYED_KEY);
+          transitionIntroduction("pending");
+        }
+        transitionSound("blocked");
+      };
+
+      const startChannel = (
+        kind: "music" | "narration",
+        media: HTMLMediaElement,
+      ) => {
+        let playback: Promise<void>;
+        try {
+          playback = media.play();
+        } catch {
+          blockAttempt();
+          return;
+        }
+
+        void playback
+          .then(() => {
+            if (attempt !== attemptRef.current) return;
+            if (kind === "narration") {
+              writeSession(INTRO_PLAYED_KEY, "played");
+              transitionIntroduction("playing");
+            }
+            transitionSound("playing");
+          })
+          .catch(() => {
+            if (attempt !== attemptRef.current) return;
+            const hasMediaError =
+              kind === "music"
+                ? musicFailedRef.current
+                : narrationFailedRef.current;
+            if (hasMediaError) {
+              if (musicFailedRef.current && narrationFailedRef.current) {
+                transitionSound("error");
+              }
+              return;
+            }
+            blockAttempt();
+          });
+      };
+
+      let channelCount = 0;
+      if (shouldStartMusic) {
+        channelCount += 1;
+        startChannel("music", music);
+      }
+      if (shouldNarrate) {
+        channelCount += 1;
+        startChannel("narration", narration);
+      }
+      if (channelCount === 0) {
+        transitionSound(
+          musicFailedRef.current && narrationFailedRef.current
+            ? "error"
+            : "playing",
+        );
+      }
+    },
+    [transitionIntroduction, transitionSound],
+  );
+
   useEffect(() => {
-    if (!active || attemptedRef.current) return;
-    attemptedRef.current = true;
+    if (!active) return;
+    lifecycleRef.current += 1;
 
     if (readSession(SOUND_PREFERENCE_KEY) === "muted") {
       if (readSession(INTRO_PLAYED_KEY) === "played") {
-        setIntroductionState("played");
+        transitionIntroduction("played");
       }
-      setSoundState("muted");
+      transitionSound("muted");
       return;
     }
 
-    void startExperience();
-  }, [active, startExperience]);
+    const music = musicRef.current;
+    const narration = narrationRef.current;
+    if (soundStateRef.current !== "starting") startExperience();
+    return () => {
+      const cleanupLifecycle = ++lifecycleRef.current;
+      queueMicrotask(() => {
+        if (lifecycleRef.current !== cleanupLifecycle) return;
+        attemptRef.current += 1;
+        music?.pause();
+        narration?.pause();
+      });
+    };
+  }, [active, startExperience, transitionIntroduction, transitionSound]);
 
   useEffect(() => {
     if (soundState !== "blocked") return;
@@ -155,7 +202,7 @@ export default function WelcomeSound({
       ) {
         return;
       }
-      void startExperience(true);
+      startExperience();
     };
 
     document.addEventListener("click", retry, { once: true });
@@ -166,74 +213,54 @@ export default function WelcomeSound({
     };
   }, [soundState, startExperience]);
 
-  useEffect(() => {
-    const music = musicRef.current;
-    const narration = narrationRef.current;
-    return () => {
-      music?.pause();
-      narration?.pause();
-    };
-  }, []);
-
   function toggleSound() {
     const music = musicRef.current;
     const narration = narrationRef.current;
-    if (!music || !narration || soundState === "starting") return;
+    if (!music || !narration) return;
 
-    if (soundState === "playing") {
+    if (soundState === "playing" || soundState === "starting") {
+      attemptRef.current += 1;
       music.pause();
       narration.pause();
       writeSession(SOUND_PREFERENCE_KEY, "muted");
-      setSoundState("muted");
+      if (introductionStateRef.current === "playing") {
+        transitionIntroduction("played");
+      }
+      transitionSound("muted");
       return;
     }
 
     removeSession(SOUND_PREFERENCE_KEY);
-    void startExperience(true);
+    startExperience();
   }
 
-  async function replayIntroduction() {
-    const music = musicRef.current;
+  function replayIntroduction() {
     const narration = narrationRef.current;
-    if (!music || !narration || narrationFailedRef.current) return;
+    if (!narration || narrationFailedRef.current) return;
 
     removeSession(SOUND_PREFERENCE_KEY);
-    music.volume = DUCKED_MUSIC_VOLUME;
     narration.currentTime = 0;
-    setSoundState("starting");
-    const results = await Promise.allSettled([
-      musicFailedRef.current || soundState === "playing"
-        ? Promise.resolve()
-        : music.play(),
-      narration.play(),
-    ]);
-    if (results[1].status === "rejected") {
-      narrationFailedRef.current = true;
-      setIntroductionState("error");
-      setSoundState(musicFailedRef.current ? "error" : "playing");
-      return;
-    }
-
-    writeSession(INTRO_PLAYED_KEY, "played");
-    setIntroductionState("playing");
-    setSoundState("playing");
+    removeSession(INTRO_PLAYED_KEY);
+    transitionIntroduction("pending");
+    startExperience({ forceNarration: true });
   }
 
   function handleNarrationEnded() {
-    setIntroductionState("played");
+    transitionIntroduction("played");
+    writeSession(INTRO_PLAYED_KEY, "played");
     if (musicRef.current) musicRef.current.volume = RESTING_MUSIC_VOLUME;
   }
 
   function handleNarrationError() {
     narrationFailedRef.current = true;
-    setIntroductionState("error");
+    transitionIntroduction("error");
     if (musicRef.current) musicRef.current.volume = RESTING_MUSIC_VOLUME;
-    if (musicFailedRef.current) setSoundState("error");
+    if (musicFailedRef.current) transitionSound("error");
   }
 
   function handleMusicError() {
     musicFailedRef.current = true;
-    if (narrationFailedRef.current) setSoundState("error");
+    if (narrationFailedRef.current) transitionSound("error");
   }
 
   const buttonLabel =
@@ -241,9 +268,7 @@ export default function WelcomeSound({
       ? "Start sound"
       : soundState === "muted" || soundState === "idle"
         ? "Turn sound on"
-        : soundState === "starting"
-          ? "Starting sound"
-          : "Mute sound";
+        : "Mute sound";
 
   return (
     <div className={`mt-3 ${className}`.trim()} data-testid="welcome-sound">
@@ -274,11 +299,10 @@ export default function WelcomeSound({
             aria-label={buttonLabel}
             className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1844ef] px-4 py-2 text-sm font-extrabold text-white transition hover:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef] disabled:cursor-wait disabled:opacity-70"
             data-sound-control
-            disabled={soundState === "starting"}
             onClick={toggleSound}
             type="button"
           >
-            {soundState === "playing" ? (
+            {soundState === "playing" || soundState === "starting" ? (
               <VolumeX aria-hidden="true" size={17} />
             ) : (
               <Volume2 aria-hidden="true" size={17} />
@@ -290,7 +314,7 @@ export default function WelcomeSound({
               aria-label="Replay welcome"
               className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#1844ef]/20 px-4 py-2 text-sm font-extrabold text-[#1844ef] transition hover:border-[#f06619] hover:text-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
               data-sound-control
-              onClick={() => void replayIntroduction()}
+              onClick={replayIntroduction}
               type="button"
             >
               <RotateCcw aria-hidden="true" size={16} />
