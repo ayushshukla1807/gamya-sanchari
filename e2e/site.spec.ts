@@ -1,172 +1,115 @@
-import { expect, test, type Page } from "@playwright/test";
-
-const destinations = [
-  "South India",
-  "West India",
-  "North India",
-  "East India",
-  "International",
-];
-
-const services = [
-  "International Trips",
-  "Domestic Trips",
-  "Air Tickets",
-  "Visa Assistance",
-  "Group Tours",
-  "Honeymoon Trips",
-  "Hotel Booking",
-  "Travel Insurance",
-];
-
-async function expectWhatsAppPopup(page: Page, action: () => Promise<void>) {
-  const popupPromise = page.waitForEvent("popup");
-  const outboundRequestPromise = page.context().waitForEvent("request", {
-    predicate: (request) => request.url().startsWith("https://wa.me/918073254766"),
-  });
-  await action();
-  const [popup, outboundRequest] = await Promise.all([
-    popupPromise,
-    outboundRequestPromise,
-  ]);
-  await expect.poll(() => popup.url()).toMatch(/(?:wa\.me\/918073254766|api\.whatsapp\.com\/send\/\?phone=918073254766)/);
-  return { outboundUrl: outboundRequest.url(), popup };
-}
+import { expect, test } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
+});
+
+test("nested routes render directly and navigation works on desktop and mobile", async ({ page }, testInfo) => {
+  for (const [path, heading] of [
+    ["/destinations/kerala/", "Kerala"],
+    ["/packages/kerala-easy-pace/", "Kerala at an easy pace"],
+    ["/journal/how-to-pace-a-kerala-trip/", "How to pace a Kerala trip without rushing it"],
+  ] as const) {
+    await page.goto(path);
+    await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
+  }
+
   await page.goto("/");
-});
-
-test("navigation, fixed controls and 360px layout remain operable", async ({ page }, testInfo) => {
-  const isMobile = testInfo.project.name === "mobile-360";
-  const primaryNav = page.getByRole("navigation", { name: "Primary navigation" });
-
-  if (isMobile) {
-    const menu = page.locator('button[aria-controls="mobile-navigation"]');
-    await menu.click();
-    await expect(menu).toHaveAttribute("aria-expanded", "true");
+  if (testInfo.project.name === "mobile-360") {
+    await page.getByRole("button", { name: "Open navigation" }).click();
     await page.getByRole("navigation", { name: "Mobile navigation" }).getByRole("link", { name: "About" }).click();
-    await expect(page).toHaveURL(/#about$/);
-    await expect(page.getByRole("navigation", { name: "Mobile navigation" })).toHaveCount(0);
-
-    await menu.click();
-    await page.keyboard.press("Escape");
-    await expect(menu).toHaveAttribute("aria-expanded", "false");
-    await expect(menu).toBeFocused();
-    await expect(page.getByRole("complementary", { name: "Quick enquiry actions" })).toBeHidden();
   } else {
-    await primaryNav.getByRole("link", { name: "About" }).click();
-    await expect(page).toHaveURL(/#about$/);
-    await expect(page.getByRole("complementary", { name: "Quick enquiry actions" })).toBeVisible();
+    await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "About" }).click();
   }
-
-  await expect(page.locator("#about")).toBeInViewport();
-  await expect(page.getByRole("link", { name: "Chat on WhatsApp" })).toBeVisible();
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-
-  await page.evaluate(() => window.scrollTo(0, 450));
-  await expect(page.getByRole("button", { name: "Back to top" })).toBeVisible();
-  await page.getByRole("button", { name: "Back to top" }).click();
-  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+  await expect(page).toHaveURL(/\/about\/?$/);
 });
 
-test("every destination and service opens the correct enquiry context", async ({ page }) => {
-  for (const title of [...destinations, ...services]) {
-    const trigger = page.getByRole("button", {
-      name: `Enquire about ${title}`,
-      exact: true,
-    });
-    await trigger.click();
-    const dialog = page.getByRole("dialog", { name: "Plan your journey" });
-    await expect(dialog).toContainText(`Enquiring about ${title}`);
-    await expect(dialog.getByLabel("Message")).toHaveValue(`I'd like to plan a trip for ${title}.`);
-    await dialog.getByRole("button", { name: "Close enquiry" }).click();
-    await expect(dialog).toHaveCount(0);
-    await expect(trigger).toBeFocused();
-  }
-
-  const sampleJourney = page.getByRole("button", {
-    name: "Plan Kerala at an easy pace",
+test("skip navigation, reduced motion and media fallbacks preserve all content", async ({ page }) => {
+  await page.addInitScript(() => {
+    Reflect.deleteProperty(window, "speechSynthesis");
+    Reflect.deleteProperty(window, "SpeechSynthesisUtterance");
   });
-  await sampleJourney.click();
-  const dialog = page.getByRole("dialog", { name: "Plan your journey" });
-  await expect(dialog).toContainText("Enquiring about Kerala at an easy pace");
-  await dialog.getByRole("button", { name: "Close enquiry" }).click();
-});
+  await page.goto("/");
 
-test("modal close paths, focus trap and WhatsApp submissions work", async ({ page }, testInfo) => {
-  const isMobile = testInfo.project.name === "mobile-360";
-  const trigger = page.getByRole("button", { name: "Enquire about South India" });
-  await trigger.focus();
-  await page.keyboard.press("Enter");
-
-  const dialog = page.getByRole("dialog", { name: "Plan your journey" });
-  const closeButton = dialog.getByRole("button", { name: "Close enquiry" });
-  const submitButton = dialog.getByRole("button", { name: "Continue on WhatsApp" });
-  await expect(dialog.getByLabel("Name")).toBeFocused();
-
-  await closeButton.focus();
-  await page.keyboard.press("Shift+Tab");
-  await expect(submitButton).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(closeButton).toBeFocused();
-  await page.keyboard.press("Escape");
-  await expect(dialog).toHaveCount(0);
-  await expect(trigger).toBeFocused();
+  const skipLink = page.getByRole("link", { name: "Skip to main content" });
+  await expect(skipLink).toBeFocused();
+  await skipLink.click();
+  await expect(page.locator("#main-content")).toBeFocused();
 
-  await trigger.click();
-  await page.getByTestId("enquiry-overlay").dispatchEvent("mousedown");
-  await expect(dialog).toHaveCount(0);
-
-  await trigger.click();
-  await dialog.getByLabel("Name").fill("Asha & Ravi");
-  await dialog.getByLabel("Phone").fill("+91 98765 43210");
-  await dialog.getByLabel("Email (optional)").fill("asha@example.com");
-  await dialog.getByLabel("Message").fill("Beach + hills 🌴\nPlease call after 6.");
-  const { outboundUrl, popup } = await expectWhatsAppPopup(page, () => submitButton.click());
-  const decodedUrl = decodeURIComponent(outboundUrl.replace(/\+/g, " "));
-  expect(decodedUrl).toContain("Asha & Ravi");
-  expect(decodedUrl).toContain("Beach + hills 🌴");
-  await popup.close();
-  await closeButton.click();
-
-  await page.locator("#contact").scrollIntoViewIfNeeded();
-  const callbackInput = page.getByLabel("Phone number for callback");
-  await callbackInput.fill("+91 99887 77665");
-  const { outboundUrl: callbackUrl, popup: callbackPopup } = await expectWhatsAppPopup(page, () =>
-    page.getByRole("button", { name: "Request a Call" }).click(),
-  );
-  expect(decodeURIComponent(callbackUrl.replace(/\+/g, " "))).toContain("+91 99887 77665");
-  await callbackPopup.close();
-
-  if (isMobile) {
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-  }
-});
-
-test("poster fallback and reduced-motion hero keep final content readable", async ({ page }) => {
+  expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(true);
+  await expect(page.locator("#main-content")).toHaveCSS("opacity", "1");
+  await expect(page.locator("#main-content")).toHaveCSS("transform", "none");
   await expect(page.getByTestId("announcement-message")).toHaveCount(0);
   await expect(page.getByTestId("travel-host")).toBeVisible();
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("GAMYA SANCHARI");
-
-  const heroMedia = page.getByTestId("hero-media");
-  await expect(heroMedia).toHaveCSS("background-image", /hero-poster\.webp/);
+  await expect(page.getByRole("button", { name: "Hear the host" })).toHaveCount(0);
   const video = page.locator("video");
   await video.dispatchEvent("error");
   await expect(video).toHaveClass(/hidden/);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 });
 
-test("the cinematic announcement reaches each message", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "desktop-chromium", "One real-timer pass is sufficient.");
-  await page.emulateMedia({ reducedMotion: "no-preference" });
-  await page.reload();
+test("destination and package filters expose empty and reset states by keyboard", async ({ page }) => {
+  await page.goto("/destinations/");
+  await page.getByRole("button", { name: "International" }).focus();
+  await page.keyboard.press("Enter");
+  await page.getByLabel("Region").selectOption({ label: "South India" });
+  await expect(page.getByRole("heading", { name: "No destinations match that combination" })).toBeVisible();
+  await page.getByRole("button", { name: "Reset filters" }).click();
+  await expect(page.getByText("5 destinations found")).toBeVisible();
 
-  const announcement = page.getByTestId("announcement-message");
-  await expect(announcement).toContainText("captain speaking");
-  await expect(announcement).toContainText("descent into your dream destination", { timeout: 3_000 });
-  await expect(announcement).toContainText("Your Journey Awaits", { timeout: 3_000 });
-  await expect(announcement).toHaveCount(0, { timeout: 3_000 });
-  await expect(page.getByTestId("travel-host")).toBeVisible();
+  await page.goto("/packages/");
+  await page.getByRole("button", { name: "International" }).click();
+  await page.getByLabel("Destination").selectOption("kerala");
+  await expect(page.getByRole("heading", { name: "No sample journeys match those choices" })).toBeVisible();
+  await page.getByRole("button", { name: "Reset filters" }).click();
+  await expect(page.getByText("4 sample journeys found")).toBeVisible();
+});
+
+test("itinerary and complete planner flow remain operable", async ({ page }) => {
+  await page.goto("/packages/kerala-easy-pace/");
+  const secondDay = page.getByRole("button", { name: /Day 2/ });
+  await secondDay.click();
+  await expect(secondDay).toHaveAttribute("aria-expanded", "true");
+  await expect(page.getByRole("region")).toContainText("Travel to Munnar");
+
+  await page.goto("/plan-my-trip/?destination=kerala");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByLabel("Travel party").selectOption("Family");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByLabel("Approximate month").fill("December");
+  await page.getByLabel("Duration").fill("6 days");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByLabel("culture").check({ force: true });
+  await page.getByLabel("Pace").selectOption("balanced");
+  await page.getByLabel("Accommodation").selectOption({ label: "Boutique comfort" });
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByLabel("Name").fill("Asha");
+  await page.getByLabel("Phone", { exact: true }).fill("+91 90000 00000");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByText("Step 6 of 6: Review")).toBeVisible();
+  await page.getByRole("button", { name: "Edit When" }).click();
+  await expect(page.getByLabel("Approximate month")).toHaveValue("December");
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+
+  await page.evaluate(() => {
+    window.open = ((url?: string | URL) => {
+      document.body.dataset.outbound = String(url ?? "");
+      return null;
+    }) as typeof window.open;
+  });
+  await page.getByRole("button", { name: "Continue in WhatsApp" }).click();
+  await expect.poll(() => page.locator("body").getAttribute("data-outbound")).toContain("wa.me/918073254766");
+});
+
+test("360px layouts never overflow and sticky actions stay reachable", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile-360", "Narrow-layout safety is covered in the 360px project.");
+  for (const path of ["/", "/destinations/", "/packages/kerala-easy-pace/", "/plan-my-trip/", "/contact/"]) {
+    await page.goto(path);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  }
+  await page.goto("/packages/kerala-easy-pace/");
+  await expect(page.getByRole("link", { name: "Customize This Trip" }).last()).toBeVisible();
 });

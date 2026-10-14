@@ -1,16 +1,16 @@
 "use client";
 
-import { useReducedMotion } from "framer-motion";
 import { ArrowUp, Mail, MessageCircle, Send } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { BRAND } from "@/constants/brand";
+import { useMotionPolicy } from "@/components/motion/MotionProvider";
 
 import { useEnquiry } from "./enquiry/EnquiryProvider";
 
 export default function GlobalWidgets() {
   const { openEnquiry } = useEnquiry();
-  const reduceMotion = useReducedMotion();
+  const motionPolicy = useMotionPolicy();
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [quietRoute, setQuietRoute] = useState(false);
 
@@ -73,7 +73,7 @@ export default function GlobalWidgets() {
           aria-label="Back to top"
           className="fixed bottom-5 right-5 z-40 grid min-h-11 min-w-11 place-items-center rounded-full bg-[#212121] text-white shadow-xl transition hover:bg-[#1844ef] focus-visible:bg-[#1844ef] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1844ef]"
           onClick={() =>
-            window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" })
+            window.scrollTo({ top: 0, behavior: motionPolicy.smoothScroll ? "smooth" : "auto" })
           }
           type="button"
         >

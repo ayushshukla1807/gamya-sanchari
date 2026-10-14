@@ -5,6 +5,9 @@ import GlobalWidgets from "@/components/GlobalWidgets";
 import { EnquiryProvider } from "@/components/enquiry/EnquiryProvider";
 import SiteFooter from "@/components/layout/SiteFooter";
 import SiteHeader from "@/components/layout/SiteHeader";
+import SkipLink from "@/components/a11y/SkipLink";
+import MotionProvider from "@/components/motion/MotionProvider";
+import PageTransition from "@/components/motion/PageTransition";
 
 import "./globals.css";
 import { metadata, travelAgencySchema } from "./siteMetadata";
@@ -37,12 +40,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={libreFranklin.variable}>
-        <EnquiryProvider>
-          <SiteHeader />
-          {children}
-          <SiteFooter />
-          <GlobalWidgets />
-        </EnquiryProvider>
+        <MotionProvider>
+          <SkipLink />
+          <EnquiryProvider>
+            <SiteHeader />
+            <PageTransition>{children}</PageTransition>
+            <SiteFooter />
+            <GlobalWidgets />
+          </EnquiryProvider>
+        </MotionProvider>
         <script
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(travelAgencySchema).replace(/</g, "\\u003c"),

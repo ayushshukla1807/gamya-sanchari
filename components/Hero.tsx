@@ -1,11 +1,12 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, Map, Volume2, VolumeX } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import { BRAND } from "@/constants/brand";
+import { useMotionPolicy } from "@/components/motion/MotionProvider";
 
 const ANNOUNCEMENTS = [
   "✈️ Ladies and gentlemen, this is your captain speaking…",
@@ -24,11 +25,11 @@ function AnnouncementSequence({
 }: {
   onComplete: (visible: boolean) => void;
 }) {
-  const reduceMotion = useReducedMotion();
+  const policy = useMotionPolicy();
   const [announcement, setAnnouncement] = useState<number | null>(0);
 
   useEffect(() => {
-    if (reduceMotion) {
+    if (!policy.autoAnnouncements) {
       setAnnouncement(null);
       onComplete(true);
       return;
@@ -48,7 +49,7 @@ function AnnouncementSequence({
       ),
     );
     return () => timers.forEach((timer) => window.clearTimeout(timer));
-  }, [onComplete, reduceMotion]);
+  }, [onComplete, policy.autoAnnouncements]);
 
   if (announcement === null) return null;
 
@@ -71,7 +72,7 @@ function AnnouncementSequence({
 }
 
 function TravelHost() {
-  const reduceMotion = useReducedMotion();
+  const policy = useMotionPolicy();
   const [canSpeak, setCanSpeak] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
@@ -109,7 +110,7 @@ function TravelHost() {
       aria-label="Gamya Sanchari travel host"
       className="absolute inset-x-0 bottom-0 z-20 grid min-h-56 grid-cols-[minmax(108px,0.42fr)_minmax(0,1fr)] items-end overflow-hidden rounded-[2rem] border border-white/15 bg-[#071027]/90 shadow-2xl backdrop-blur-md sm:min-h-64 sm:grid-cols-[minmax(160px,0.45fr)_minmax(0,1fr)] lg:relative lg:inset-auto lg:z-auto lg:mt-0 lg:block lg:min-h-[64svh] lg:overflow-visible lg:border-0 lg:bg-transparent lg:shadow-none lg:backdrop-blur-none"
       data-testid="travel-host"
-      initial={reduceMotion ? false : { opacity: 0, x: 120 }}
+      initial={policy.reduced ? false : { opacity: 0, x: 120 }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
     >
       <div className="relative h-full min-h-52 max-[380px]:hidden sm:min-h-64 lg:absolute lg:inset-y-0 lg:left-[38%] lg:right-0 lg:min-h-0" data-testid="travel-host-portrait">

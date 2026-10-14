@@ -1,7 +1,12 @@
+"use client";
+
+import { useMotionPolicy } from "@/components/motion/MotionProvider";
+
 export default function RouteLine({ stops }: { stops: readonly string[] }) {
+  const motionPolicy = useMotionPolicy();
   return (
     <div className="relative" data-motion="route-line">
-      <span aria-hidden="true" className="absolute left-4 right-4 top-4 h-px bg-gradient-to-r from-[#1844ef] via-[#f5ad56] to-[#f06619] motion-safe:origin-left motion-safe:animate-[route-draw_var(--motion-cinematic)_var(--ease-travel)_both]" />
+      <span aria-hidden="true" className={`absolute left-4 right-4 top-4 h-px bg-gradient-to-r from-[#1844ef] via-[#f5ad56] to-[#f06619] ${motionPolicy.routeDrawing ? "origin-left animate-[route-draw_var(--motion-cinematic)_var(--ease-travel)_both]" : ""}`} />
       <ol className="relative grid gap-5 sm:grid-flow-col sm:auto-cols-fr">
         {stops.map((stop, index) => (
           <li className="grid gap-3 text-sm font-extrabold text-[#0b1633]" key={stop}>
