@@ -9,7 +9,9 @@ describe("PackageFilters", () => {
     const user = userEvent.setup();
     render(<PackageFilters journeys={JOURNEYS} />);
 
-    expect(screen.getByText("4 sample journeys found")).toHaveAttribute(
+    expect(
+      screen.getByText(`${JOURNEYS.length} sample journeys found`),
+    ).toHaveAttribute(
       "aria-live",
       "polite",
     );
@@ -36,6 +38,8 @@ describe("PackageFilters", () => {
       "/plan-my-trip/",
     );
     await user.click(screen.getByRole("button", { name: "Reset filters" }));
-    expect(screen.getByText("4 sample journeys found")).toBeVisible();
+    expect(
+      screen.getByText(`${JOURNEYS.length} sample journeys found`),
+    ).toBeVisible();
   });
 });

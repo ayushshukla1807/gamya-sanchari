@@ -12,7 +12,9 @@ describe("DestinationFilters", () => {
     expect(screen.getByLabelText("Region")).toBeVisible();
     expect(screen.getByLabelText("Season")).toBeVisible();
     expect(screen.getByLabelText("Travel style")).toBeVisible();
-    expect(screen.getByText("5 destinations found")).toHaveAttribute(
+    expect(
+      screen.getByText(`${DESTINATIONS.length} destinations found`),
+    ).toHaveAttribute(
       "aria-live",
       "polite",
     );
@@ -24,7 +26,11 @@ describe("DestinationFilters", () => {
     await user.keyboard("{Enter}");
 
     expect(international).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText("2 destinations found")).toBeVisible();
+    expect(
+      screen.getByText(
+        `${DESTINATIONS.filter(({ scope }) => scope === "international").length} destinations found`,
+      ),
+    ).toBeVisible();
     expect(screen.getByRole("link", { name: /Explore Bali/i })).toHaveAttribute(
       "href",
       "/destinations/bali/",
@@ -48,6 +54,8 @@ describe("DestinationFilters", () => {
     );
 
     await user.click(screen.getByRole("button", { name: "Reset filters" }));
-    expect(screen.getByText("5 destinations found")).toBeVisible();
+    expect(
+      screen.getByText(`${DESTINATIONS.length} destinations found`),
+    ).toBeVisible();
   });
 });

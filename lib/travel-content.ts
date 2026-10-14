@@ -4,6 +4,7 @@ import {
   JOURNAL_ARTICLES,
   JOURNEYS,
 } from "@/constants/travel";
+import type { JourneyCategory } from "@/types/travel";
 
 function assertCollectionSlugs(
   name: string,
@@ -45,6 +46,12 @@ export function getArticle(slug: string) {
 export function getRelatedJourneys(destinationSlug: string) {
   return JOURNEYS.filter((journey) =>
     (journey.destinationSlugs as readonly string[]).includes(destinationSlug),
+  );
+}
+
+export function getJourneysByCategory(category: JourneyCategory) {
+  return JOURNEYS.filter((journey) =>
+    (journey.categorySlugs as readonly JourneyCategory[]).includes(category),
   );
 }
 

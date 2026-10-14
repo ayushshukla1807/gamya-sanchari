@@ -38,7 +38,7 @@ describe("marketing sections", () => {
     for (const destination of DESTINATIONS) {
       expect(screen.getByRole("heading", { name: destination.title })).toBeVisible();
       for (const place of destination.places) {
-        expect(screen.getByText(place)).toBeVisible();
+        expect(screen.getAllByText(place)[0]).toBeVisible();
       }
     }
     await user.click(screen.getByRole("button", { name: "Enquire about South India" }));
