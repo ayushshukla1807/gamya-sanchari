@@ -1,10 +1,10 @@
 import type { Viewport } from "next";
 import { Libre_Franklin } from "next/font/google";
 
-import Footer from "@/components/Footer";
 import GlobalWidgets from "@/components/GlobalWidgets";
-import Navbar from "@/components/Navbar";
 import { EnquiryProvider } from "@/components/enquiry/EnquiryProvider";
+import SiteFooter from "@/components/layout/SiteFooter";
+import SiteHeader from "@/components/layout/SiteHeader";
 
 import "./globals.css";
 import { metadata, travelAgencySchema } from "./siteMetadata";
@@ -38,9 +38,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={libreFranklin.variable}>
         <EnquiryProvider>
-          <Navbar />
+          <SiteHeader />
           {children}
-          <Footer />
+          <SiteFooter />
           <GlobalWidgets />
         </EnquiryProvider>
         <script

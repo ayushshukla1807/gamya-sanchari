@@ -44,9 +44,7 @@ export function getArticle(slug: string) {
 
 export function getRelatedJourneys(destinationSlug: string) {
   return JOURNEYS.filter((journey) =>
-    journey.destinationSlugs.includes(
-      destinationSlug as (typeof journey.destinationSlugs)[number],
-    ),
+    (journey.destinationSlugs as readonly string[]).includes(destinationSlug),
   );
 }
 

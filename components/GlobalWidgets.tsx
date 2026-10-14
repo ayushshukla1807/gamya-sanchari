@@ -12,6 +12,7 @@ export default function GlobalWidgets() {
   const { openEnquiry } = useEnquiry();
   const reduceMotion = useReducedMotion();
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [quietRoute, setQuietRoute] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setShowBackToTop(window.scrollY > 300);
@@ -20,11 +21,19 @@ export default function GlobalWidgets() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    setQuietRoute(
+      ["/plan-my-trip", "/plan-my-trip/", "/contact", "/contact/"].includes(
+        window.location.pathname,
+      ),
+    );
+  }, []);
+
   return (
     <>
       <a
         aria-label="Chat on WhatsApp"
-        className="fixed bottom-5 left-5 z-40 grid min-h-12 min-w-12 place-items-center rounded-full bg-[#25d366] text-white shadow-xl shadow-black/20 transition hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#25d366]"
+        className={`fixed bottom-5 left-5 z-40 grid min-h-12 min-w-12 place-items-center rounded-full bg-[#25d366] text-white shadow-xl shadow-black/20 transition hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#25d366] ${quietRoute ? "opacity-55" : ""}`}
         href={BRAND.whatsappHref}
         rel="noreferrer"
         target="_blank"
@@ -53,7 +62,7 @@ export default function GlobalWidgets() {
         </a>
         <a
           className="flex min-h-11 items-center gap-2 px-4 py-3 text-sm font-bold transition hover:bg-[#1844ef] focus-visible:bg-[#1844ef] focus-visible:outline-none"
-          href="#contact"
+        href="/contact/"
         >
           <Mail aria-hidden="true" size={16} /> Contact Us
         </a>

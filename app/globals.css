@@ -9,6 +9,23 @@
   --dark: #212121;
   --body: #656565;
   --surface: #f3f3f3;
+  --midnight: #081329;
+  --ivory: #fffaf0;
+  --sand: #eadbc4;
+  --mist: #eaf0f6;
+  --gold: #b97918;
+  --route-stroke: #6f89ee;
+  --focus-ring: #f5ad56;
+  --shadow-soft: 0 18px 60px rgb(8 19 41 / 0.12);
+  --motion-fast: 180ms;
+  --motion-base: 260ms;
+  --motion-cinematic: 900ms;
+  --ease-travel: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes route-draw {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 
 * {
@@ -68,5 +85,9 @@ button {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  [data-motion="route-line"] > span[aria-hidden="true"] {
+    transform: none !important;
   }
 }

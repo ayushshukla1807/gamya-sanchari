@@ -9,12 +9,12 @@ import type {
 import { JOURNEYS } from "@/constants/travel";
 
 export const NAV_LINKS: NavigationLink[] = [
-  { href: "#home", label: "Home" },
-  { href: "#about", label: "About" },
-  { href: "#destinations", label: "Destinations" },
-  { href: "#services", label: "Services" },
-  { href: "#why-us", label: "Why Us" },
-  { href: "#contact", label: "Contact" },
+  { href: "/destinations/", label: "Destinations" },
+  { href: "/packages/", label: "Packages" },
+  { href: "/experiences/", label: "Experiences" },
+  { href: "/plan-my-trip/", label: "Plan My Trip" },
+  { href: "/about/", label: "About" },
+  { href: "/contact/", label: "Contact" },
 ];
 
 export const DESTINATIONS: Destination[] = [
