@@ -2,17 +2,21 @@ import Hero from "@/components/Hero";
 import ConfidenceClose from "@/components/home/ConfidenceClose";
 import ExperienceShowcase from "@/components/home/ExperienceShowcase";
 import FeaturedJourneys from "@/components/home/FeaturedJourneys";
+import HandledInclusions from "@/components/home/HandledInclusions";
 import PlannerPreview from "@/components/home/PlannerPreview";
 import PlanningRoute from "@/components/home/PlanningRoute";
-import RegionExplorer from "@/components/home/RegionExplorer";
+import PreviousDepartures from "@/components/home/PreviousDepartures";
+import TravelDesk from "@/components/home/TravelDesk";
 
 export default function Home() {
   return (
     <main className="overflow-hidden">
       <Hero />
-      <RegionExplorer />
       <ExperienceShowcase />
       <FeaturedJourneys />
+      <HandledInclusions />
+      <PreviousDepartures />
+      <TravelDesk />
       <PlanningRoute />
       <PlannerPreview />
       <ConfidenceClose />

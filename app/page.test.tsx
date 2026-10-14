@@ -35,4 +35,18 @@ describe("Home", () => {
 
     expect(screen.queryByText(/log[ -]?in|sign[ -]?up|membership/i)).not.toBeInTheDocument();
   });
+
+  it("features audited routes rather than a generic package wall", () => {
+    render(<EnquiryProvider><Home /></EnquiryProvider>);
+
+    for (const journey of [
+      "Puri, Jagannath & Konark",
+      "Tirupati Darshan from Bengaluru",
+      "Char Dham Yatra",
+      "Andaman Island Escape",
+      "Varanasi, Ayodhya & Prayagraj",
+    ]) {
+      expect(screen.getAllByRole("heading", { name: journey })[0]).toBeVisible();
+    }
+  });
 });
