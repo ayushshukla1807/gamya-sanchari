@@ -32,6 +32,10 @@ describe("Hero", () => {
     expect(video).toHaveAttribute("loop");
     expect(video).toHaveAttribute("autoplay");
     expect(video).toHaveProperty("muted", true);
+    expect(video?.querySelector("source")).toHaveAttribute(
+      "media",
+      "(min-width: 640px)",
+    );
     expect(screen.getByTestId("hero-media")).toHaveStyle({
       backgroundImage: 'url("/images/hero-poster.webp")',
     });

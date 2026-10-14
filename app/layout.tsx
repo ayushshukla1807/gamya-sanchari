@@ -12,7 +12,7 @@ import { metadata, travelAgencySchema } from "./siteMetadata";
 const libreFranklin = Libre_Franklin({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
-  display: "swap",
+  display: "optional",
   variable: "--font-libre-franklin",
 });
 
@@ -27,6 +27,15 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <link
+          as="image"
+          fetchPriority="high"
+          href="/images/hero-poster.webp"
+          rel="preload"
+          type="image/webp"
+        />
+      </head>
       <body className={libreFranklin.variable}>
         <EnquiryProvider>
           <Navbar />
