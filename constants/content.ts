@@ -2,6 +2,7 @@ import type {
   Benefit,
   Destination,
   NavigationLink,
+  SampleJourney,
   Service,
   TravellerStory,
 } from "@/types/content";
@@ -45,6 +46,33 @@ export const DESTINATIONS: Destination[] = [
     places: ["Dubai", "Thailand", "Singapore", "Bali", "Maldives"],
     image: "/images/destinations/international.webp",
     alt: "Tropical island resort surrounded by clear blue water",
+  },
+];
+
+export const SAMPLE_JOURNEYS: SampleJourney[] = [
+  {
+    title: "Kerala at an easy pace",
+    duration: "5 days",
+    route: ["Kochi", "Munnar", "Thekkady"],
+    theme: "Hills · nature · family time",
+  },
+  {
+    title: "Kashmir valley moments",
+    duration: "6 days",
+    route: ["Srinagar", "Gulmarg", "Pahalgam"],
+    theme: "Scenery · snow · slow travel",
+  },
+  {
+    title: "Dubai first-timer favourites",
+    duration: "5 days",
+    route: ["Old Dubai", "Downtown", "Desert"],
+    theme: "City · culture · adventure",
+  },
+  {
+    title: "Bali, beautifully unhurried",
+    duration: "6 days",
+    route: ["Ubud", "Seminyak", "Nusa Dua"],
+    theme: "Wellness · coast · honeymoon",
   },
 ];
 

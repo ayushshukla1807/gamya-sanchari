@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { metadata, travelAgencySchema } from "@/app/siteMetadata";
@@ -43,6 +43,30 @@ describe("marketing sections", () => {
     }
     await user.click(screen.getByRole("button", { name: "Enquire about South India" }));
     expect(screen.getByText("Enquiring about South India")).toBeVisible();
+  });
+
+  it("turns destination browsing into customisable sample journeys", async () => {
+    const user = userEvent.setup();
+    render(
+      <EnquiryProvider>
+        <Destinations />
+      </EnquiryProvider>,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "Popular journeys, shaped around you" }),
+    ).toBeVisible();
+    const keralaJourney = screen
+      .getByRole("heading", { name: "Kerala at an easy pace" })
+      .closest("article")!;
+    expect(within(keralaJourney).getByText("5 days · Sample itinerary")).toBeVisible();
+
+    await user.click(
+      screen.getByRole("button", { name: "Plan Kerala at an easy pace" }),
+    );
+    expect(
+      screen.getByText("Enquiring about Kerala at an easy pace"),
+    ).toBeVisible();
   });
 
   it("renders all services and opens their exact enquiry context", async () => {

@@ -13,5 +13,6 @@ Gamya Sanchari uses locally hosted, optimized derivatives of the following media
 | `public/images/destinations/east-india.webp` | Bliss | [Stunning Himalayan Mountain Landscape in Sikkim](https://www.pexels.com/photo/stunning-himalayan-mountain-landscape-in-sikkim-india-30201553/) |
 | `public/images/destinations/international.webp` | Asad Photo Maldives | [Tropical Resort on an Island](https://www.pexels.com/photo/tropical-resort-on-an-island-27099924/) |
 | `public/images/og-image.jpg` | Michel Rothstein | Branded crop derived from [Airplane Landing at the Airport](https://www.pexels.com/video/airplane-landing-at-the-airport-5237591/) |
+| `public/images/travel-host.webp` | OpenAI image generation | Original transparent spokesperson artwork created for Gamya Sanchari |
 
-The Gamya Sanchari favicon and graphic overlays are original project artwork.
+The Gamya Sanchari favicon, spokesperson and graphic overlays are original project artwork.

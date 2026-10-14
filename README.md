@@ -8,6 +8,8 @@ An accessible, cinematic one-page travel website for Gamya Sanchari, a Bengaluru
 
 - Responsive destination and service discovery from 360 px upward
 - Local, optimized hero video with poster fallback and a poster-first mobile experience
+- Timed plane-to-host welcome with captions, opt-in browser speech, and reduced-motion handling
+- Customisable sample journeys with durations, route ideas, and contextual enquiry actions
 - Accessible enquiry modal with focus trapping, Escape/overlay close, and trigger-focus restoration
 - WhatsApp-only enquiry and callback flows; form values are never stored or submitted to this site
 - Reduced-motion support, keyboard navigation, semantic landmarks, metadata, sitemap, robots, manifest, and `TravelAgency` JSON-LD

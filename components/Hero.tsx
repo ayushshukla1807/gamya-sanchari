@@ -1,7 +1,8 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowDown, MessageCircle } from "lucide-react";
+import { ArrowDown, MessageCircle, Volume2, VolumeX } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import { BRAND } from "@/constants/brand";
@@ -15,28 +16,39 @@ const ANNOUNCEMENTS = [
 const WHATSAPP_CTA =
   "https://wa.me/918073254766?text=Hi%20Gamya%20Sanchari!%20I%20want%20to%20plan%20a%20trip.";
 
-function AnnouncementSequence() {
+const HOST_INTRODUCTION =
+  "Namaskara! Welcome to Gamya Sanchari. Tell us where you want to go, and we'll bring your flights, stays, transfers and experiences together — your way.";
+
+function AnnouncementSequence({
+  onComplete,
+}: {
+  onComplete: (visible: boolean) => void;
+}) {
   const reduceMotion = useReducedMotion();
   const [announcement, setAnnouncement] = useState<number | null>(0);
 
   useEffect(() => {
     if (reduceMotion) {
       setAnnouncement(null);
+      onComplete(true);
       return;
     }
 
     setAnnouncement(0);
+    onComplete(false);
     const timers = ANNOUNCEMENTS.map((_, index) =>
       window.setTimeout(
-        () =>
+        () => {
           setAnnouncement(
             index + 1 < ANNOUNCEMENTS.length ? index + 1 : null,
-          ),
+          );
+          if (index + 1 === ANNOUNCEMENTS.length) onComplete(true);
+        },
         (index + 1) * 2200,
       ),
     );
     return () => timers.forEach((timer) => window.clearTimeout(timer));
-  }, [reduceMotion]);
+  }, [onComplete, reduceMotion]);
 
   if (announcement === null) return null;
 
@@ -58,8 +70,100 @@ function AnnouncementSequence() {
   );
 }
 
+function TravelHost() {
+  const reduceMotion = useReducedMotion();
+  const [canSpeak, setCanSpeak] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  useEffect(() => {
+    setCanSpeak(
+      "speechSynthesis" in window && "SpeechSynthesisUtterance" in window,
+    );
+
+    return () => window.speechSynthesis?.cancel();
+  }, []);
+
+  function toggleSpeech() {
+    if (!canSpeak) return;
+
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const message = new SpeechSynthesisUtterance(HOST_INTRODUCTION);
+    message.lang = "en-IN";
+    message.rate = 0.94;
+    message.pitch = 1.02;
+    message.onend = () => setIsSpeaking(false);
+    message.onerror = () => setIsSpeaking(false);
+    window.speechSynthesis.speak(message);
+    setIsSpeaking(true);
+  }
+
+  return (
+    <motion.aside
+      animate={{ opacity: 1, x: 0 }}
+      aria-label="Gamya Sanchari travel host"
+      className="absolute inset-x-0 bottom-0 z-20 grid min-h-56 grid-cols-[minmax(108px,0.42fr)_minmax(0,1fr)] items-end overflow-hidden rounded-[2rem] border border-white/15 bg-[#071027]/90 shadow-2xl backdrop-blur-md sm:min-h-64 sm:grid-cols-[minmax(160px,0.45fr)_minmax(0,1fr)] lg:relative lg:inset-auto lg:z-auto lg:mt-0 lg:block lg:min-h-[64svh] lg:overflow-visible lg:border-0 lg:bg-transparent lg:shadow-none lg:backdrop-blur-none"
+      data-testid="travel-host"
+      initial={reduceMotion ? false : { opacity: 0, x: 120 }}
+      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div className="relative h-full min-h-52 sm:min-h-64 lg:absolute lg:inset-y-0 lg:left-[38%] lg:right-0 lg:min-h-0">
+        <Image
+          alt=""
+          className="object-contain object-bottom"
+          fill
+          priority
+          sizes="(min-width: 1024px) 42vw, 42vw"
+          src="/images/travel-host.webp"
+        />
+      </div>
+
+      <div className="relative z-10 m-3 ml-0 rounded-3xl border border-white/15 bg-white/95 p-4 text-[#212121] shadow-2xl sm:m-5 sm:ml-0 sm:p-5 lg:absolute lg:left-0 lg:top-[17%] lg:m-0 lg:w-[62%]">
+        <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#1844ef]">
+          Your personal travel host
+        </p>
+        <p
+          className="mt-2 text-sm font-semibold leading-6 sm:text-base"
+          data-testid="travel-host-caption"
+        >
+          {HOST_INTRODUCTION}
+        </p>
+        {canSpeak ? (
+          <button
+            aria-label={isSpeaking ? "Stop introduction" : "Hear the host"}
+            className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1844ef] px-4 py-2 text-sm font-extrabold text-white transition hover:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
+            onClick={toggleSpeech}
+            type="button"
+          >
+            {isSpeaking ? (
+              <VolumeX aria-hidden="true" size={17} />
+            ) : (
+              <Volume2 aria-hidden="true" size={17} />
+            )}
+            {isSpeaking ? "Stop" : "Hear the host"}
+          </button>
+        ) : null}
+        <a
+          className="mt-3 inline-flex min-h-11 items-center justify-center rounded-full border border-[#1844ef]/20 px-4 py-2 text-sm font-extrabold text-[#1844ef] transition hover:border-[#f06619] hover:text-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
+          href={WHATSAPP_CTA}
+          rel="noreferrer"
+          target="_blank"
+        >
+          Plan with me
+        </a>
+      </div>
+    </motion.aside>
+  );
+}
+
 export default function Hero() {
   const [videoFailed, setVideoFailed] = useState(false);
+  const [showHost, setShowHost] = useState(false);
 
   return (
     <>
@@ -93,13 +197,13 @@ export default function Hero() {
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,8,20,0.25)_0%,rgba(3,8,20,0.52)_44%,rgba(3,8,20,0.94)_100%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(240,102,25,0.22),transparent_38%)]" />
 
-        <div className="relative z-10 mx-auto w-full max-w-[1440px] px-5 pb-14 pt-36 sm:px-8 sm:pb-20 lg:px-12 lg:pb-24">
-          <div className="max-w-4xl">
+        <div className="relative z-10 mx-auto grid w-full max-w-[1440px] items-end gap-8 px-5 pb-14 pt-36 sm:px-8 sm:pb-20 lg:grid-cols-[minmax(0,1.08fr)_minmax(390px,0.92fr)] lg:px-12 lg:pb-6 lg:pt-28">
+          <div className="max-w-4xl lg:pb-8">
             <p className="mb-5 flex items-center gap-3 text-sm font-extrabold uppercase tracking-[0.22em] text-white/75">
               <span className="h-px w-10 bg-[#f06619]" />
               {BRAND.nameKannada} · Bengaluru
             </p>
-            <h1 className="text-balance text-4xl font-extrabold leading-[0.98] tracking-[-0.04em] sm:text-6xl lg:text-8xl">
+            <h1 className="text-balance text-4xl font-extrabold leading-[0.98] tracking-[-0.04em] sm:text-6xl lg:text-6xl xl:text-7xl">
               Enjoy your holidays with{" "}
               <span className="text-[#f9a36f]">GAMYA SANCHARI</span>
             </h1>
@@ -129,9 +233,10 @@ export default function Hero() {
               </a>
             </div>
           </div>
+          {showHost ? <TravelHost /> : null}
         </div>
       </section>
-      <AnnouncementSequence />
+      <AnnouncementSequence onComplete={setShowHost} />
     </>
   );
 }

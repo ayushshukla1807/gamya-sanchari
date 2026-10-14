@@ -80,6 +80,10 @@ describe("Hero", () => {
 
     act(() => vi.advanceTimersByTime(2200));
     expect(screen.queryByTestId("announcement-message")).not.toBeInTheDocument();
+    expect(screen.getByTestId("travel-host")).toBeInTheDocument();
+    expect(screen.getByTestId("travel-host-caption")).toHaveTextContent(
+      "Namaskara! Welcome to Gamya Sanchari",
+    );
   });
 
   it("shows the final state immediately for reduced-motion users", () => {
@@ -87,11 +91,49 @@ describe("Hero", () => {
     render(<Hero />);
 
     expect(screen.queryByTestId("announcement-message")).not.toBeInTheDocument();
+    expect(screen.getByTestId("travel-host")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", {
         name: "Enjoy your holidays with GAMYA SANCHARI",
       }),
     ).toBeVisible();
+  });
+
+  it("speaks and stops the host introduction only after a visitor asks to hear it", () => {
+    vi.useFakeTimers();
+    const speak = vi.fn();
+    const cancel = vi.fn();
+    const utterance = {
+      lang: "",
+      rate: 0,
+      pitch: 0,
+      onend: null as (() => void) | null,
+      onerror: null as (() => void) | null,
+    };
+
+    vi.stubGlobal(
+      "SpeechSynthesisUtterance",
+      vi.fn(() => utterance),
+    );
+    Object.defineProperty(window, "speechSynthesis", {
+      configurable: true,
+      value: { cancel, speak },
+    });
+
+    render(<Hero />);
+    act(() => vi.advanceTimersByTime(6600));
+
+    fireEvent.click(screen.getByRole("button", { name: "Hear the host" }));
+    expect(speak).toHaveBeenCalledTimes(1);
+    expect(
+      screen.getByRole("button", { name: "Stop introduction" }),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Stop introduction" }));
+    expect(cancel).toHaveBeenCalled();
+    expect(
+      screen.getByRole("button", { name: "Hear the host" }),
+    ).toBeInTheDocument();
   });
 
   it("hides a failed video while retaining the poster and readable content", () => {

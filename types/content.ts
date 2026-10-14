@@ -28,6 +28,13 @@ export interface Destination {
   alt: string;
 }
 
+export interface SampleJourney {
+  title: string;
+  duration: string;
+  route: string[];
+  theme: string;
+}
+
 export interface Service {
   title: string;
   description: string;

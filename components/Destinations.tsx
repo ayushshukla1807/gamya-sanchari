@@ -1,9 +1,9 @@
 "use client";
 
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, CalendarDays, MapPin } from "lucide-react";
 import Image from "next/image";
 
-import { DESTINATIONS } from "@/constants/content";
+import { DESTINATIONS, SAMPLE_JOURNEYS } from "@/constants/content";
 
 import MotionReveal from "./MotionReveal";
 import SectionHeading from "./SectionHeading";
@@ -62,6 +62,64 @@ export default function Destinations() {
               </button>
             </MotionReveal>
           ))}
+        </div>
+
+        <div className="mt-20 border-t border-[#212121]/10 pt-14 sm:mt-24 sm:pt-16">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="eyebrow text-[#f06619]">A clearer place to begin</p>
+              <h2 className="mt-3 text-balance text-3xl font-extrabold tracking-[-0.035em] text-[#212121] sm:text-4xl">
+                Popular journeys, shaped around you
+              </h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-[#656565] sm:text-base">
+              These are sample starting points, not fixed packages. We adjust the pace,
+              stays and experiences after listening to how you want to travel.
+            </p>
+          </div>
+
+          <div className="mt-9 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {SAMPLE_JOURNEYS.map((journey, index) => (
+              <MotionReveal delay={index * 0.05} key={journey.title}>
+                <article className="group flex h-full flex-col rounded-[1.75rem] border border-[#212121]/10 bg-[#f7f8fc] p-6 transition duration-300 hover:-translate-y-1 hover:border-[#1844ef]/30 hover:bg-white hover:shadow-xl">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-[#1844ef]/10 px-3 py-1.5 text-xs font-extrabold text-[#1844ef]">
+                      <CalendarDays aria-hidden="true" size={15} />
+                      {journey.duration} · Sample itinerary
+                    </span>
+                    <span className="text-sm font-extrabold text-[#f06619]">
+                      0{index + 1}
+                    </span>
+                  </div>
+                  <h3 className="mt-5 text-xl font-extrabold leading-tight text-[#212121]">
+                    {journey.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-[#656565]">{journey.theme}</p>
+                  <div className="mt-6 flex flex-wrap items-center gap-2 text-sm font-bold text-[#212121]">
+                    {journey.route.map((stop, stopIndex) => (
+                      <span className="inline-flex items-center gap-2" key={stop}>
+                        {stopIndex === 0 ? (
+                          <MapPin aria-hidden="true" className="text-[#f06619]" size={16} />
+                        ) : (
+                          <ArrowRight aria-hidden="true" className="text-[#1844ef]" size={14} />
+                        )}
+                        {stop}
+                      </span>
+                    ))}
+                  </div>
+                  <button
+                    aria-label={`Plan ${journey.title}`}
+                    className="mt-7 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#212121] px-5 py-2.5 text-sm font-extrabold text-white transition group-hover:bg-[#1844ef] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
+                    onClick={() => openEnquiry(journey.title)}
+                    type="button"
+                  >
+                    Shape this journey
+                    <ArrowUpRight aria-hidden="true" size={17} />
+                  </button>
+                </article>
+              </MotionReveal>
+            ))}
+          </div>
         </div>
       </div>
     </section>

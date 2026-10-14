@@ -85,6 +85,14 @@ test("every destination and service opens the correct enquiry context", async ({
     await expect(dialog).toHaveCount(0);
     await expect(trigger).toBeFocused();
   }
+
+  const sampleJourney = page.getByRole("button", {
+    name: "Plan Kerala at an easy pace",
+  });
+  await sampleJourney.click();
+  const dialog = page.getByRole("dialog", { name: "Plan your journey" });
+  await expect(dialog).toContainText("Enquiring about Kerala at an easy pace");
+  await dialog.getByRole("button", { name: "Close enquiry" }).click();
 });
 
 test("modal close paths, focus trap and WhatsApp submissions work", async ({ page }, testInfo) => {
@@ -139,6 +147,7 @@ test("modal close paths, focus trap and WhatsApp submissions work", async ({ pag
 
 test("poster fallback and reduced-motion hero keep final content readable", async ({ page }) => {
   await expect(page.getByTestId("announcement-message")).toHaveCount(0);
+  await expect(page.getByTestId("travel-host")).toBeVisible();
   await expect(page.getByRole("heading", { level: 1 })).toContainText("GAMYA SANCHARI");
 
   const heroMedia = page.getByTestId("hero-media");
@@ -159,4 +168,5 @@ test("the cinematic announcement reaches each message", async ({ page }, testInf
   await expect(announcement).toContainText("descent into your dream destination", { timeout: 3_000 });
   await expect(announcement).toContainText("Your Journey Awaits", { timeout: 3_000 });
   await expect(announcement).toHaveCount(0, { timeout: 3_000 });
+  await expect(page.getByTestId("travel-host")).toBeVisible();
 });
