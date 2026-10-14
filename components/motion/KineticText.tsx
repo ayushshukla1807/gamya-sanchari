@@ -13,7 +13,7 @@ interface KineticTextProps {
 }
 
 function normaliseWord(word: string) {
-  return word.toLocaleLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
+  return word.toLocaleLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
 export default function KineticText({
@@ -57,7 +57,7 @@ export default function KineticText({
                 whileInView={canAnimate ? { opacity: 1, y: 0 } : undefined}
               >
                 {word}
-                {index < words.length - 1 ? "\u00a0" : ""}
+                {index < words.length - 1 ? " " : ""}
               </motion.span>
             </span>
           );

@@ -13,7 +13,8 @@ export default function PackageCard({ journey }: { journey: Journey }) {
   const canReveal = !policy.reduced && typeof IntersectionObserver !== "undefined";
   return (
     <motion.article
-      className="group overflow-hidden rounded-[2rem] border border-[#0b1633]/10 bg-white shadow-[var(--shadow-soft)]"
+      className="premium-card group overflow-hidden rounded-[2rem] bg-white shadow-[var(--shadow-soft)]"
+      data-material="premium-card"
       data-motion="journey-card"
       data-motion-engine="framer-motion"
       initial={canReveal ? { opacity: 0, y: 24, scale: 0.985 } : false}
@@ -23,7 +24,7 @@ export default function PackageCard({ journey }: { journey: Journey }) {
       whileInView={canReveal ? { opacity: 1, y: 0, scale: 1 } : undefined}
     >
       <div className="relative aspect-[16/10] overflow-hidden">
-        <Image alt="" className="object-cover transition duration-700 group-hover:scale-105 motion-reduce:transition-none" fill sizes="(min-width: 1024px) 50vw, 100vw" src={journey.heroImage} />
+        <Image alt="" className="object-cover transition duration-1000 ease-[var(--ease-travel)] group-hover:scale-[1.065] motion-reduce:transition-none" fill sizes="(min-width: 1024px) 50vw, 100vw" src={journey.heroImage} />
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#081329]/80 to-transparent" />
         <div className="absolute bottom-5 left-5">
           <JourneyStatusBadge status={journey.departureStatus} />

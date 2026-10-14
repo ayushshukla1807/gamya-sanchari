@@ -27,9 +27,10 @@ describe("shared motion choreography", () => {
       </MotionProvider>,
     );
 
-    expect(
-      screen.getByRole("heading", { name: "Your journey awaits" }),
-    ).toHaveAttribute("data-motion", "kinetic-text");
+    const heading = screen.getByRole("heading", { name: "Your journey awaits" });
+    expect(heading).toHaveAttribute("data-motion", "kinetic-text");
+    expect(heading).toHaveTextContent("Your journey awaits");
+    expect(heading.textContent).toBe("Your journey awaits");
     expect(container.querySelectorAll('[data-motion="kinetic-word"]')).toHaveLength(
       3,
     );

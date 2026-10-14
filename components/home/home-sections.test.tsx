@@ -46,6 +46,13 @@ describe("guided home journey", () => {
     expect(
       container.querySelectorAll('[data-motion^="reveal-"]').length,
     ).toBeGreaterThanOrEqual(12);
+    expect(screen.getByTestId("scroll-progress")).toBeInTheDocument();
+    expect(
+      container.querySelectorAll('[data-material="premium-section"]').length,
+    ).toBeGreaterThanOrEqual(7);
+    expect(
+      container.querySelectorAll('[data-material="premium-card"]').length,
+    ).toBeGreaterThanOrEqual(12);
   });
 });
 

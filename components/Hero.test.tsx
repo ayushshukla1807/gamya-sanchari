@@ -47,13 +47,15 @@ describe("Hero", () => {
   });
 
   it("keeps final fallback content and the exact calls to action in static markup", () => {
-    render(<Hero />);
+    const { container } = render(<Hero />);
 
-    expect(
+    const heading =
       screen.getByRole("heading", {
         name: "Enjoy your holidays with GAMYA SANCHARI",
-      }),
-    ).toBeVisible();
+      });
+    expect(heading).toBeVisible();
+    expect(heading).toHaveAttribute("data-motion", "kinetic-text");
+    expect(container.querySelector('[data-material="hero-stage"]')).toBeVisible();
     expect(screen.getByText("Domestic | International | Experiences")).toBeVisible();
     expect(screen.getByRole("link", { name: "Explore Destinations" })).toHaveAttribute(
       "href",
@@ -62,6 +64,9 @@ describe("Hero", () => {
     expect(screen.getByRole("link", { name: "Plan My Trip" })).toHaveAttribute(
       "href",
       "/plan-my-trip/",
+    );
+    expect(screen.getByRole("link", { name: "Plan My Trip" })).toHaveClass(
+      "premium-button",
     );
   });
 
