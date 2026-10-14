@@ -73,6 +73,37 @@ test("skip navigation, reduced motion and media fallbacks preserve all content",
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 });
 
+test("kinetic headings preserve visible word spacing", async ({ page }) => {
+  await page.goto("/");
+  const firstHeadingWords = page
+    .getByRole("heading", {
+      level: 1,
+      name: "Enjoy your holidays with GAMYA SANCHARI",
+    })
+    .locator('[data-motion="kinetic-word"]');
+
+  const gap = await firstHeadingWords.evaluateAll((words) => {
+    const first = words[0]?.getBoundingClientRect();
+    const second = words[1]?.getBoundingClientRect();
+    return first && second ? second.left - first.right : 0;
+  });
+
+  expect(gap).toBeGreaterThan(1);
+});
+
+test("reduced motion keeps package imagery static on hover", async ({ page }, testInfo) => {
+  test.skip(
+    testInfo.project.name === "mobile-360",
+    "Hover transform is verified in the pointer-capable desktop project.",
+  );
+  await page.goto("/packages/");
+  const card = page.locator('[data-motion="journey-card"]').first();
+  const image = card.locator("img");
+
+  await card.hover();
+  await expect(image).toHaveCSS("transform", "none");
+});
+
 test("official brand artwork and enhanced motion render in normal-motion mode", async ({ page }, testInfo) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");

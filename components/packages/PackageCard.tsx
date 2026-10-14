@@ -24,7 +24,7 @@ export default function PackageCard({ journey }: { journey: Journey }) {
       whileInView={canReveal ? { opacity: 1, y: 0, scale: 1 } : undefined}
     >
       <div className="relative aspect-[16/10] overflow-hidden">
-        <Image alt="" className="object-cover transition duration-1000 ease-[var(--ease-travel)] group-hover:scale-[1.065] motion-reduce:transition-none" fill sizes="(min-width: 1024px) 50vw, 100vw" src={journey.heroImage} />
+        <Image alt="" className="object-cover transition duration-1000 ease-[var(--ease-travel)] motion-safe:group-hover:scale-[1.065] motion-reduce:transform-none motion-reduce:transition-none" fill sizes="(min-width: 1024px) 50vw, 100vw" src={journey.heroImage} />
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#081329]/80 to-transparent" />
         <div className="absolute bottom-5 left-5">
           <JourneyStatusBadge status={journey.departureStatus} />

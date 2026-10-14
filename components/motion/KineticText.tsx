@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { ElementType } from "react";
+import { Fragment, type ElementType } from "react";
 
 import { useMotionPolicy } from "@/components/motion/MotionProvider";
 
@@ -39,9 +39,9 @@ export default function KineticText({
         {words.map((word, index) => {
           const accented = accents.has(normaliseWord(word));
           return (
+            <Fragment key={`${word}-${index}`}>
             <span
               className="inline-block overflow-hidden align-bottom"
-              key={`${word}-${index}`}
             >
               <motion.span
                 className={`inline-block ${accented ? "text-shimmer" : ""}`}
@@ -57,9 +57,10 @@ export default function KineticText({
                 whileInView={canAnimate ? { opacity: 1, y: 0 } : undefined}
               >
                 {word}
-                {index < words.length - 1 ? " " : ""}
               </motion.span>
             </span>
+            {index < words.length - 1 ? " " : null}
+            </Fragment>
           );
         })}
       </span>
