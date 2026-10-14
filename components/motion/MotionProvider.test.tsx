@@ -25,6 +25,8 @@ describe("central motion policy", () => {
       smoothScroll: false,
       routeDrawing: false,
       autoAnnouncements: false,
+      kineticText: false,
+      scrollProgress: false,
     });
   });
 
@@ -37,6 +39,8 @@ describe("central motion policy", () => {
       smoothScroll: true,
       routeDrawing: true,
       autoAnnouncements: true,
+      kineticText: true,
+      scrollProgress: true,
     });
   });
 
