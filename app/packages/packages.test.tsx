@@ -20,6 +20,16 @@ describe("package routes", () => {
     expect(container.querySelectorAll("[data-departure-status]")).toHaveLength(
       JOURNEYS.length,
     );
+    expect(
+      screen.getByRole("heading", { name: "How availability works" }),
+    ).toBeVisible();
+    for (const status of [
+      "Enquire now",
+      "Next departure on request",
+      "Previous departure",
+    ]) {
+      expect(screen.getAllByText(status).length).toBeGreaterThan(0);
+    }
   });
 
   it("statically generates all journey details with unique metadata", async () => {
@@ -36,7 +46,7 @@ describe("package routes", () => {
     const journey = getJourney("kerala-easy-pace")!;
     render(<JourneyPage params={{ slug: journey.slug }} />);
 
-    expect(screen.getByText("Sample journey—customizable")).toBeVisible();
+    expect(screen.getByText("Enquire now")).toBeVisible();
     expect(screen.getByRole("heading", { name: journey.title })).toBeVisible();
     expect(screen.getByRole("heading", { name: "Day by day" })).toBeVisible();
     expect(
@@ -46,6 +56,21 @@ describe("package routes", () => {
       "href",
       "/destinations/kerala/",
     );
+  });
+
+  it("renders audited proof, inclusions and highlights without an empty itinerary", () => {
+    const journey = getJourney("puri-jagannath-konark")!;
+    render(<JourneyPage params={{ slug: journey.slug }} />);
+
+    expect(screen.getByText("Previous departure")).toBeVisible();
+    expect(screen.getByText("Jagannath Temple")).toBeVisible();
+    expect(screen.getByText("Coordinated transport")).toBeVisible();
+    expect(
+      screen.getAllByRole("link", { name: "Ask for the next departure" })[0],
+    ).toHaveAttribute("target", "_blank");
+    expect(
+      screen.queryByRole("heading", { name: "Day by day" }),
+    ).not.toBeInTheDocument();
   });
 });
 

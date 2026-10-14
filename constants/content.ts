@@ -51,9 +51,9 @@ export const DESTINATIONS: Destination[] = [
 ];
 
 export const SAMPLE_JOURNEYS: SampleJourney[] = JOURNEYS.map(
-  ({ title, duration, route, theme }) => ({
+  ({ title, durationLabel, route, theme }) => ({
     title,
-    duration,
+    duration: durationLabel,
     route: [...route],
     theme,
   }),

@@ -43,8 +43,6 @@ export interface Journey {
   readonly slug: string;
   readonly title: string;
   readonly summary: string;
-  /** @deprecated Migrated consumers should use durationLabel. */
-  readonly duration: string;
   readonly durationLabel: string;
   readonly route: readonly string[];
   readonly routeHighlights: readonly string[];
