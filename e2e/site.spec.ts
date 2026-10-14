@@ -55,6 +55,9 @@ test("skip navigation, reduced motion and media fallbacks preserve all content",
   await expect(page.locator("#main-content")).toBeFocused();
 
   expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(true);
+  await expect(page.locator("video")).not.toHaveAttribute("autoplay", "");
+  await expect(page.locator("video")).not.toHaveAttribute("loop", "");
+  expect(await page.locator("video").evaluate((element: HTMLVideoElement) => element.paused)).toBe(true);
   await expect(page.locator("#main-content")).toHaveCSS("opacity", "1");
   await expect(page.locator("#main-content")).toHaveCSS("transform", "none");
   await expect(page.getByTestId("announcement-message")).toHaveCount(0);
@@ -71,6 +74,13 @@ test("skip navigation, reduced motion and media fallbacks preserve all content",
 });
 
 test("destination and package filters expose empty and reset states by keyboard", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("link", { name: /Women-only Travel/ }).click();
+  await expect(page).toHaveURL(/\/packages\/?\?category=women-only$/);
+  await expect(page.getByLabel("Category")).toHaveValue("women-only");
+  await expect(page.getByText("1 sample journey found")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Andaman Island Escape" })).toBeVisible();
+
   await page.goto("/destinations/");
   await page.getByRole("button", { name: "International" }).focus();
   await page.keyboard.press("Enter");
@@ -85,6 +95,26 @@ test("destination and package filters expose empty and reset states by keyboard"
   await expect(page.getByRole("heading", { name: "No sample journeys match those choices" })).toBeVisible();
   await page.getByRole("button", { name: "Reset filters" }).click();
   await expect(page.getByText(/sample journeys found/)).toBeVisible();
+});
+
+test("experience portals retain their planning context", async ({ page }) => {
+  await page.goto("/experiences/");
+  await page
+    .locator("article")
+    .filter({ hasText: "Women-only travel" })
+    .getByRole("link", { name: /Plan this experience/ })
+    .click();
+
+  await expect(page).toHaveURL(/\/plan-my-trip\/?\?experience=women-only$/);
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        JSON.parse(
+          sessionStorage.getItem("gamya-sanchari-planner") ?? "{}",
+        ).experienceSlug,
+      ),
+    )
+    .toBe("women-only");
 });
 
 test("historical journeys keep status and contextual next-departure enquiry together", async ({ page }) => {
@@ -135,6 +165,14 @@ test("itinerary and complete planner flow remain operable", async ({ page }) => 
 
 test("360px layouts never overflow and sticky actions stay reachable", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile-360", "Narrow-layout safety is covered in the 360px project.");
+  await page.goto("/");
+  const heroActionBox = await page.getByRole("link", { name: "Plan My Trip" }).first().boundingBox();
+  const hostBox = await page.getByTestId("travel-host").boundingBox();
+  const captionBox = await page.getByTestId("travel-host-caption").boundingBox();
+  expect(heroActionBox).not.toBeNull();
+  expect(hostBox).not.toBeNull();
+  expect(captionBox?.width ?? 0).toBeGreaterThan(250);
+  expect(hostBox!.y).toBeGreaterThanOrEqual(heroActionBox!.y + heroActionBox!.height);
   for (const path of ["/", "/destinations/", "/spiritual-journeys/", "/group-departures/", "/packages/puri-jagannath-konark/", "/plan-my-trip/", "/contact/"]) {
     await page.goto(path);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);

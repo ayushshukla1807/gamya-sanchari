@@ -94,3 +94,14 @@ test("falls back safely from malformed session storage", async () => {
   await waitFor(() => expect(screen.getByLabelText("Destination")).toHaveValue(""));
   expect(screen.getByText("Step 1 of 6: Where")).toBeVisible();
 });
+
+test("keeps experience context from an experience portal", async () => {
+  window.history.replaceState({}, "", "/plan-my-trip/?experience=women-only");
+  render(<TripPlanner />);
+
+  await waitFor(() =>
+    expect(JSON.parse(sessionStorage.getItem(storageKey) ?? "{}")).toMatchObject({
+      experienceSlug: "women-only",
+    }),
+  );
+});

@@ -107,6 +107,7 @@ export interface JournalArticle {
 export interface PlannerDraft {
   readonly destinationSlug: string;
   readonly journeySlug: string;
+  readonly experienceSlug: string;
   readonly scope: "" | TravelScope | "help-me-choose";
   readonly adults: number;
   readonly children: number;

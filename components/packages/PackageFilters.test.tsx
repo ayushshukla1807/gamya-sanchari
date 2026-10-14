@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import PackageFilters from "@/components/packages/PackageFilters";
@@ -65,5 +65,38 @@ describe("PackageFilters", () => {
     expect(
       screen.getByRole("link", { name: "View Canton Fair Business Visit" }),
     ).toBeVisible();
+  });
+
+  it("hydrates validated category and experience filters from a discovery link", () => {
+    const { unmount } = render(
+      <PackageFilters initialFilters={{ category: "women-only" }} journeys={JOURNEYS} />,
+    );
+    expect(screen.getByLabelText("Category")).toHaveValue("women-only");
+    expect(screen.getByText("1 sample journey found")).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Andaman Island Escape" })).toBeVisible();
+
+    unmount();
+    render(
+      <PackageFilters initialFilters={{ experience: "island-escapes" }} journeys={JOURNEYS} />,
+    );
+    expect(screen.getByLabelText("Experience")).toHaveValue("island-escapes");
+  });
+
+  it("ignores unknown discovery filters", () => {
+    render(<PackageFilters initialFilters={{ category: "not-real", experience: "unknown" }} journeys={JOURNEYS} />);
+    expect(screen.getByLabelText("Category")).toHaveValue("all");
+    expect(screen.getByLabelText("Experience")).toHaveValue("all");
+    expect(screen.getByText(`${JOURNEYS.length} sample journeys found`)).toBeVisible();
+  });
+
+  it("hydrates filters from the browser query on a static export", async () => {
+    window.history.replaceState({}, "", "/packages/?category=women-only");
+
+    render(<PackageFilters journeys={JOURNEYS} />);
+
+    await waitFor(() =>
+      expect(screen.getByLabelText("Category")).toHaveValue("women-only"),
+    );
+    expect(screen.getByText("1 sample journey found")).toBeVisible();
   });
 });

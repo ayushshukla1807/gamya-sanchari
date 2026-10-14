@@ -41,6 +41,10 @@ export function getJourney(slug: string): Journey | undefined {
   );
 }
 
+export function getExperience(slug: string) {
+  return EXPERIENCES.find((experience) => experience.slug === slug);
+}
+
 export function getArticle(slug: string) {
   return JOURNAL_ARTICLES.find((article) => article.slug === slug);
 }

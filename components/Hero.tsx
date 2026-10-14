@@ -129,7 +129,7 @@ function TravelHost() {
     <motion.aside
       animate={{ opacity: 1, x: 0 }}
       aria-label="Gamya Sanchari travel host"
-      className="absolute inset-x-0 bottom-0 z-20 grid min-h-56 grid-cols-[minmax(108px,0.42fr)_minmax(0,1fr)] items-end overflow-hidden rounded-[2rem] border border-white/15 bg-[#071027]/90 shadow-2xl backdrop-blur-md sm:min-h-64 sm:grid-cols-[minmax(160px,0.45fr)_minmax(0,1fr)] lg:relative lg:inset-auto lg:z-auto lg:mt-0 lg:block lg:min-h-[64svh] lg:overflow-visible lg:border-0 lg:bg-transparent lg:shadow-none lg:backdrop-blur-none"
+      className="relative z-20 mt-8 grid min-h-56 grid-cols-[minmax(108px,0.42fr)_minmax(0,1fr)] items-end overflow-hidden rounded-[2rem] border border-white/15 bg-[#071027]/90 shadow-2xl backdrop-blur-md max-[380px]:grid-cols-1 sm:min-h-64 sm:grid-cols-[minmax(160px,0.45fr)_minmax(0,1fr)] lg:inset-auto lg:z-auto lg:mt-0 lg:block lg:min-h-[64svh] lg:overflow-visible lg:border-0 lg:bg-transparent lg:shadow-none lg:backdrop-blur-none"
       data-testid="travel-host"
       initial={policy.reduced ? false : { opacity: 0, x: 120 }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
@@ -145,7 +145,7 @@ function TravelHost() {
         />
       </div>
 
-      <div className="relative z-10 m-3 ml-0 rounded-3xl border border-white/15 bg-white/95 p-4 text-[#212121] shadow-2xl sm:m-5 sm:ml-0 sm:p-5 lg:absolute lg:left-0 lg:top-[17%] lg:m-0 lg:w-[62%]">
+      <div className="relative z-10 m-3 ml-0 rounded-3xl border border-white/15 bg-white/95 p-4 text-[#212121] shadow-2xl max-[380px]:ml-3 sm:m-5 sm:ml-0 sm:p-5 lg:absolute lg:left-0 lg:top-[17%] lg:m-0 lg:w-[62%]">
         <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#1844ef]">
           Your personal travel host
         </p>
@@ -219,8 +219,17 @@ function TravelHost() {
 }
 
 export default function Hero() {
+  const policy = useMotionPolicy();
   const [videoFailed, setVideoFailed] = useState(false);
   const [showHost, setShowHost] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (!policy.reduced || !videoRef.current) return;
+    videoRef.current.removeAttribute("autoplay");
+    videoRef.current.removeAttribute("loop");
+    videoRef.current.pause();
+  }, [policy.reduced]);
 
   return (
     <>
@@ -235,14 +244,15 @@ export default function Hero() {
         >
           <video
             aria-hidden="true"
-            autoPlay
+            autoPlay={!policy.reduced}
             className={`h-full w-full object-cover ${videoFailed ? "hidden" : "hidden sm:block"}`}
-            loop
+            loop={!policy.reduced}
             muted
             onError={() => setVideoFailed(true)}
             playsInline
             poster="/images/hero-poster.webp"
             preload="metadata"
+            ref={videoRef}
           >
             <source
               media="(min-width: 640px)"

@@ -14,7 +14,12 @@ function setReducedMotion(matches: boolean) {
   reducedMotion.value = matches;
 }
 
-beforeEach(() => setReducedMotion(false));
+beforeEach(() => {
+  setReducedMotion(false);
+  vi.spyOn(window.HTMLMediaElement.prototype, "pause").mockImplementation(
+    () => undefined,
+  );
+});
 afterEach(() => {
   vi.useRealTimers();
   vi.restoreAllMocks();
@@ -88,15 +93,30 @@ describe("Hero", () => {
 
   it("shows the final state immediately for reduced-motion users", () => {
     setReducedMotion(true);
-    render(<Hero />);
+    const { container } = render(<Hero />);
+    const video = container.querySelector("video");
 
     expect(screen.queryByTestId("announcement-message")).not.toBeInTheDocument();
     expect(screen.getByTestId("travel-host")).toBeInTheDocument();
+    expect(video).not.toHaveAttribute("autoplay");
+    expect(video).not.toHaveAttribute("loop");
     expect(
       screen.getByRole("heading", {
         name: "Enjoy your holidays with GAMYA SANCHARI",
       }),
     ).toBeVisible();
+  });
+
+  it("stops the background video when reduced motion is enabled while mounted", () => {
+    const pause = vi
+      .spyOn(window.HTMLMediaElement.prototype, "pause")
+      .mockImplementation(() => undefined);
+    const { rerender } = render(<Hero />);
+
+    setReducedMotion(true);
+    rerender(<Hero />);
+
+    expect(pause).toHaveBeenCalledTimes(1);
   });
 
   it("loads, plays and stops the recorded host introduction only after a visitor asks", async () => {
@@ -110,6 +130,7 @@ describe("Hero", () => {
       .mockImplementation(() => undefined);
 
     render(<Hero />);
+    pause.mockClear();
 
     const audio = screen.getByTestId("host-introduction-audio");
     expect(audio).toHaveAttribute(
@@ -181,6 +202,7 @@ describe("Hero", () => {
     const pause = vi.spyOn(window.HTMLMediaElement.prototype, "pause").mockImplementation(() => undefined);
 
     const { unmount } = render(<Hero />);
+    pause.mockClear();
     const audio = screen.getByTestId("host-introduction-audio");
     fireEvent.click(screen.getByRole("button", { name: "Hear the host" }));
     fireEvent.canPlay(audio);

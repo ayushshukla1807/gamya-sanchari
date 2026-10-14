@@ -1,10 +1,11 @@
 import { DESTINATIONS, JOURNEYS } from "@/constants/travel";
-import { getDestination, getJourney } from "@/lib/travel-content";
+import { getDestination, getExperience, getJourney } from "@/lib/travel-content";
 import type { PlannerDraft, TravelPace, TravelScope } from "@/types/travel";
 
 export const EMPTY_PLANNER_DRAFT: PlannerDraft = {
   destinationSlug: "",
   journeySlug: "",
+  experienceSlug: "",
   scope: "",
   adults: 2,
   children: 0,
@@ -52,6 +53,7 @@ export function normalizePlannerDraft(value: unknown): PlannerDraft {
   const source = readObject(value);
   const storedDestination = getDestination(text(source.destinationSlug));
   const storedJourney = getJourney(text(source.journeySlug));
+  const storedExperience = getExperience(text(source.experienceSlug));
   const destination = storedJourney
     ? getDestination(storedJourney.destinationSlugs[0])
     : storedDestination;
@@ -83,6 +85,7 @@ export function normalizePlannerDraft(value: unknown): PlannerDraft {
   return {
     destinationSlug: destination?.slug ?? "",
     journeySlug: storedJourney?.slug ?? "",
+    experienceSlug: storedExperience?.slug ?? "",
     scope: destination?.scope ?? (validScopes.has(scopeCandidate) ? scopeCandidate : ""),
     adults: count(source.adults, 2, 1),
     children: count(source.children, 0, 0),
@@ -108,12 +111,14 @@ function plural(countValue: number, singular: string, pluralForm: string) {
 export function buildPlannerSummary(draft: PlannerDraft): string {
   const destination = getDestination(draft.destinationSlug);
   const journey = getJourney(draft.journeySlug);
+  const experience = getExperience(draft.experienceSlug);
   const lines = [
     "Personalized trip request",
     `Destination: ${destination?.title ?? (draft.scope === "help-me-choose" ? "Help me choose" : "Open to ideas")}`,
   ];
 
   if (journey) lines.push(`Starting journey: ${journey.title}`);
+  if (experience) lines.push(`Experience: ${experience.title}`);
   lines.push(
     `Travellers: ${plural(draft.adults, "adult", "adults")}, ${plural(draft.children, "child", "children")}`,
   );
@@ -146,6 +151,7 @@ export function readPlannerContext(searchParams: URLSearchParams): Partial<Plann
     const destination = getDestination(searchParams.get("destination") ?? "");
     if (destination) {
       context = {
+        journeySlug: "",
         destinationSlug: destination.slug,
         scope: destination.scope,
       };
@@ -153,15 +159,17 @@ export function readPlannerContext(searchParams: URLSearchParams): Partial<Plann
       const scope = searchParams.get("scope");
       context =
         scope === "domestic" || scope === "international"
-          ? { scope: scope as TravelScope }
+          ? { journeySlug: "", destinationSlug: "", scope: scope as TravelScope }
           : {};
     }
   }
 
   const party = text(searchParams.get("party"), 80);
   const month = text(searchParams.get("month"), 40);
+  const experience = getExperience(searchParams.get("experience") ?? "");
   return {
     ...context,
+    ...(experience ? { experienceSlug: experience.slug } : {}),
     ...(party ? { partyType: party } : {}),
     ...(month ? { travelMonth: month } : {}),
   };
