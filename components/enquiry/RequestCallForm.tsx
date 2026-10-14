@@ -6,9 +6,11 @@ import { buildRequestCallUrl } from "@/lib/whatsapp";
 
 export function RequestCallForm() {
   const [phone, setPhone] = useState("");
+  const [status, setStatus] = useState("");
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setStatus("Opening WhatsApp with your callback request…");
     window.open(
       buildRequestCallUrl(phone),
       "_blank",
@@ -37,6 +39,9 @@ export function RequestCallForm() {
       >
         Request a Call
       </button>
+      <p className="min-h-5 text-xs leading-5 text-white/70" role="status">
+        {status}
+      </p>
     </form>
   );
 }
