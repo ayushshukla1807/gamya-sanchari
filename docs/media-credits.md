@@ -20,5 +20,6 @@ Gamya Sanchari uses locally hosted, optimized derivatives of the following media
 | `public/images/brand/gamya-sanchari-icon-192.png` | Gamya Sanchari | App-icon derivative of client-supplied official brand artwork |
 | `public/images/brand/gamya-sanchari-icon-512.png` | Gamya Sanchari | App-icon derivative of client-supplied official brand artwork |
 | `public/images/brand/gamya-sanchari-social.png` | Gamya Sanchari | Social-sharing derivative of client-supplied official brand artwork |
+| `public/audio/gamya-ambient-journey.mp3` | Gamya Sanchari project | Original synthesized ambient composition created locally for this website |
 
-The Gamya Sanchari favicon is derived from the client-supplied official brand artwork. The spokesperson and graphic overlays are original project artwork.
+The Gamya Sanchari favicon is derived from the client-supplied official brand artwork. The spokesperson, graphic overlays, and ambient composition are original project artwork.

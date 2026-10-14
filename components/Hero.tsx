@@ -1,10 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Map, Volume2, VolumeX } from "lucide-react";
+import { ArrowRight, Map } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
+import WelcomeSound from "@/components/audio/WelcomeSound";
 import { BRAND } from "@/constants/brand";
 import KineticText from "@/components/motion/KineticText";
 import { useMotionPolicy } from "@/components/motion/MotionProvider";
@@ -20,8 +21,6 @@ const WHATSAPP_CTA =
 
 const HOST_INTRODUCTION =
   "Namaskara, and welcome to Gamya Sanchari. Tell us how you dream of travelling. We'll thoughtfully bring together your flights, stays, transfers, and experiences, so your journey feels truly yours.";
-
-const HOST_AUDIO = "/audio/gamya-host-introduction.mp3";
 
 function AnnouncementSequence({
   onComplete,
@@ -76,55 +75,6 @@ function AnnouncementSequence({
 
 function TravelHost() {
   const policy = useMotionPolicy();
-  const [audioState, setAudioState] = useState<
-    "idle" | "loading" | "playing" | "error"
-  >("idle");
-  const [hasPlayed, setHasPlayed] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const audioActiveRef = useRef(false);
-  const mountedRef = useRef(true);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    return () => {
-      mountedRef.current = false;
-      if (audioActiveRef.current) audio?.pause();
-    };
-  }, []);
-
-  function toggleAudio() {
-    const audio = audioRef.current;
-    if (!audio || audioState === "error" || audioState === "loading") return;
-
-    if (audioState === "playing") {
-      audio.pause();
-      audio.currentTime = 0;
-      audioActiveRef.current = false;
-      setHasPlayed(false);
-      setAudioState("idle");
-      return;
-    }
-
-    if (hasPlayed) audio.currentTime = 0;
-    audioActiveRef.current = true;
-    setAudioState("loading");
-    audio.load();
-  }
-
-  function playWhenReady() {
-    const audio = audioRef.current;
-    if (!audio || audioState !== "loading") return;
-
-    void audio
-      .play()
-      .then(() => {
-        if (mountedRef.current) setAudioState("playing");
-      })
-      .catch(() => {
-        audioActiveRef.current = false;
-        if (mountedRef.current) setAudioState("error");
-      });
-  }
 
   return (
     <motion.aside
@@ -156,56 +106,7 @@ function TravelHost() {
         >
           {HOST_INTRODUCTION}
         </p>
-        <audio
-          data-testid="host-introduction-audio"
-          onCanPlay={playWhenReady}
-          onEnded={() => {
-            audioActiveRef.current = false;
-            setHasPlayed(true);
-            setAudioState("idle");
-          }}
-          onError={() => {
-            audioActiveRef.current = false;
-            setAudioState("error");
-          }}
-          preload="none"
-          ref={audioRef}
-          src={HOST_AUDIO}
-        />
-        {audioState !== "error" ? (
-          <button
-            aria-label={
-              audioState === "loading"
-                ? "Loading introduction"
-                : audioState === "playing"
-                  ? "Stop introduction"
-                  : hasPlayed
-                    ? "Replay introduction"
-                    : "Hear the host"
-            }
-            className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1844ef] px-4 py-2 text-sm font-extrabold text-white transition hover:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
-            disabled={audioState === "loading"}
-            onClick={toggleAudio}
-            type="button"
-          >
-            {audioState === "playing" ? (
-              <VolumeX aria-hidden="true" size={17} />
-            ) : (
-              <Volume2 aria-hidden="true" size={17} />
-            )}
-            {audioState === "loading"
-              ? "Loading…"
-              : audioState === "playing"
-                ? "Stop"
-                : hasPlayed
-                  ? "Replay"
-                  : "Hear the host"}
-          </button>
-        ) : (
-          <p className="mt-3 text-xs font-bold text-[#5b6476]">
-            Audio introduction unavailable
-          </p>
-        )}
+        <WelcomeSound active />
         <a
           className="mt-3 inline-flex min-h-11 items-center justify-center rounded-full border border-[#1844ef]/20 px-4 py-2 text-sm font-extrabold text-[#1844ef] transition hover:border-[#f06619] hover:text-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
           href={WHATSAPP_CTA}
