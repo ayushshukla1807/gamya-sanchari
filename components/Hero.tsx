@@ -75,33 +75,54 @@ function AnnouncementSequence({
 
 function TravelHost() {
   const policy = useMotionPolicy();
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [audioFailed, setAudioFailed] = useState(false);
+  const [audioState, setAudioState] = useState<
+    "idle" | "loading" | "playing" | "error"
+  >("idle");
+  const [hasPlayed, setHasPlayed] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const audioActiveRef = useRef(false);
+  const mountedRef = useRef(true);
 
   useEffect(() => {
     const audio = audioRef.current;
     return () => {
-      if (audio && !audio.paused) audio.pause();
+      mountedRef.current = false;
+      if (audioActiveRef.current) audio?.pause();
     };
   }, []);
 
   function toggleAudio() {
     const audio = audioRef.current;
-    if (!audio || audioFailed) return;
+    if (!audio || audioState === "error" || audioState === "loading") return;
 
-    if (isSpeaking) {
+    if (audioState === "playing") {
       audio.pause();
       audio.currentTime = 0;
-      setIsSpeaking(false);
+      audioActiveRef.current = false;
+      setHasPlayed(false);
+      setAudioState("idle");
       return;
     }
 
-    setIsSpeaking(true);
-    void audio.play().catch(() => {
-      setAudioFailed(true);
-      setIsSpeaking(false);
-    });
+    if (hasPlayed) audio.currentTime = 0;
+    audioActiveRef.current = true;
+    setAudioState("loading");
+    audio.load();
+  }
+
+  function playWhenReady() {
+    const audio = audioRef.current;
+    if (!audio || audioState !== "loading") return;
+
+    void audio
+      .play()
+      .then(() => {
+        if (mountedRef.current) setAudioState("playing");
+      })
+      .catch(() => {
+        audioActiveRef.current = false;
+        if (mountedRef.current) setAudioState("error");
+      });
   }
 
   return (
@@ -136,28 +157,48 @@ function TravelHost() {
         </p>
         <audio
           data-testid="host-introduction-audio"
-          onEnded={() => setIsSpeaking(false)}
+          onCanPlay={playWhenReady}
+          onEnded={() => {
+            audioActiveRef.current = false;
+            setHasPlayed(true);
+            setAudioState("idle");
+          }}
           onError={() => {
-            setAudioFailed(true);
-            setIsSpeaking(false);
+            audioActiveRef.current = false;
+            setAudioState("error");
           }}
           preload="none"
           ref={audioRef}
           src={HOST_AUDIO}
         />
-        {!audioFailed ? (
+        {audioState !== "error" ? (
           <button
-            aria-label={isSpeaking ? "Stop introduction" : "Hear the host"}
+            aria-label={
+              audioState === "loading"
+                ? "Loading introduction"
+                : audioState === "playing"
+                  ? "Stop introduction"
+                  : hasPlayed
+                    ? "Replay introduction"
+                    : "Hear the host"
+            }
             className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1844ef] px-4 py-2 text-sm font-extrabold text-white transition hover:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
+            disabled={audioState === "loading"}
             onClick={toggleAudio}
             type="button"
           >
-            {isSpeaking ? (
+            {audioState === "playing" ? (
               <VolumeX aria-hidden="true" size={17} />
             ) : (
               <Volume2 aria-hidden="true" size={17} />
             )}
-            {isSpeaking ? "Stop" : "Hear the host"}
+            {audioState === "loading"
+              ? "Loading…"
+              : audioState === "playing"
+                ? "Stop"
+                : hasPlayed
+                  ? "Replay"
+                  : "Hear the host"}
           </button>
         ) : (
           <p className="mt-3 text-xs font-bold text-[#5b6476]">

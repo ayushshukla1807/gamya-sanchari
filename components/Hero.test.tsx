@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, vi } from "vitest";
 
 import Hero from "./Hero";
@@ -99,17 +99,17 @@ describe("Hero", () => {
     ).toBeVisible();
   });
 
-  it("plays and stops the recorded host introduction only after a visitor asks to hear it", () => {
-    vi.useFakeTimers();
+  it("loads, plays and stops the recorded host introduction only after a visitor asks", async () => {
+    setReducedMotion(true);
     const play = vi
       .spyOn(window.HTMLMediaElement.prototype, "play")
       .mockResolvedValue();
+    vi.spyOn(window.HTMLMediaElement.prototype, "load").mockImplementation(() => undefined);
     const pause = vi
       .spyOn(window.HTMLMediaElement.prototype, "pause")
       .mockImplementation(() => undefined);
 
     render(<Hero />);
-    act(() => vi.advanceTimersByTime(6600));
 
     const audio = screen.getByTestId("host-introduction-audio");
     expect(audio).toHaveAttribute(
@@ -119,7 +119,11 @@ describe("Hero", () => {
     expect(audio).toHaveAttribute("preload", "none");
 
     fireEvent.click(screen.getByRole("button", { name: "Hear the host" }));
-    expect(play).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("button", { name: "Loading introduction" })).toBeDisabled();
+    expect(play).not.toHaveBeenCalled();
+
+    fireEvent.canPlay(audio);
+    await waitFor(() => expect(play).toHaveBeenCalledTimes(1));
     expect(
       screen.getByRole("button", { name: "Stop introduction" }),
     ).toBeInTheDocument();
@@ -132,18 +136,59 @@ describe("Hero", () => {
     ).toBeInTheDocument();
   });
 
-  it("returns the recorded host control to its idle state when playback ends", () => {
+  it("offers replay after playback ends and resets only when replay begins", async () => {
     setReducedMotion(true);
     vi.spyOn(window.HTMLMediaElement.prototype, "play").mockResolvedValue();
+    vi.spyOn(window.HTMLMediaElement.prototype, "load").mockImplementation(() => undefined);
+    vi.spyOn(window.HTMLMediaElement.prototype, "pause").mockImplementation(() => undefined);
 
-    render(<Hero />);
+    const { unmount } = render(<Hero />);
+    const audio = screen.getByTestId("host-introduction-audio");
 
     fireEvent.click(screen.getByRole("button", { name: "Hear the host" }));
-    fireEvent.ended(screen.getByTestId("host-introduction-audio"));
+    fireEvent.canPlay(audio);
+    await screen.findByRole("button", { name: "Stop introduction" });
+    fireEvent.ended(audio);
 
     expect(
-      screen.getByRole("button", { name: "Hear the host" }),
+      screen.getByRole("button", { name: "Replay introduction" }),
     ).toBeInTheDocument();
+    audio.currentTime = 7;
+    fireEvent.click(screen.getByRole("button", { name: "Replay introduction" }));
+    expect(audio).toHaveProperty("currentTime", 0);
+    expect(screen.getByRole("button", { name: "Loading introduction" })).toBeDisabled();
+    unmount();
+  });
+
+  it("shows the transcript and a clear fallback when recorded playback is rejected", async () => {
+    setReducedMotion(true);
+    vi.spyOn(window.HTMLMediaElement.prototype, "load").mockImplementation(() => undefined);
+    vi.spyOn(window.HTMLMediaElement.prototype, "play").mockRejectedValue(new Error("blocked"));
+
+    render(<Hero />);
+    const audio = screen.getByTestId("host-introduction-audio");
+    fireEvent.click(screen.getByRole("button", { name: "Hear the host" }));
+    fireEvent.canPlay(audio);
+
+    expect(await screen.findByText("Audio introduction unavailable")).toBeVisible();
+    expect(screen.getByTestId("travel-host-caption")).toHaveTextContent("Namaskara, and welcome to Gamya Sanchari");
+  });
+
+  it("pauses active audio during cleanup while leaving the written introduction available", async () => {
+    setReducedMotion(true);
+    vi.spyOn(window.HTMLMediaElement.prototype, "load").mockImplementation(() => undefined);
+    vi.spyOn(window.HTMLMediaElement.prototype, "play").mockResolvedValue();
+    const pause = vi.spyOn(window.HTMLMediaElement.prototype, "pause").mockImplementation(() => undefined);
+
+    const { unmount } = render(<Hero />);
+    const audio = screen.getByTestId("host-introduction-audio");
+    fireEvent.click(screen.getByRole("button", { name: "Hear the host" }));
+    fireEvent.canPlay(audio);
+    await screen.findByRole("button", { name: "Stop introduction" });
+    expect(screen.getByTestId("travel-host-caption")).toBeVisible();
+
+    unmount();
+    expect(pause).toHaveBeenCalledTimes(1);
   });
 
   it("hides a failed video while retaining the poster and readable content", () => {
