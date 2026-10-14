@@ -2,6 +2,7 @@
 
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 const AMBIENT_AUDIO = "/audio/gamya-ambient-journey.mp3";
 const HOST_AUDIO = "/audio/gamya-host-introduction.mp3";
@@ -124,7 +125,6 @@ export default function WelcomeSound({
           .then(() => {
             if (attempt !== attemptRef.current) return;
             if (kind === "narration") {
-              writeSession(INTRO_PLAYED_KEY, "played");
               transitionIntroduction("playing");
             }
             transitionSound("playing");
@@ -224,7 +224,8 @@ export default function WelcomeSound({
       narration.pause();
       writeSession(SOUND_PREFERENCE_KEY, "muted");
       if (introductionStateRef.current === "playing") {
-        transitionIntroduction("played");
+        removeSession(INTRO_PLAYED_KEY);
+        transitionIntroduction("pending");
       }
       transitionSound("muted");
       return;
@@ -265,13 +266,65 @@ export default function WelcomeSound({
 
   const buttonLabel =
     soundState === "blocked"
-      ? "Start sound"
+      ? "Tap to hear welcome"
       : soundState === "muted" || soundState === "idle"
         ? "Turn sound on"
         : "Mute sound";
 
+  const soundControls =
+    soundState === "error" ? (
+      <p className="text-xs font-bold text-[#5b6476]" role="status">
+        Audio unavailable
+      </p>
+    ) : (
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          aria-label={buttonLabel}
+          className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1844ef] px-4 py-2 text-sm font-extrabold text-white transition hover:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef] disabled:cursor-wait disabled:opacity-70"
+          data-sound-control
+          onClick={toggleSound}
+          type="button"
+        >
+          {soundState === "playing" || soundState === "starting" ? (
+            <VolumeX aria-hidden="true" size={17} />
+          ) : (
+            <Volume2 aria-hidden="true" size={17} />
+          )}
+          {buttonLabel}
+        </button>
+        {introductionState === "played" ? (
+          <button
+            aria-label="Replay welcome"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#1844ef]/20 px-4 py-2 text-sm font-extrabold text-[#1844ef] transition hover:border-[#f06619] hover:text-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
+            data-sound-control
+            onClick={replayIntroduction}
+            type="button"
+          >
+            <RotateCcw aria-hidden="true" size={16} />
+            Replay welcome
+          </button>
+        ) : null}
+      </div>
+    );
+
+  const blockedPrompt = (
+    <div className="fixed inset-x-4 bottom-5 z-[90] mx-auto max-w-sm rounded-[1.5rem] border border-white/40 bg-white/95 p-3 shadow-[0_24px_80px_rgba(7,16,39,0.34)] backdrop-blur-xl sm:inset-x-auto sm:right-6 sm:mx-0">
+      {soundControls}
+      <p
+        aria-live="assertive"
+        className="mt-2 text-xs font-semibold text-[#5b6476]"
+        role="status"
+      >
+        Sound is ready — tap once to hear your welcome.
+      </p>
+    </div>
+  );
+
   return (
-    <div className={`mt-3 ${className}`.trim()} data-testid="welcome-sound">
+    <div
+      className={`mt-3 ${className}`.trim()}
+      data-testid="welcome-sound"
+    >
       <audio
         data-testid="ambient-music-audio"
         loop
@@ -289,46 +342,9 @@ export default function WelcomeSound({
         src={HOST_AUDIO}
       />
 
-      {soundState === "error" ? (
-        <p className="text-xs font-bold text-[#5b6476]" role="status">
-          Audio unavailable
-        </p>
-      ) : (
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            aria-label={buttonLabel}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1844ef] px-4 py-2 text-sm font-extrabold text-white transition hover:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef] disabled:cursor-wait disabled:opacity-70"
-            data-sound-control
-            onClick={toggleSound}
-            type="button"
-          >
-            {soundState === "playing" || soundState === "starting" ? (
-              <VolumeX aria-hidden="true" size={17} />
-            ) : (
-              <Volume2 aria-hidden="true" size={17} />
-            )}
-            {buttonLabel}
-          </button>
-          {introductionState === "played" ? (
-            <button
-              aria-label="Replay welcome"
-              className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#1844ef]/20 px-4 py-2 text-sm font-extrabold text-[#1844ef] transition hover:border-[#f06619] hover:text-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
-              data-sound-control
-              onClick={replayIntroduction}
-              type="button"
-            >
-              <RotateCcw aria-hidden="true" size={16} />
-              Replay welcome
-            </button>
-          ) : null}
-        </div>
-      )}
-
-      {soundState === "blocked" ? (
-        <p className="mt-2 text-xs font-semibold text-[#5b6476]" role="status">
-          Your browser paused the welcome. Tap or press any key to begin.
-        </p>
-      ) : null}
+      {soundState === "blocked" && typeof document !== "undefined"
+        ? createPortal(blockedPrompt, document.body)
+        : soundControls}
       {introductionState === "error" ? (
         <p className="mt-2 text-xs font-semibold text-[#5b6476]" role="status">
           Spoken welcome unavailable

@@ -73,7 +73,10 @@ describe("WelcomeSound", () => {
     );
 
     expect(
-      await screen.findByRole("button", { name: "Start sound" }),
+      await screen.findByRole("button", { name: "Tap to hear welcome" }),
+    ).toBeVisible();
+    expect(
+      screen.getByText("Sound is ready — tap once to hear your welcome."),
     ).toBeVisible();
     play.mockResolvedValue(undefined);
     fireEvent.click(screen.getByRole("button", { name: "Explore trips" }));
@@ -95,13 +98,17 @@ describe("WelcomeSound", () => {
       </>,
     );
 
-    await screen.findByRole("button", { name: "Start sound" });
+    await screen.findByRole("button", { name: "Tap to hear welcome" });
     fireEvent.click(screen.getByRole("button", { name: "Explore trips" }));
     await waitFor(() => expect(play).toHaveBeenCalledTimes(4));
-    expect(screen.getByRole("button", { name: "Start sound" })).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: "Tap to hear welcome" }),
+    ).toBeVisible();
 
     play.mockResolvedValue(undefined);
-    fireEvent.click(screen.getByRole("button", { name: "Explore trips" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Tap to hear welcome" }),
+    );
     await waitFor(() => expect(play).toHaveBeenCalledTimes(6));
     expect(screen.getByRole("button", { name: "Mute sound" })).toBeVisible();
   });
@@ -157,8 +164,35 @@ describe("WelcomeSound", () => {
     expect(overlapped).toBe(false);
     expect(playing.get("ambient-music-audio")).toBe(true);
     expect(playing.get("host-introduction-audio")).toBe(true);
-    expect(sessionStorage.getItem("gamya-sanchari-welcome-played")).toBe(
-      "played",
+    expect(
+      sessionStorage.getItem("gamya-sanchari-welcome-played"),
+    ).toBeNull();
+  });
+
+  it("retries an interrupted welcome instead of recording it as heard", async () => {
+    const started: string[] = [];
+    vi.spyOn(window.HTMLMediaElement.prototype, "play").mockImplementation(
+      function play(this: HTMLMediaElement) {
+        started.push(mediaName(this) ?? "unknown");
+        return Promise.resolve();
+      },
+    );
+
+    const first = render(<WelcomeSound active />);
+    await waitFor(() => expect(started).toHaveLength(2));
+    expect(
+      sessionStorage.getItem("gamya-sanchari-welcome-played"),
+    ).toBeNull();
+
+    first.unmount();
+    started.length = 0;
+    render(<WelcomeSound active />);
+
+    await waitFor(() =>
+      expect(started).toEqual([
+        "ambient-music-audio",
+        "host-introduction-audio",
+      ]),
     );
   });
 
@@ -173,6 +207,7 @@ describe("WelcomeSound", () => {
 
     const first = render(<WelcomeSound active />);
     await waitFor(() => expect(started).toHaveLength(2));
+    fireEvent.ended(screen.getByTestId("host-introduction-audio"));
     first.unmount();
     started.length = 0;
 

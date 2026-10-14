@@ -63,7 +63,9 @@ test("skip navigation, reduced motion and media fallbacks preserve all content",
   await expect(page.getByTestId("announcement-message")).toHaveCount(0);
   await expect(page.getByTestId("travel-host")).toBeVisible();
   await expect(
-    page.getByRole("button", { name: /Mute sound|Start sound/ }),
+    page.getByRole("button", {
+      name: /Mute sound|Tap to hear welcome/,
+    }),
   ).toBeVisible();
   expect(await page.evaluate(() => "speechSynthesis" in window)).toBe(false);
   await page.getByTestId("host-introduction-audio").dispatchEvent("error");
@@ -90,9 +92,23 @@ test("blocked welcome audio starts on the first intentional visitor gesture", as
   });
   await page.goto("/");
 
-  await expect(page.getByRole("button", { name: "Start sound" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Tap to hear welcome" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Tap to hear welcome" }),
+  ).toBeInViewport();
+  await expect(
+    page.getByText("Sound is ready — tap once to hear your welcome."),
+  ).toBeVisible();
   await page.getByTestId("travel-host-caption").click();
   await expect(page.getByRole("button", { name: "Mute sound" })).toBeVisible();
+  expect(
+    await page.evaluate(() =>
+      sessionStorage.getItem("gamya-sanchari-welcome-played"),
+    ),
+  ).toBeNull();
+  await page.getByTestId("host-introduction-audio").dispatchEvent("ended");
   await expect
     .poll(() =>
       page.evaluate(() =>
@@ -276,7 +292,9 @@ test("360px layouts never overflow and sticky actions stay reachable", async ({ 
   expect(captionBox?.width ?? 0).toBeGreaterThan(250);
   expect(hostBox!.y).toBeGreaterThanOrEqual(heroActionBox!.y + heroActionBox!.height);
   await expect(
-    page.getByRole("button", { name: /Mute sound|Start sound/ }),
+    page.getByRole("button", {
+      name: /Mute sound|Tap to hear welcome/,
+    }),
   ).toBeVisible();
   for (const path of ["/", "/destinations/", "/spiritual-journeys/", "/group-departures/", "/packages/puri-jagannath-konark/", "/plan-my-trip/", "/contact/"]) {
     await page.goto(path);
