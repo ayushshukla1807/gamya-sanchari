@@ -52,11 +52,11 @@ describe("Hero", () => {
     expect(screen.getByText("Domestic | International | Experiences")).toBeVisible();
     expect(screen.getByRole("link", { name: "Explore Destinations" })).toHaveAttribute(
       "href",
-      "#destinations",
+      "/destinations/",
     );
-    expect(screen.getByRole("link", { name: "Enquire on WhatsApp" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Plan My Trip" })).toHaveAttribute(
       "href",
-      "https://wa.me/918073254766?text=Hi%20Gamya%20Sanchari!%20I%20want%20to%20plan%20a%20trip.",
+      "/plan-my-trip/",
     );
   });
 
@@ -151,5 +151,24 @@ describe("Hero", () => {
         name: "Enjoy your holidays with GAMYA SANCHARI",
       }),
     ).toBeVisible();
+  });
+
+  it("keeps speech opt-in unavailable when the browser has no speech synthesis", () => {
+    setReducedMotion(true);
+    Reflect.deleteProperty(window, "speechSynthesis");
+    vi.unstubAllGlobals();
+
+    render(<Hero />);
+
+    expect(screen.queryByRole("button", { name: "Hear the host" })).not.toBeInTheDocument();
+    expect(screen.getByTestId("travel-host-caption")).toBeVisible();
+  });
+
+  it("marks the host portrait as removable on very narrow screens", () => {
+    setReducedMotion(true);
+    render(<Hero />);
+    expect(screen.getByTestId("travel-host-portrait")).toHaveClass(
+      "max-[380px]:hidden",
+    );
   });
 });

@@ -17,10 +17,11 @@ describe("Home", () => {
 
     expect(screen.getAllByRole("main")).toHaveLength(1);
     for (const link of NAV_LINKS) {
-      expect(screen.getAllByRole("link", { name: link.label })[0]).toHaveAttribute(
-        "href",
-        link.href.replace(/\/$/, ""),
-      );
+      const href = screen
+        .getAllByRole("link", { name: link.label })[0]
+        .getAttribute("href");
+
+      expect([link.href, link.href.replace(/\/$/, "")]).toContain(href);
     }
   });
 

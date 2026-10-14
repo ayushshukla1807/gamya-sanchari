@@ -133,25 +133,38 @@ export function buildPlannerSummary(draft: PlannerDraft): string {
 
 export function readPlannerContext(searchParams: URLSearchParams): Partial<PlannerDraft> {
   const journey = getJourney(searchParams.get("journey") ?? "");
+  let context: Partial<PlannerDraft>;
+
   if (journey) {
     const destination = getDestination(journey.destinationSlugs[0]);
-    return {
+    context = {
       journeySlug: journey.slug,
       destinationSlug: destination?.slug ?? "",
       scope: destination?.scope ?? "",
     };
+  } else {
+    const destination = getDestination(searchParams.get("destination") ?? "");
+    if (destination) {
+      context = {
+        destinationSlug: destination.slug,
+        scope: destination.scope,
+      };
+    } else {
+      const scope = searchParams.get("scope");
+      context =
+        scope === "domestic" || scope === "international"
+          ? { scope: scope as TravelScope }
+          : {};
+    }
   }
 
-  const destination = getDestination(searchParams.get("destination") ?? "");
-  if (destination) {
-    return { destinationSlug: destination.slug, scope: destination.scope };
-  }
-
-  const scope = searchParams.get("scope");
-  if (scope === "domestic" || scope === "international") {
-    return { scope: scope as TravelScope };
-  }
-  return {};
+  const party = text(searchParams.get("party"), 80);
+  const month = text(searchParams.get("month"), 40);
+  return {
+    ...context,
+    ...(party ? { partyType: party } : {}),
+    ...(month ? { travelMonth: month } : {}),
+  };
 }
 
 export const PLANNER_DESTINATIONS = DESTINATIONS;

@@ -107,4 +107,19 @@ describe("planner summaries and context", () => {
       scope: "domestic",
     });
   });
+
+  test("carries safe home-preview party and month context into the planner", () => {
+    expect(
+      readPlannerContext(
+        new URLSearchParams(
+          "destination=kerala&party=Family&month=December&ignored=anything",
+        ),
+      ),
+    ).toEqual({
+      destinationSlug: "kerala",
+      scope: "domestic",
+      partyType: "Family",
+      travelMonth: "December",
+    });
+  });
 });
