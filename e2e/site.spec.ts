@@ -62,15 +62,44 @@ test("skip navigation, reduced motion and media fallbacks preserve all content",
   await expect(page.locator("#main-content")).toHaveCSS("transform", "none");
   await expect(page.getByTestId("announcement-message")).toHaveCount(0);
   await expect(page.getByTestId("travel-host")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Hear the host" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: /Mute sound|Start sound/ }),
+  ).toBeVisible();
   expect(await page.evaluate(() => "speechSynthesis" in window)).toBe(false);
   await page.getByTestId("host-introduction-audio").dispatchEvent("error");
-  await expect(page.getByText("Audio introduction unavailable")).toBeVisible();
+  await expect(page.getByText("Spoken welcome unavailable")).toBeVisible();
   await expect(page.getByTestId("travel-host-caption")).toContainText("Namaskara");
   const video = page.locator("video");
   await video.dispatchEvent("error");
   await expect(video).toHaveClass(/hidden/);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+});
+
+test("blocked welcome audio starts on the first intentional visitor gesture", async ({ page }) => {
+  await page.addInitScript(() => {
+    let attempts = 0;
+    HTMLMediaElement.prototype.play = function play() {
+      attempts += 1;
+      if (attempts <= 2) {
+        return Promise.reject(
+          new DOMException("Autoplay blocked", "NotAllowedError"),
+        );
+      }
+      return Promise.resolve();
+    };
+  });
+  await page.goto("/");
+
+  await expect(page.getByRole("button", { name: "Start sound" })).toBeVisible();
+  await page.getByTestId("travel-host-caption").click();
+  await expect(page.getByRole("button", { name: "Mute sound" })).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        sessionStorage.getItem("gamya-sanchari-welcome-played"),
+      ),
+    )
+    .toBe("played");
 });
 
 test("kinetic headings preserve visible word spacing", async ({ page }) => {
@@ -246,6 +275,9 @@ test("360px layouts never overflow and sticky actions stay reachable", async ({ 
   expect(hostBox).not.toBeNull();
   expect(captionBox?.width ?? 0).toBeGreaterThan(250);
   expect(hostBox!.y).toBeGreaterThanOrEqual(heroActionBox!.y + heroActionBox!.height);
+  await expect(
+    page.getByRole("button", { name: /Mute sound|Start sound/ }),
+  ).toBeVisible();
   for (const path of ["/", "/destinations/", "/spiritual-journeys/", "/group-departures/", "/packages/puri-jagannath-konark/", "/plan-my-trip/", "/contact/"]) {
     await page.goto(path);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
