@@ -65,7 +65,7 @@ export default function SiteHeader() {
             whileHover={policy.reduced ? undefined : { rotate: -4, scale: 1.06 }}
           >
             <Image
-              alt="Gamya Sanchari"
+              alt=""
               height={48}
               priority
               src="/images/brand/gamya-sanchari-emblem.png"

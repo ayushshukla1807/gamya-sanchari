@@ -73,11 +73,13 @@ test("skip navigation, reduced motion and media fallbacks preserve all content",
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 });
 
-test("official brand artwork and enhanced motion render in normal-motion mode", async ({ page }) => {
+test("official brand artwork and enhanced motion render in normal-motion mode", async ({ page }, testInfo) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");
 
-  await expect(page.getByAltText("Gamya Sanchari", { exact: true })).toBeVisible();
+  await expect(
+    page.locator('header img[src*="gamya-sanchari-emblem"]'),
+  ).toBeVisible();
   await expect(
     page.getByAltText("Gamya Sanchari — Your Journey Awaits"),
   ).toBeVisible();
@@ -85,15 +87,32 @@ test("official brand artwork and enhanced motion render in normal-motion mode", 
     "data-motion-enabled",
     "true",
   );
-  await expect(page.getByTestId("page-transition-motion")).toHaveCSS(
-    "opacity",
-    "1",
-  );
+  await expect(page.getByTestId("page-transition")).toHaveCSS("opacity", "1");
   expect(await page.locator('[data-motion^="reveal-"]').count()).toBeGreaterThanOrEqual(12);
   await expect(page.getByTestId("route-progress").first()).toHaveAttribute(
     "data-motion-engine",
     "framer-motion",
   );
+
+  const previousTransition = await page.getByTestId("page-transition").elementHandle();
+  await page.locator("footer").getByRole("link", { name: "About" }).click();
+  await expect(page).toHaveURL(/\/about\/?$/);
+  expect(await previousTransition?.evaluate((element) => element.isConnected)).toBe(
+    false,
+  );
+
+  if (testInfo.project.name === "mobile-360") {
+    await page.goto("/packages/kerala-easy-pace/");
+    const stickyAction = page
+      .getByRole("link", { name: "Customize This Trip" })
+      .last();
+    await expect(stickyAction).toBeInViewport();
+    expect(
+      await stickyAction.evaluate(
+        (element) => getComputedStyle(element.parentElement!).position,
+      ),
+    ).toBe("fixed");
+  }
 });
 
 test("destination and package filters expose empty and reset states by keyboard", async ({ page }) => {

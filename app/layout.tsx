@@ -7,7 +7,6 @@ import SiteFooter from "@/components/layout/SiteFooter";
 import SiteHeader from "@/components/layout/SiteHeader";
 import SkipLink from "@/components/a11y/SkipLink";
 import MotionProvider from "@/components/motion/MotionProvider";
-import PageTransition from "@/components/motion/PageTransition";
 
 import "./globals.css";
 import { metadata, travelAgencySchema } from "./siteMetadata";
@@ -44,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <SkipLink />
           <EnquiryProvider>
             <SiteHeader />
-            <PageTransition>{children}</PageTransition>
+            {children}
             <SiteFooter />
             <GlobalWidgets />
           </EnquiryProvider>

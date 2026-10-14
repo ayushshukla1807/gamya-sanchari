@@ -1,31 +1,35 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useAnimationControls } from "framer-motion";
+import { useEffect } from "react";
 
 import { useMotionPolicy } from "@/components/motion/MotionProvider";
 
 export default function PageTransition({ children }: { children: React.ReactNode }) {
   const policy = useMotionPolicy();
+  const controls = useAnimationControls();
+
+  useEffect(() => {
+    if (!policy.pageTransition) return;
+
+    controls.set({ opacity: 0.94 });
+    void controls.start({
+      opacity: 1,
+      transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
+    });
+  }, [controls, policy.pageTransition]);
+
   return (
-    <div
+    <motion.div
+      animate={controls}
       data-motion="page-transition"
       data-motion-enabled={policy.pageTransition ? "true" : "false"}
       data-testid="page-transition"
       id="main-content"
+      initial={false}
       tabIndex={-1}
     >
-      <motion.div
-        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        data-testid="page-transition-motion"
-        initial={
-          policy.pageTransition
-            ? { opacity: 0, y: 14, filter: "blur(5px)" }
-            : false
-        }
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {children}
-      </motion.div>
-    </div>
+      {children}
+    </motion.div>
   );
 }

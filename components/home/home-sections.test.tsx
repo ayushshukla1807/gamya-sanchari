@@ -34,6 +34,9 @@ describe("guided home journey", () => {
     for (const intent of ["Spiritual Journeys", "Group Departures", "Short Trips", "Island Escapes", "Women-only Travel", "Business Travel"]) {
       expect(screen.getByRole("heading", { name: intent })).toBeVisible();
     }
+    expect(
+      screen.getByRole("link", { name: /Spiritual Journeys/ }),
+    ).toHaveClass("block", "h-full");
     for (const inclusion of ["Transport", "Stays", "Applicable meals", "Sightseeing", "Local coordination", "Tour-manager or guide support"]) {
       expect(screen.getByText(inclusion)).toBeVisible();
     }

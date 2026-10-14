@@ -11,7 +11,7 @@ export default function TravelIntentSelector() {
         <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {TRAVEL_INTENTS.map((intent, index) => (
             <MotionReveal delay={index * 0.055} direction={index % 2 === 0 ? "left" : "right"} hoverLift key={intent.slug}>
-            <a className="group rounded-[1.75rem] border border-[#0b1633]/10 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-[#1844ef]/30 hover:shadow-xl" href={intent.href} key={intent.slug}>
+            <a className="group block h-full rounded-[1.75rem] border border-[#0b1633]/10 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-[#1844ef]/30 hover:shadow-xl" href={intent.href}>
               <span className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#f06619]">0{index + 1}</span>
               <h3 className="mt-5 text-2xl font-extrabold text-[#0b1633]">{intent.title}</h3>
               <p className="mt-3 leading-7 text-[#566073]">{intent.summary}</p>

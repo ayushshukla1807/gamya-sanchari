@@ -29,6 +29,13 @@ describe("shared motion choreography", () => {
       "data-motion-enabled",
       "true",
     );
+    expect(screen.getByTestId("page-transition")).not.toHaveStyle({
+      filter: "blur(0px)",
+    });
+    expect(screen.getByTestId("page-transition")).not.toHaveStyle({ opacity: 0 });
+    expect(screen.getByTestId("page-transition")).not.toHaveStyle({
+      transform: "translateY(0px)",
+    });
     expect(screen.getByText("Journey content").parentElement).toHaveAttribute(
       "data-motion",
       "reveal-up",
