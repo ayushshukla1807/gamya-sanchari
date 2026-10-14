@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Map, Volume2, VolumeX } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { BRAND } from "@/constants/brand";
 import { useMotionPolicy } from "@/components/motion/MotionProvider";
@@ -18,7 +18,9 @@ const WHATSAPP_CTA =
   "https://wa.me/918073254766?text=Hi%20Gamya%20Sanchari!%20I%20want%20to%20plan%20a%20trip.";
 
 const HOST_INTRODUCTION =
-  "Namaskara! Welcome to Gamya Sanchari. Tell us where you want to go, and we'll bring your flights, stays, transfers and experiences together — your way.";
+  "Namaskara, and welcome to Gamya Sanchari. Tell us how you dream of travelling. We'll thoughtfully bring together your flights, stays, transfers, and experiences, so your journey feels truly yours.";
+
+const HOST_AUDIO = "/audio/gamya-host-introduction.mp3";
 
 function AnnouncementSequence({
   onComplete,
@@ -73,35 +75,33 @@ function AnnouncementSequence({
 
 function TravelHost() {
   const policy = useMotionPolicy();
-  const [canSpeak, setCanSpeak] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [audioFailed, setAudioFailed] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
-    setCanSpeak(
-      "speechSynthesis" in window && "SpeechSynthesisUtterance" in window,
-    );
-
-    return () => window.speechSynthesis?.cancel();
+    const audio = audioRef.current;
+    return () => {
+      if (audio && !audio.paused) audio.pause();
+    };
   }, []);
 
-  function toggleSpeech() {
-    if (!canSpeak) return;
+  function toggleAudio() {
+    const audio = audioRef.current;
+    if (!audio || audioFailed) return;
 
     if (isSpeaking) {
-      window.speechSynthesis.cancel();
+      audio.pause();
+      audio.currentTime = 0;
       setIsSpeaking(false);
       return;
     }
 
-    window.speechSynthesis.cancel();
-    const message = new SpeechSynthesisUtterance(HOST_INTRODUCTION);
-    message.lang = "en-IN";
-    message.rate = 0.94;
-    message.pitch = 1.02;
-    message.onend = () => setIsSpeaking(false);
-    message.onerror = () => setIsSpeaking(false);
-    window.speechSynthesis.speak(message);
     setIsSpeaking(true);
+    void audio.play().catch(() => {
+      setAudioFailed(true);
+      setIsSpeaking(false);
+    });
   }
 
   return (
@@ -134,11 +134,22 @@ function TravelHost() {
         >
           {HOST_INTRODUCTION}
         </p>
-        {canSpeak ? (
+        <audio
+          data-testid="host-introduction-audio"
+          onEnded={() => setIsSpeaking(false)}
+          onError={() => {
+            setAudioFailed(true);
+            setIsSpeaking(false);
+          }}
+          preload="none"
+          ref={audioRef}
+          src={HOST_AUDIO}
+        />
+        {!audioFailed ? (
           <button
             aria-label={isSpeaking ? "Stop introduction" : "Hear the host"}
             className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1844ef] px-4 py-2 text-sm font-extrabold text-white transition hover:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
-            onClick={toggleSpeech}
+            onClick={toggleAudio}
             type="button"
           >
             {isSpeaking ? (
@@ -148,7 +159,11 @@ function TravelHost() {
             )}
             {isSpeaking ? "Stop" : "Hear the host"}
           </button>
-        ) : null}
+        ) : (
+          <p className="mt-3 text-xs font-bold text-[#5b6476]">
+            Audio introduction unavailable
+          </p>
+        )}
         <a
           className="mt-3 inline-flex min-h-11 items-center justify-center rounded-full border border-[#1844ef]/20 px-4 py-2 text-sm font-extrabold text-[#1844ef] transition hover:border-[#f06619] hover:text-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
           href={WHATSAPP_CTA}
