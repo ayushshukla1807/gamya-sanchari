@@ -1,17 +1,19 @@
-import Camp from "@/components/Camp";
-import Features from "@/components/Features";
-import GetApp from "@/components/GetApp";
-import Guide from "@/components/Guide";
+import About from "@/components/About";
+import Destinations from "@/components/Destinations";
 import Hero from "@/components/Hero";
+import Services from "@/components/Services";
+import Testimonials from "@/components/Testimonials";
+import WhyUs from "@/components/WhyUs";
 
 export default function Home() {
   return (
-    <main className="relative overflow-hidden">
+    <main className="overflow-hidden">
       <Hero />
-      <Camp />
-      <Guide />
-      <Features />
-      <GetApp />
+      <About />
+      <Destinations />
+      <Services />
+      <WhyUs />
+      <Testimonials />
     </main>
   );
 }
