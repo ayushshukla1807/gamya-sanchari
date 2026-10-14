@@ -75,14 +75,17 @@ describe("package routes", () => {
 });
 
 describe("experience route", () => {
-  it("presents six distinct experience portals with fit and pacing guidance", () => {
+  it("presents every specialist travel portal with clear English guidance", () => {
     render(<ExperiencesPage />);
 
-    for (const experience of EXPERIENCES) {
+    const specialistSlugs = ["spiritual", "women-only", "short-trips", "island-escapes", "group-departures", "business-travel"];
+    for (const experience of EXPERIENCES.filter(({ slug }) => specialistSlugs.includes(slug))) {
       const heading = screen.getByRole("heading", { name: experience.title });
       expect(heading).toBeVisible();
+      expect(screen.getByText(experience.summary)).toBeVisible();
       expect(screen.getByText(experience.fit)).toBeVisible();
       expect(screen.getByText(experience.pacing)).toBeVisible();
     }
+    expect(screen.getByText(/Travel in your own way/i)).toBeVisible();
   });
 });

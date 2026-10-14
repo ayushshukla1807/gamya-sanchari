@@ -115,7 +115,7 @@ describe("marketing sections", () => {
       BRAND.emailHref,
     );
     expect(screen.getByText(BRAND.location)).toBeVisible();
-    expect(screen.getByRole("link", { name: "Instagram" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Active campaigns & trip moments" })).toHaveAttribute(
       "href",
       BRAND.instagram,
     );

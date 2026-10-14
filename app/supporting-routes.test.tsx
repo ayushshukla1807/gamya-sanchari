@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 
 import { BRAND } from "@/constants/brand";
 import { JOURNAL_ARTICLES } from "@/constants/travel";
+import SiteFooter from "@/components/layout/SiteFooter";
 
 import AboutPage from "./about/page";
 import ContactPage from "./contact/page";
@@ -58,6 +59,14 @@ describe("supporting routes", () => {
         "href", `/journal/${article.slug}`,
       );
     }
+  });
+
+  it("links specialist discovery and active Instagram moments from the footer", () => {
+    render(<SiteFooter />);
+
+    expect(screen.getByRole("link", { name: "Spiritual Journeys" })).toHaveAttribute("href", "/spiritual-journeys");
+    expect(screen.getByRole("link", { name: "Group Departures" })).toHaveAttribute("href", "/group-departures");
+    expect(screen.getByRole("link", { name: "Active campaigns & trip moments" })).toHaveAttribute("href", BRAND.instagram);
   });
 
   it("statically generates complete article pages with contextual next steps", async () => {

@@ -10,6 +10,8 @@ const expectedLinks = [
   ["Destinations", "/destinations/"],
   ["Packages", "/packages/"],
   ["Experiences", "/experiences/"],
+  ["Spiritual Journeys", "/spiritual-journeys/"],
+  ["Group Departures", "/group-departures/"],
   ["Plan My Trip", "/plan-my-trip/"],
   ["About", "/about/"],
   ["Contact", "/contact/"],
@@ -32,6 +34,7 @@ describe("SiteHeader", () => {
       "data-primary-action",
       "true",
     );
+    expect(within(desktop).getAllByRole("link").filter((link) => link.hasAttribute("data-primary-action"))).toHaveLength(1);
   });
 
   test("closes the mobile menu with Escape and restores trigger focus", async () => {
@@ -59,9 +62,12 @@ describe("SiteHeader", () => {
     const mobile = screen.getByRole("navigation", {
       name: "Mobile navigation",
     });
-    const packageLink = within(mobile).getByRole("link", { name: "Packages" });
-    packageLink.addEventListener("click", (event) => event.preventDefault());
-    await user.click(packageLink);
+    for (const [label, href] of expectedLinks) {
+      expect(within(mobile).getByRole("link", { name: label })).toHaveAttribute("href", href);
+    }
+    const spiritualLink = within(mobile).getByRole("link", { name: "Spiritual Journeys" });
+    spiritualLink.addEventListener("click", (event) => event.preventDefault());
+    await user.click(spiritualLink);
 
     expect(
       screen.queryByRole("navigation", { name: "Mobile navigation" }),
