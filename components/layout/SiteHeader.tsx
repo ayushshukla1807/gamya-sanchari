@@ -1,15 +1,21 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { BRAND } from "@/constants/brand";
 import { NAV_LINKS } from "@/constants/content";
+import { useMotionPolicy } from "@/components/motion/MotionProvider";
 
 export default function SiteHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const policy = useMotionPolicy();
+  const canAnimateMenu =
+    !policy.reduced && typeof IntersectionObserver !== "undefined";
 
   useEffect(() => {
     if (!isOpen) return;
@@ -27,7 +33,7 @@ export default function SiteHeader() {
     const primary = link.href === "/plan-my-trip/";
     const compact = link.href === "/group-departures/";
     return (
-      <li key={link.href}>
+      <motion.li key={link.href} whileHover={policy.reduced ? undefined : { y: -2 }}>
         <a
           className={
             primary
@@ -40,7 +46,7 @@ export default function SiteHeader() {
         >
           {link.label}
         </a>
-      </li>
+      </motion.li>
     );
   });
 
@@ -54,12 +60,18 @@ export default function SiteHeader() {
           className="flex min-h-11 items-center gap-3 rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f5ad56]"
           href="/"
         >
-          <span
-            aria-hidden="true"
-            className="grid size-11 shrink-0 place-items-center rounded-full bg-[#1844ef] text-sm font-extrabold shadow-lg shadow-[#1844ef]/30"
+          <motion.span
+            className="grid size-12 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-1 shadow-lg shadow-[#1844ef]/20"
+            whileHover={policy.reduced ? undefined : { rotate: -4, scale: 1.06 }}
           >
-            GS
-          </span>
+            <Image
+              alt="Gamya Sanchari"
+              height={48}
+              priority
+              src="/images/brand/gamya-sanchari-emblem.png"
+              width={52}
+            />
+          </motion.span>
           <span className="grid leading-tight">
             <span className="text-sm font-extrabold tracking-wide sm:text-base">
               {BRAND.name}
@@ -72,7 +84,7 @@ export default function SiteHeader() {
 
         <ul className="hidden items-center gap-0.5 xl:flex">{links}</ul>
 
-        <button
+        <motion.button
           aria-controls="mobile-navigation"
           aria-expanded={isOpen}
           aria-label={isOpen ? "Close navigation" : "Open navigation"}
@@ -80,19 +92,23 @@ export default function SiteHeader() {
           onClick={() => setIsOpen((current) => !current)}
           ref={menuButtonRef}
           type="button"
+          whileTap={policy.reduced ? undefined : { scale: 0.9 }}
         >
           {isOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
-        </button>
+        </motion.button>
       </nav>
 
       {isOpen ? (
-        <nav
+        <motion.nav
+          animate={{ opacity: 1, y: 0 }}
           aria-label="Mobile navigation"
           className="border-t border-white/10 bg-[#081329]/98 px-5 pb-5 pt-3 backdrop-blur-xl xl:hidden"
           id="mobile-navigation"
+          initial={canAnimateMenu ? { opacity: 0, y: -10 } : false}
+          transition={{ duration: 0.22 }}
         >
           <ul className="mx-auto grid max-w-[1440px] gap-1">{links}</ul>
-        </nav>
+        </motion.nav>
       ) : null}
     </header>
   );

@@ -1,3 +1,5 @@
+import MotionReveal from "@/components/MotionReveal";
+
 const ITEMS = [
   ["Transport", "Flights, rail, road and local movement connected around the route."],
   ["Stays", "Options chosen for location, comfort and the people travelling."],
@@ -16,7 +18,7 @@ export default function HandledInclusions() {
           <p className="max-w-2xl text-lg leading-8 text-[#566073]">Every inclusion is confirmed for your journey. Nothing is assumed from an old poster or an earlier departure.</p>
         </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {ITEMS.map(([title, description]) => <article className="rounded-[1.5rem] bg-white p-6 shadow-sm" key={title}><h3 className="text-xl font-extrabold text-[#0b1633]">{title}</h3><p className="mt-2 text-sm leading-6 text-[#566073]">{description}</p></article>)}
+          {ITEMS.map(([title, description], index) => <MotionReveal delay={index * 0.05} direction="scale" hoverLift key={title}><article className="rounded-[1.5rem] bg-white p-6 shadow-sm"><h3 className="text-xl font-extrabold text-[#0b1633]">{title}</h3><p className="mt-2 text-sm leading-6 text-[#566073]">{description}</p></article></MotionReveal>)}
         </div>
       </div>
     </section>

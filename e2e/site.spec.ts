@@ -73,6 +73,29 @@ test("skip navigation, reduced motion and media fallbacks preserve all content",
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 });
 
+test("official brand artwork and enhanced motion render in normal-motion mode", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+
+  await expect(page.getByAltText("Gamya Sanchari", { exact: true })).toBeVisible();
+  await expect(
+    page.getByAltText("Gamya Sanchari — Your Journey Awaits"),
+  ).toBeVisible();
+  await expect(page.getByTestId("page-transition")).toHaveAttribute(
+    "data-motion-enabled",
+    "true",
+  );
+  await expect(page.getByTestId("page-transition-motion")).toHaveCSS(
+    "opacity",
+    "1",
+  );
+  expect(await page.locator('[data-motion^="reveal-"]').count()).toBeGreaterThanOrEqual(12);
+  await expect(page.getByTestId("route-progress").first()).toHaveAttribute(
+    "data-motion-engine",
+    "framer-motion",
+  );
+});
+
 test("destination and package filters expose empty and reset states by keyboard", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: /Women-only Travel/ }).click();

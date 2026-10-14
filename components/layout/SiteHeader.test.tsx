@@ -24,6 +24,9 @@ describe("SiteHeader", () => {
     const desktop = screen.getByRole("navigation", {
       name: "Primary navigation",
     });
+    expect(
+      within(desktop).getByRole("img", { name: "Gamya Sanchari" }),
+    ).toHaveAttribute("src", expect.stringContaining("gamya-sanchari-emblem"));
     for (const [label, href] of expectedLinks) {
       expect(within(desktop).getByRole("link", { name: label })).toHaveAttribute(
         "href",
@@ -103,6 +106,10 @@ describe("shared editorial navigation primitives", () => {
   test("keeps route labels readable independently of animation", () => {
     render(<RouteLine stops={["Listen", "Shape", "Refine", "Support"]} />);
 
+    expect(screen.getByTestId("route-progress")).toHaveAttribute(
+      "data-motion-engine",
+      "framer-motion",
+    );
     for (const stop of ["Listen", "Shape", "Refine", "Support"]) {
       expect(screen.getByText(stop)).toBeVisible();
     }

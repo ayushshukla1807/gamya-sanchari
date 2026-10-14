@@ -40,6 +40,9 @@ describe("guided home journey", () => {
     expect(container.querySelectorAll('[data-departure-status="previous"]').length).toBeGreaterThanOrEqual(3);
     expect(screen.getByText(/Tiranga Darshan/i)).toBeVisible();
     expect(screen.getByRole("link", { name: /active campaigns and trip moments/i })).toHaveAttribute("href", BRAND.instagram);
+    expect(
+      container.querySelectorAll('[data-motion^="reveal-"]').length,
+    ).toBeGreaterThanOrEqual(12);
   });
 });
 

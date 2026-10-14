@@ -15,5 +15,10 @@ Gamya Sanchari uses locally hosted, optimized derivatives of the following media
 | `public/images/og-image.jpg` | Michel Rothstein | Branded crop derived from [Airplane Landing at the Airport](https://www.pexels.com/video/airplane-landing-at-the-airport-5237591/) |
 | `public/images/travel-host.webp` | OpenAI image generation | Original transparent spokesperson artwork created for Gamya Sanchari |
 | `public/images/site-preview.webp` | Gamya Sanchari project | Original screenshot of the locally rendered website |
+| `public/images/brand/gamya-sanchari-emblem.png` | Gamya Sanchari | Cropped, web-optimized derivative of client-supplied official brand artwork |
+| `public/images/brand/gamya-sanchari-lockup.png` | Gamya Sanchari | Cropped, web-optimized derivative of client-supplied official brand artwork |
+| `public/images/brand/gamya-sanchari-icon-192.png` | Gamya Sanchari | App-icon derivative of client-supplied official brand artwork |
+| `public/images/brand/gamya-sanchari-icon-512.png` | Gamya Sanchari | App-icon derivative of client-supplied official brand artwork |
+| `public/images/brand/gamya-sanchari-social.png` | Gamya Sanchari | Social-sharing derivative of client-supplied official brand artwork |
 
-The Gamya Sanchari favicon, spokesperson and graphic overlays are original project artwork.
+The Gamya Sanchari favicon is derived from the client-supplied official brand artwork. The spokesperson and graphic overlays are original project artwork.

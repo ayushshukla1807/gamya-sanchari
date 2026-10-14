@@ -1,4 +1,5 @@
 import { Instagram, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { RequestCallForm } from "@/components/enquiry/RequestCallForm";
@@ -11,9 +12,14 @@ export default function SiteFooter() {
       <div className="mx-auto max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12">
         <div className="grid gap-12 border-b border-white/10 pb-14 lg:grid-cols-[1.2fr_0.75fr_0.8fr_1.05fr]">
           <div>
-            <Link className="inline-flex items-center gap-3" href="/">
-              <span className="grid size-12 place-items-center rounded-full bg-[#1844ef] font-extrabold">GS</span>
-              <span className="grid leading-tight"><span className="font-extrabold">{BRAND.name}</span><span className="text-xs text-white/60">{BRAND.nameKannada} · {BRAND.descriptor}</span></span>
+            <Link className="inline-flex rounded-2xl bg-white p-3 shadow-2xl" href="/">
+              <Image
+                alt="Gamya Sanchari — Your Journey Awaits"
+                className="h-auto w-40"
+                height={872}
+                src="/images/brand/gamya-sanchari-lockup.png"
+                width={714}
+              />
             </Link>
             <p className="mt-6 max-w-sm text-sm leading-7 text-white/65">Bengaluru-based travel planning for journeys that fit your people, pace and priorities.</p>
             <p className="mt-5 max-w-sm font-bold leading-7 text-white/85">{BRAND.blessing}</p>

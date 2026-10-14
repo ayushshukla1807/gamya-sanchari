@@ -31,7 +31,8 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/images/brand/gamya-sanchari-icon-192.png",
+    apple: "/images/brand/gamya-sanchari-icon-512.png",
   },
 };
 
@@ -46,6 +47,7 @@ export const travelAgencySchema = {
   email: BRAND.email,
   description,
   slogan: "Your Journey Awaits",
+  logo: `${BRAND.siteUrl}/images/brand/gamya-sanchari-lockup.png`,
   address: {
     "@type": "PostalAddress",
     addressLocality: "Bengaluru",

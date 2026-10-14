@@ -16,7 +16,7 @@ export const SITE_DESCRIPTION =
   "Personalized domestic and international travel planning from Bengaluru, shaped around your people, pace and priorities.";
 
 const STATIC_PAGES: readonly PublishedPage[] = [
-  { path: "/", title: "Gamya Sanchari | Your Journey Awaits", description: SITE_DESCRIPTION, image: "/images/og-image.jpg", priority: 1 },
+  { path: "/", title: "Gamya Sanchari | Your Journey Awaits", description: SITE_DESCRIPTION, image: "/images/brand/gamya-sanchari-social.png", priority: 1 },
   { path: "/destinations/", title: "Thoughtful Travel Destinations | Gamya Sanchari", description: "Explore domestic and international destinations by region, season and travel style, then shape one around your pace.", priority: 0.9 },
   { path: "/spiritual-journeys/", title: "Supported Spiritual Journeys & Yatras | Gamya Sanchari", description: "Explore spiritual journeys and pilgrimage routes with responsible pacing, practical yatra preparation and current departure verification.", priority: 0.9 },
   { path: "/group-departures/", title: "Supported Group Departures | Gamya Sanchari", description: "Explore group departure routes with coordinated transport, stays, applicable inclusions and honest, request-based availability.", priority: 0.9 },
@@ -39,7 +39,7 @@ export function getPublishedPages(): readonly PublishedPage[] {
 
 export function buildPageMetadata(page: PublishedPage): Metadata {
   const canonical = `${BRAND.siteUrl}${page.path === "/" ? "/" : page.path}`;
-  const image = page.image ?? "/images/og-image.jpg";
+  const image = page.image ?? "/images/brand/gamya-sanchari-social.png";
   return {
     title: page.title,
     description: page.description,
