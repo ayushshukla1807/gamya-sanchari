@@ -60,3 +60,5 @@ export interface WhatsAppEnquiry {
   message: string;
   context?: string;
 }
+
+export type { PlannerDraft } from "@/types/travel";
