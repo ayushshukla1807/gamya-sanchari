@@ -8,12 +8,32 @@ import { BENEFITS, DESTINATIONS, SERVICES, TRAVELLER_STORIES } from "@/constants
 import About from "./About";
 import Destinations from "./Destinations";
 import Footer from "./Footer";
+import SectionHeading from "./SectionHeading";
 import Services from "./Services";
 import Testimonials from "./Testimonials";
 import WhyUs from "./WhyUs";
 import { EnquiryProvider } from "./enquiry/EnquiryProvider";
 
 describe("marketing sections", () => {
+  it("gives shared editorial headings accessible kinetic type and premium material hooks", () => {
+    const { container } = render(
+      <SectionHeading
+        description="A considered journey, shaped around you."
+        eyebrow="Travel beautifully"
+        title="Your journey awaits"
+      />,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "Your journey awaits" }),
+    ).toHaveAttribute("data-motion", "kinetic-text");
+    expect(container.firstElementChild).toHaveAttribute(
+      "data-material",
+      "editorial-heading",
+    );
+    expect(container.querySelector('[data-material="accent-line"]')).toBeVisible();
+  });
+
   it("renders the exact introduction and confidence statement", () => {
     render(<About />);
 

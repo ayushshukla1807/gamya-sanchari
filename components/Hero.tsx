@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { BRAND } from "@/constants/brand";
+import KineticText from "@/components/motion/KineticText";
 import { useMotionPolicy } from "@/components/motion/MotionProvider";
 
 const ANNOUNCEMENTS = [
@@ -129,7 +130,7 @@ function TravelHost() {
     <motion.aside
       animate={{ opacity: 1, x: 0 }}
       aria-label="Gamya Sanchari travel host"
-      className="relative z-20 mt-8 grid min-h-56 grid-cols-[minmax(108px,0.42fr)_minmax(0,1fr)] items-end overflow-hidden rounded-[2rem] border border-white/15 bg-[#071027]/90 shadow-2xl backdrop-blur-md max-[380px]:grid-cols-1 sm:min-h-64 sm:grid-cols-[minmax(160px,0.45fr)_minmax(0,1fr)] lg:inset-auto lg:z-auto lg:mt-0 lg:block lg:min-h-[64svh] lg:overflow-visible lg:border-0 lg:bg-transparent lg:shadow-none lg:backdrop-blur-none"
+      className="premium-surface relative z-20 mt-8 grid min-h-56 grid-cols-[minmax(108px,0.42fr)_minmax(0,1fr)] items-end overflow-hidden rounded-[2rem] bg-[#071027]/90 shadow-2xl backdrop-blur-md max-[380px]:grid-cols-1 sm:min-h-64 sm:grid-cols-[minmax(160px,0.45fr)_minmax(0,1fr)] lg:inset-auto lg:z-auto lg:mt-0 lg:block lg:min-h-[64svh] lg:overflow-visible lg:border-0 lg:bg-transparent lg:shadow-none lg:backdrop-blur-none lg:[box-shadow:none]"
       data-testid="travel-host"
       initial={policy.reduced ? false : { opacity: 0, x: 120 }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
@@ -235,6 +236,7 @@ export default function Hero() {
     <>
       <section
         className="relative isolate flex min-h-[100svh] items-end overflow-hidden bg-[#10182a] text-white"
+        data-material="hero-stage"
         id="home"
       >
         <div
@@ -263,6 +265,18 @@ export default function Hero() {
         </div>
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,8,20,0.25)_0%,rgba(3,8,20,0.52)_44%,rgba(3,8,20,0.94)_100%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(240,102,25,0.22),transparent_38%)]" />
+        <motion.div
+          animate={policy.reduced ? undefined : { rotate: 360, scale: [1, 1.08, 1] }}
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-32 top-24 size-[28rem] rounded-full border border-white/10 opacity-40 shadow-[0_0_120px_rgba(24,68,239,0.2)]"
+          transition={{ duration: 24, ease: "linear", repeat: Infinity }}
+        />
+        <motion.div
+          animate={policy.reduced ? undefined : { x: [0, 24, 0], y: [0, -18, 0] }}
+          aria-hidden="true"
+          className="pointer-events-none absolute left-[8%] top-[28%] size-2 rounded-full bg-[#f5ad56] shadow-[0_0_28px_8px_rgba(245,173,86,0.45)]"
+          transition={{ duration: 7, ease: "easeInOut", repeat: Infinity }}
+        />
 
         <div className="relative z-10 mx-auto grid w-full max-w-[1440px] items-end gap-8 px-5 pb-14 pt-36 sm:px-8 sm:pb-20 lg:grid-cols-[minmax(0,1.08fr)_minmax(390px,0.92fr)] lg:px-12 lg:pb-6 lg:pt-28">
           <div className="max-w-4xl lg:pb-8">
@@ -270,10 +284,12 @@ export default function Hero() {
               <span className="h-px w-10 bg-[#f06619]" />
               {BRAND.nameKannada} · Bengaluru
             </p>
-            <h1 className="text-balance text-4xl font-extrabold leading-[0.98] tracking-[-0.04em] sm:text-6xl lg:text-6xl xl:text-7xl">
-              Enjoy your holidays with{" "}
-              <span className="text-[#f9a36f]">GAMYA SANCHARI</span>
-            </h1>
+            <KineticText
+              accentWords={["GAMYA", "SANCHARI"]}
+              as="h1"
+              className="text-balance text-4xl font-extrabold leading-[0.98] tracking-[-0.04em] sm:text-6xl lg:text-6xl xl:text-7xl"
+              text="Enjoy your holidays with GAMYA SANCHARI"
+            />
             <p className="mt-6 text-base font-bold uppercase tracking-[0.18em] text-white/80 sm:text-lg">
               Domestic | International | Experiences
             </p>
@@ -283,14 +299,14 @@ export default function Hero() {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1844ef] px-7 py-3 font-extrabold text-white shadow-xl shadow-[#1844ef]/20 transition hover:bg-[#f06619] focus-visible:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                className="premium-button inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1844ef] px-7 py-3 font-extrabold text-white shadow-xl shadow-[#1844ef]/20 hover:bg-[#f06619] focus-visible:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                 href="/plan-my-trip/"
               >
                 Plan My Trip
                 <ArrowRight aria-hidden="true" size={18} />
               </a>
               <a
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-7 py-3 font-extrabold text-white backdrop-blur-md transition hover:border-[#f06619] hover:bg-[#f06619] focus-visible:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                className="premium-button inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-7 py-3 font-extrabold text-white backdrop-blur-md hover:border-[#f06619] hover:bg-[#f06619] focus-visible:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                 href="/destinations/"
               >
                 <Map aria-hidden="true" size={19} />

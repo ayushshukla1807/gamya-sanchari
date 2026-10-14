@@ -11,6 +11,8 @@ export interface MotionPolicy {
   readonly smoothScroll: boolean;
   readonly routeDrawing: boolean;
   readonly autoAnnouncements: boolean;
+  readonly kineticText: boolean;
+  readonly scrollProgress: boolean;
 }
 
 export function getMotionPolicy(reduced: boolean): MotionPolicy {
@@ -22,6 +24,8 @@ export function getMotionPolicy(reduced: boolean): MotionPolicy {
     smoothScroll: !reduced,
     routeDrawing: !reduced,
     autoAnnouncements: !reduced,
+    kineticText: !reduced,
+    scrollProgress: !reduced,
   };
 }
 
