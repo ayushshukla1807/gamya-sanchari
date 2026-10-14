@@ -126,10 +126,10 @@ describe("SEO metadata", () => {
   it("publishes the exact Open Graph title and canonical URL", () => {
     expect(metadata.openGraph).toMatchObject({
       title: "Gamya Sanchari | Your Journey Awaits",
-      url: "https://gamya-sanchari.vercel.app",
+      url: "https://gamya-sanchari.vercel.app/",
     });
     expect(metadata.alternates).toMatchObject({
-      canonical: "https://gamya-sanchari.vercel.app",
+      canonical: "https://gamya-sanchari.vercel.app/",
     });
   });
 

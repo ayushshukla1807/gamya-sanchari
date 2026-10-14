@@ -1,6 +1,8 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+
+import { useMotionPolicy } from "@/components/motion/MotionProvider";
 
 interface MotionRevealProps {
   children: React.ReactNode;
@@ -13,13 +15,13 @@ export default function MotionReveal({
   className,
   delay = 0,
 }: MotionRevealProps) {
-  const reduceMotion = useReducedMotion();
+  const policy = useMotionPolicy();
   const canAnimateInView =
-    !reduceMotion && typeof IntersectionObserver !== "undefined";
+    !policy.reduced && typeof IntersectionObserver !== "undefined";
   return (
     <motion.div
       className={className}
-      initial={canAnimateInView ? { opacity: 0, y: 24 } : false}
+      initial={canAnimateInView ? { opacity: 0, y: policy.revealOffset } : false}
       transition={{ delay, duration: 0.55, ease: "easeOut" }}
       viewport={{ amount: 0.2, once: true }}
       whileInView={canAnimateInView ? { opacity: 1, y: 0 } : undefined}

@@ -7,8 +7,8 @@ import { NAV_LINKS } from "@/constants/content";
 import Home from "./page";
 
 describe("Home", () => {
-  it("renders one main landmark and every navigation target", () => {
-    const { container } = render(
+  it("renders one main landmark and every primary route link", () => {
+    render(
       <EnquiryProvider>
         <Home />
         <Footer />
@@ -17,7 +17,11 @@ describe("Home", () => {
 
     expect(screen.getAllByRole("main")).toHaveLength(1);
     for (const link of NAV_LINKS) {
-      expect(container.querySelector(link.href)).not.toBeNull();
+      const href = screen
+        .getAllByRole("link", { name: link.label })[0]
+        .getAttribute("href");
+
+      expect([link.href, link.href.replace(/\/$/, "")]).toContain(href);
     }
   });
 

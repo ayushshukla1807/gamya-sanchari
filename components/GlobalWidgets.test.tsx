@@ -45,7 +45,7 @@ describe("GlobalWidgets", () => {
     );
     expect(screen.getByRole("link", { name: "Contact Us" })).toHaveAttribute(
       "href",
-      "#contact",
+      "/contact/",
     );
 
     await user.click(screen.getByRole("button", { name: "Enquire Now" }));

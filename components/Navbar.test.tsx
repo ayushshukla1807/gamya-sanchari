@@ -4,19 +4,19 @@ import userEvent from "@testing-library/user-event";
 import Navbar from "./Navbar";
 
 describe("Navbar", () => {
-  it("renders the bilingual lockup and exact section links", () => {
+  it("renders the bilingual lockup and exact route links", () => {
     render(<Navbar />);
 
     expect(screen.getByText("Gamya Sanchari")).toBeVisible();
     expect(screen.getByText("ಗಮ್ಯ ಸಂಚಾರಿ · Travel Planners")).toBeVisible();
 
     const expected = [
-      ["Home", "#home"],
-      ["About", "#about"],
-      ["Destinations", "#destinations"],
-      ["Services", "#services"],
-      ["Why Us", "#why-us"],
-      ["Contact", "#contact"],
+      ["Destinations", "/destinations/"],
+      ["Packages", "/packages/"],
+      ["Experiences", "/experiences/"],
+      ["Plan My Trip", "/plan-my-trip/"],
+      ["About", "/about/"],
+      ["Contact", "/contact/"],
     ];
     for (const [name, href] of expected) {
       expect(screen.getByRole("link", { name })).toHaveAttribute("href", href);
@@ -35,11 +35,11 @@ describe("Navbar", () => {
     expect(menuButton).toHaveAttribute("aria-expanded", "true");
     expect(screen.getByRole("navigation", { name: "Mobile navigation" })).toBeVisible();
 
-    await user.click(
-      screen.getByRole("navigation", { name: "Mobile navigation" }).querySelector(
-        'a[href="#about"]',
-      )!,
-    );
+    const aboutLink = screen
+      .getByRole("navigation", { name: "Mobile navigation" })
+      .querySelector('a[href="/about/"]')!;
+    aboutLink.addEventListener("click", (event) => event.preventDefault());
+    await user.click(aboutLink);
     expect(menuButton).toHaveAttribute("aria-expanded", "false");
   });
 

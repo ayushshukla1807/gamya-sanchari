@@ -17,7 +17,7 @@ export type IconName =
   | "wallet-cards";
 
 export interface NavigationLink {
-  href: `#${string}`;
+  href: `/${string}`;
   label: string;
 }
 
@@ -60,3 +60,5 @@ export interface WhatsAppEnquiry {
   message: string;
   context?: string;
 }
+
+export type { PlannerDraft } from "@/types/travel";

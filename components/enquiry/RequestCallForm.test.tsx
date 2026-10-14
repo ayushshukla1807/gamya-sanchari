@@ -46,5 +46,8 @@ describe("RequestCallForm", () => {
     expect(new URL(String(url)).searchParams.get("text")).toBe(
       "Hi Gamya Sanchari! Please call me back on +91 90000 00000.",
     );
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Opening WhatsApp with your callback request",
+    );
   });
 });

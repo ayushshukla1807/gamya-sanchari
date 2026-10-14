@@ -1,19 +1,21 @@
-import About from "@/components/About";
-import Destinations from "@/components/Destinations";
 import Hero from "@/components/Hero";
-import Services from "@/components/Services";
-import Testimonials from "@/components/Testimonials";
-import WhyUs from "@/components/WhyUs";
+import ConfidenceClose from "@/components/home/ConfidenceClose";
+import ExperienceShowcase from "@/components/home/ExperienceShowcase";
+import FeaturedJourneys from "@/components/home/FeaturedJourneys";
+import PlannerPreview from "@/components/home/PlannerPreview";
+import PlanningRoute from "@/components/home/PlanningRoute";
+import RegionExplorer from "@/components/home/RegionExplorer";
 
 export default function Home() {
   return (
     <main className="overflow-hidden">
       <Hero />
-      <About />
-      <Destinations />
-      <Services />
-      <WhyUs />
-      <Testimonials />
+      <RegionExplorer />
+      <ExperienceShowcase />
+      <FeaturedJourneys />
+      <PlanningRoute />
+      <PlannerPreview />
+      <ConfidenceClose />
     </main>
   );
 }

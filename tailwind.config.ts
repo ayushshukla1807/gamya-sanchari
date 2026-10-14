@@ -14,6 +14,11 @@ const config: Config = {
           dark: "#212121",
           body: "#656565",
           surface: "#f3f3f3",
+          midnight: "#081329",
+          ivory: "#fffaf0",
+          sand: "#eadbc4",
+          mist: "#eaf0f6",
+          gold: "#b97918",
         },
       },
       fontFamily: {

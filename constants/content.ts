@@ -6,14 +6,15 @@ import type {
   Service,
   TravellerStory,
 } from "@/types/content";
+import { JOURNEYS } from "@/constants/travel";
 
 export const NAV_LINKS: NavigationLink[] = [
-  { href: "#home", label: "Home" },
-  { href: "#about", label: "About" },
-  { href: "#destinations", label: "Destinations" },
-  { href: "#services", label: "Services" },
-  { href: "#why-us", label: "Why Us" },
-  { href: "#contact", label: "Contact" },
+  { href: "/destinations/", label: "Destinations" },
+  { href: "/packages/", label: "Packages" },
+  { href: "/experiences/", label: "Experiences" },
+  { href: "/plan-my-trip/", label: "Plan My Trip" },
+  { href: "/about/", label: "About" },
+  { href: "/contact/", label: "Contact" },
 ];
 
 export const DESTINATIONS: Destination[] = [
@@ -49,32 +50,14 @@ export const DESTINATIONS: Destination[] = [
   },
 ];
 
-export const SAMPLE_JOURNEYS: SampleJourney[] = [
-  {
-    title: "Kerala at an easy pace",
-    duration: "5 days",
-    route: ["Kochi", "Munnar", "Thekkady"],
-    theme: "Hills · nature · family time",
-  },
-  {
-    title: "Kashmir valley moments",
-    duration: "6 days",
-    route: ["Srinagar", "Gulmarg", "Pahalgam"],
-    theme: "Scenery · snow · slow travel",
-  },
-  {
-    title: "Dubai first-timer favourites",
-    duration: "5 days",
-    route: ["Old Dubai", "Downtown", "Desert"],
-    theme: "City · culture · adventure",
-  },
-  {
-    title: "Bali, beautifully unhurried",
-    duration: "6 days",
-    route: ["Ubud", "Seminyak", "Nusa Dua"],
-    theme: "Wellness · coast · honeymoon",
-  },
-];
+export const SAMPLE_JOURNEYS: SampleJourney[] = JOURNEYS.map(
+  ({ title, duration, route, theme }) => ({
+    title,
+    duration,
+    route: [...route],
+    theme,
+  }),
+);
 
 export const SERVICES: Service[] = [
   {

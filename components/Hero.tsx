@@ -1,11 +1,12 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowDown, MessageCircle, Volume2, VolumeX } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowRight, Map, Volume2, VolumeX } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import { BRAND } from "@/constants/brand";
+import { useMotionPolicy } from "@/components/motion/MotionProvider";
 
 const ANNOUNCEMENTS = [
   "✈️ Ladies and gentlemen, this is your captain speaking…",
@@ -24,11 +25,11 @@ function AnnouncementSequence({
 }: {
   onComplete: (visible: boolean) => void;
 }) {
-  const reduceMotion = useReducedMotion();
+  const policy = useMotionPolicy();
   const [announcement, setAnnouncement] = useState<number | null>(0);
 
   useEffect(() => {
-    if (reduceMotion) {
+    if (!policy.autoAnnouncements) {
       setAnnouncement(null);
       onComplete(true);
       return;
@@ -48,7 +49,7 @@ function AnnouncementSequence({
       ),
     );
     return () => timers.forEach((timer) => window.clearTimeout(timer));
-  }, [onComplete, reduceMotion]);
+  }, [onComplete, policy.autoAnnouncements]);
 
   if (announcement === null) return null;
 
@@ -71,7 +72,7 @@ function AnnouncementSequence({
 }
 
 function TravelHost() {
-  const reduceMotion = useReducedMotion();
+  const policy = useMotionPolicy();
   const [canSpeak, setCanSpeak] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
@@ -109,10 +110,10 @@ function TravelHost() {
       aria-label="Gamya Sanchari travel host"
       className="absolute inset-x-0 bottom-0 z-20 grid min-h-56 grid-cols-[minmax(108px,0.42fr)_minmax(0,1fr)] items-end overflow-hidden rounded-[2rem] border border-white/15 bg-[#071027]/90 shadow-2xl backdrop-blur-md sm:min-h-64 sm:grid-cols-[minmax(160px,0.45fr)_minmax(0,1fr)] lg:relative lg:inset-auto lg:z-auto lg:mt-0 lg:block lg:min-h-[64svh] lg:overflow-visible lg:border-0 lg:bg-transparent lg:shadow-none lg:backdrop-blur-none"
       data-testid="travel-host"
-      initial={reduceMotion ? false : { opacity: 0, x: 120 }}
+      initial={policy.reduced ? false : { opacity: 0, x: 120 }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="relative h-full min-h-52 sm:min-h-64 lg:absolute lg:inset-y-0 lg:left-[38%] lg:right-0 lg:min-h-0">
+      <div className="relative h-full min-h-52 max-[380px]:hidden sm:min-h-64 lg:absolute lg:inset-y-0 lg:left-[38%] lg:right-0 lg:min-h-0" data-testid="travel-host-portrait">
         <Image
           alt=""
           className="object-contain object-bottom"
@@ -217,19 +218,17 @@ export default function Hero() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1844ef] px-7 py-3 font-extrabold text-white shadow-xl shadow-[#1844ef]/20 transition hover:bg-[#f06619] focus-visible:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-                href="#destinations"
+                href="/plan-my-trip/"
               >
-                Explore Destinations
-                <ArrowDown aria-hidden="true" size={18} />
+                Plan My Trip
+                <ArrowRight aria-hidden="true" size={18} />
               </a>
               <a
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-7 py-3 font-extrabold text-white backdrop-blur-md transition hover:border-[#f06619] hover:bg-[#f06619] focus-visible:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-                href={WHATSAPP_CTA}
-                rel="noreferrer"
-                target="_blank"
+                href="/destinations/"
               >
-                <MessageCircle aria-hidden="true" size={19} />
-                Enquire on WhatsApp
+                <Map aria-hidden="true" size={19} />
+                Explore Destinations
               </a>
             </div>
           </div>

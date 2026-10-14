@@ -1,17 +1,18 @@
 "use client";
 
-import { useReducedMotion } from "framer-motion";
 import { ArrowUp, Mail, MessageCircle, Send } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { BRAND } from "@/constants/brand";
+import { useMotionPolicy } from "@/components/motion/MotionProvider";
 
 import { useEnquiry } from "./enquiry/EnquiryProvider";
 
 export default function GlobalWidgets() {
   const { openEnquiry } = useEnquiry();
-  const reduceMotion = useReducedMotion();
+  const motionPolicy = useMotionPolicy();
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [quietRoute, setQuietRoute] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setShowBackToTop(window.scrollY > 300);
@@ -20,11 +21,19 @@ export default function GlobalWidgets() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    setQuietRoute(
+      ["/plan-my-trip", "/plan-my-trip/", "/contact", "/contact/"].includes(
+        window.location.pathname,
+      ),
+    );
+  }, []);
+
   return (
     <>
       <a
         aria-label="Chat on WhatsApp"
-        className="fixed bottom-5 left-5 z-40 grid min-h-12 min-w-12 place-items-center rounded-full bg-[#25d366] text-white shadow-xl shadow-black/20 transition hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#25d366]"
+        className={`fixed bottom-5 left-5 z-40 grid min-h-12 min-w-12 place-items-center rounded-full bg-[#25d366] text-white shadow-xl shadow-black/20 transition hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#25d366] ${quietRoute ? "opacity-55" : ""}`}
         href={BRAND.whatsappHref}
         rel="noreferrer"
         target="_blank"
@@ -53,7 +62,7 @@ export default function GlobalWidgets() {
         </a>
         <a
           className="flex min-h-11 items-center gap-2 px-4 py-3 text-sm font-bold transition hover:bg-[#1844ef] focus-visible:bg-[#1844ef] focus-visible:outline-none"
-          href="#contact"
+        href="/contact/"
         >
           <Mail aria-hidden="true" size={16} /> Contact Us
         </a>
@@ -64,7 +73,7 @@ export default function GlobalWidgets() {
           aria-label="Back to top"
           className="fixed bottom-5 right-5 z-40 grid min-h-11 min-w-11 place-items-center rounded-full bg-[#212121] text-white shadow-xl transition hover:bg-[#1844ef] focus-visible:bg-[#1844ef] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1844ef]"
           onClick={() =>
-            window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" })
+            window.scrollTo({ top: 0, behavior: motionPolicy.smoothScroll ? "smooth" : "auto" })
           }
           type="button"
         >
