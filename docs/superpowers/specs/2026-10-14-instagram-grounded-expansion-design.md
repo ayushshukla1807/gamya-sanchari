@@ -1,8 +1,8 @@
 # Gamya Sanchari Instagram-Grounded Expansion Design
 
-**Date:** 2026-10-14  
-**Status:** Ready for review  
-**Project:** Gamya Sanchari public website  
+**Date:** 2026-10-14
+**Status:** Ready for review
+**Project:** Gamya Sanchari public website
 
 ## 1. Purpose
 
