@@ -38,7 +38,7 @@ describe("marketing sections", () => {
     for (const destination of DESTINATIONS) {
       expect(screen.getByRole("heading", { name: destination.title })).toBeVisible();
       for (const place of destination.places) {
-        expect(screen.getByText(place)).toBeVisible();
+        expect(screen.getAllByText(place)[0]).toBeVisible();
       }
     }
     await user.click(screen.getByRole("button", { name: "Enquire about South India" }));
@@ -115,7 +115,7 @@ describe("marketing sections", () => {
       BRAND.emailHref,
     );
     expect(screen.getByText(BRAND.location)).toBeVisible();
-    expect(screen.getByRole("link", { name: "Instagram" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Active campaigns & trip moments" })).toHaveAttribute(
       "href",
       BRAND.instagram,
     );

@@ -5,7 +5,7 @@ import process from "node:process";
 const root = process.cwd();
 const sourceRoots = ["app", "components", "constants", "public"];
 const sourceExtensions = new Set([".css", ".json", ".ts", ".tsx"]);
-const mediaPattern = /["'(]((?:\/)?(?:images|videos)\/[^"')\s?#]+)/g;
+const mediaPattern = /["'(]((?:\/)?(?:audio|images|videos)\/[^"')\s?#]+)/g;
 const references = new Set();
 const sourceFiles = [];
 
@@ -66,7 +66,7 @@ for (const { path, contents } of sourceFiles) {
   if (/\b(?:lorem ipsum|coming soon|placeholder copy|todo:)\b/i.test(contents)) {
     errors.push(`Placeholder content in ${relative(root, path)}`);
   }
-  if (/\b(?:aggregateRating|ratingValue|priceRange|availability)\b/.test(contents)) {
+  if (/\b(?:aggregateRating|ratingValue|priceRange)\b|["']?availability["']?\s*:/.test(contents)) {
     errors.push(`Unsupported commercial schema marker in ${relative(root, path)}`);
   }
 }

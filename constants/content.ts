@@ -10,6 +10,8 @@ import { JOURNEYS } from "@/constants/travel";
 
 export const NAV_LINKS: NavigationLink[] = [
   { href: "/destinations/", label: "Destinations" },
+  { href: "/spiritual-journeys/", label: "Spiritual Journeys" },
+  { href: "/group-departures/", label: "Group Departures" },
   { href: "/packages/", label: "Packages" },
   { href: "/experiences/", label: "Experiences" },
   { href: "/plan-my-trip/", label: "Plan My Trip" },
@@ -51,9 +53,9 @@ export const DESTINATIONS: Destination[] = [
 ];
 
 export const SAMPLE_JOURNEYS: SampleJourney[] = JOURNEYS.map(
-  ({ title, duration, route, theme }) => ({
+  ({ title, durationLabel, route, theme }) => ({
     title,
-    duration,
+    duration: durationLabel,
     route: [...route],
     theme,
   }),

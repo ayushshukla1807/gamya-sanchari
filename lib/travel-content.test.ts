@@ -11,6 +11,7 @@ import {
   getArticle,
   getDestination,
   getJourney,
+  getJourneysByCategory,
   getRelatedJourneys,
 } from "@/lib/travel-content";
 
@@ -20,13 +21,34 @@ const expectedDestinationSlugs = [
   "rajasthan",
   "dubai",
   "bali",
+  "odisha-puri",
+  "tirupati",
+  "ujjain",
+  "varanasi-ayodhya-prayagraj",
+  "uttarakhand-yatra",
+  "shirdi",
+  "andaman",
+  "ooty-mysuru",
 ];
 
-const expectedJourneySlugs = [
+const originalJourneySlugs = [
   "kerala-easy-pace",
   "kashmir-valley-moments",
   "dubai-first-timer-favourites",
   "bali-beautifully-unhurried",
+];
+
+const instagramGroundedJourneySlugs = [
+  "puri-jagannath-konark",
+  "tirupati-darshan",
+  "ujjain-mahakaleshwar",
+  "varanasi-ayodhya-prayagraj",
+  "char-dham-yatra",
+  "kedarnath-yatra",
+  "shirdi-sai-darshan",
+  "andaman-island-escape",
+  "ooty-mysuru-short-break",
+  "canton-fair-business-visit",
 ];
 
 describe("travel content contracts", () => {
@@ -45,16 +67,29 @@ describe("travel content contracts", () => {
     }
   });
 
-  test("publishes the approved destination and sample journey slugs", () => {
+  test("publishes the approved destination and Instagram-grounded journey slugs", () => {
     expect(DESTINATIONS.map(({ slug }) => slug)).toEqual(
       expect.arrayContaining(expectedDestinationSlugs),
     );
-    expect(JOURNEYS.map(({ slug }) => slug)).toEqual(expectedJourneySlugs);
-    expect(JOURNEYS.every(({ isSample }) => isSample)).toBe(true);
+    expect(JOURNEYS.map(({ slug }) => slug)).toEqual(
+      expect.arrayContaining([
+        ...originalJourneySlugs,
+        ...instagramGroundedJourneySlugs,
+      ]),
+    );
   });
 
-  test("publishes six experience categories and three journal entries", () => {
-    expect(EXPERIENCES).toHaveLength(6);
+  test("publishes the specialist experience categories and three journal entries", () => {
+    expect(EXPERIENCES.map(({ slug }) => slug)).toEqual(
+      expect.arrayContaining([
+        "spiritual",
+        "group-departures",
+        "short-trips",
+        "women-only",
+        "island-escapes",
+        "business-travel",
+      ]),
+    );
     expect(JOURNAL_ARTICLES).toHaveLength(3);
   });
 
@@ -103,5 +138,20 @@ describe("travel content lookups", () => {
       "bali-beautifully-unhurried",
     ]);
     expect(getRelatedJourneys("not-a-destination")).toEqual([]);
+  });
+
+  test("returns only journeys in the requested audited category", () => {
+    expect(getJourneysByCategory("business").map(({ slug }) => slug)).toEqual([
+      "canton-fair-business-visit",
+    ]);
+    expect(
+      getJourneysByCategory("spiritual").map(({ slug }) => slug),
+    ).toEqual(
+      expect.arrayContaining([
+        "puri-jagannath-konark",
+        "tirupati-darshan",
+        "char-dham-yatra",
+      ]),
+    );
   });
 });

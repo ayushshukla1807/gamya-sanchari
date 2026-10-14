@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     "international trips",
     "honeymoon planning",
     "group tours",
+    "spiritual journeys India",
+    "pilgrimage tours from Bengaluru",
+    "group departures from Bengaluru",
     "Gamya Sanchari",
   ],
   robots: {
@@ -35,6 +38,7 @@ export const metadata: Metadata = {
 export const travelAgencySchema = {
   "@context": "https://schema.org",
   "@type": "TravelAgency",
+  "@id": `${BRAND.siteUrl}/#travel-agency`,
   name: BRAND.name,
   alternateName: BRAND.nameKannada,
   url: BRAND.siteUrl,

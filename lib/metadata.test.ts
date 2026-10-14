@@ -5,6 +5,7 @@ import {
   buildBreadcrumbSchema,
   buildPageMetadata,
   getPublishedPages,
+  metadataForPath,
 } from "@/lib/metadata";
 
 describe("published metadata", () => {
@@ -30,6 +31,21 @@ describe("published metadata", () => {
     const urls = sitemap().map(({ url }) => url);
     expect(urls).toEqual(expected);
     expect(urls.every((url) => url.endsWith("/"))).toBe(true);
+  });
+
+  test("publishes distinct spiritual and group discovery metadata", () => {
+    const spiritual = metadataForPath("/spiritual-journeys/");
+    const groups = metadataForPath("/group-departures/");
+
+    expect(spiritual.alternates?.canonical).toBe(`${BRAND.siteUrl}/spiritual-journeys/`);
+    expect(groups.alternates?.canonical).toBe(`${BRAND.siteUrl}/group-departures/`);
+    expect(spiritual.alternates?.canonical).not.toBe(groups.alternates?.canonical);
+    expect(spiritual.description).toMatch(/spiritual|yatra|pilgrimage/i);
+    expect(groups.description).toMatch(/group|departure/i);
+
+    const urls = sitemap().map(({ url }) => url);
+    expect(urls).toContain(`${BRAND.siteUrl}/spiritual-journeys/`);
+    expect(urls).toContain(`${BRAND.siteUrl}/group-departures/`);
   });
 
   test("structured data contains only supported organization and breadcrumb facts", () => {

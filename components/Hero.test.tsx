@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, vi } from "vitest";
 
 import Hero from "./Hero";
@@ -14,7 +14,12 @@ function setReducedMotion(matches: boolean) {
   reducedMotion.value = matches;
 }
 
-beforeEach(() => setReducedMotion(false));
+beforeEach(() => {
+  setReducedMotion(false);
+  vi.spyOn(window.HTMLMediaElement.prototype, "pause").mockImplementation(
+    () => undefined,
+  );
+});
 afterEach(() => {
   vi.useRealTimers();
   vi.restoreAllMocks();
@@ -82,16 +87,19 @@ describe("Hero", () => {
     expect(screen.queryByTestId("announcement-message")).not.toBeInTheDocument();
     expect(screen.getByTestId("travel-host")).toBeInTheDocument();
     expect(screen.getByTestId("travel-host-caption")).toHaveTextContent(
-      "Namaskara! Welcome to Gamya Sanchari",
+      "Namaskara, and welcome to Gamya Sanchari",
     );
   });
 
   it("shows the final state immediately for reduced-motion users", () => {
     setReducedMotion(true);
-    render(<Hero />);
+    const { container } = render(<Hero />);
+    const video = container.querySelector("video");
 
     expect(screen.queryByTestId("announcement-message")).not.toBeInTheDocument();
     expect(screen.getByTestId("travel-host")).toBeInTheDocument();
+    expect(video).not.toHaveAttribute("autoplay");
+    expect(video).not.toHaveAttribute("loop");
     expect(
       screen.getByRole("heading", {
         name: "Enjoy your holidays with GAMYA SANCHARI",
@@ -99,41 +107,110 @@ describe("Hero", () => {
     ).toBeVisible();
   });
 
-  it("speaks and stops the host introduction only after a visitor asks to hear it", () => {
-    vi.useFakeTimers();
-    const speak = vi.fn();
-    const cancel = vi.fn();
-    const utterance = {
-      lang: "",
-      rate: 0,
-      pitch: 0,
-      onend: null as (() => void) | null,
-      onerror: null as (() => void) | null,
-    };
+  it("stops the background video when reduced motion is enabled while mounted", () => {
+    const pause = vi
+      .spyOn(window.HTMLMediaElement.prototype, "pause")
+      .mockImplementation(() => undefined);
+    const { rerender } = render(<Hero />);
 
-    vi.stubGlobal(
-      "SpeechSynthesisUtterance",
-      vi.fn(() => utterance),
-    );
-    Object.defineProperty(window, "speechSynthesis", {
-      configurable: true,
-      value: { cancel, speak },
-    });
+    setReducedMotion(true);
+    rerender(<Hero />);
+
+    expect(pause).toHaveBeenCalledTimes(1);
+  });
+
+  it("loads, plays and stops the recorded host introduction only after a visitor asks", async () => {
+    setReducedMotion(true);
+    const play = vi
+      .spyOn(window.HTMLMediaElement.prototype, "play")
+      .mockResolvedValue();
+    vi.spyOn(window.HTMLMediaElement.prototype, "load").mockImplementation(() => undefined);
+    const pause = vi
+      .spyOn(window.HTMLMediaElement.prototype, "pause")
+      .mockImplementation(() => undefined);
 
     render(<Hero />);
-    act(() => vi.advanceTimersByTime(6600));
+    pause.mockClear();
+
+    const audio = screen.getByTestId("host-introduction-audio");
+    expect(audio).toHaveAttribute(
+      "src",
+      "/audio/gamya-host-introduction.mp3",
+    );
+    expect(audio).toHaveAttribute("preload", "none");
 
     fireEvent.click(screen.getByRole("button", { name: "Hear the host" }));
-    expect(speak).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("button", { name: "Loading introduction" })).toBeDisabled();
+    expect(play).not.toHaveBeenCalled();
+
+    fireEvent.canPlay(audio);
+    await waitFor(() => expect(play).toHaveBeenCalledTimes(1));
     expect(
       screen.getByRole("button", { name: "Stop introduction" }),
     ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Stop introduction" }));
-    expect(cancel).toHaveBeenCalled();
+    expect(pause).toHaveBeenCalledTimes(1);
+    expect(audio).toHaveProperty("currentTime", 0);
     expect(
       screen.getByRole("button", { name: "Hear the host" }),
     ).toBeInTheDocument();
+  });
+
+  it("offers replay after playback ends and resets only when replay begins", async () => {
+    setReducedMotion(true);
+    vi.spyOn(window.HTMLMediaElement.prototype, "play").mockResolvedValue();
+    vi.spyOn(window.HTMLMediaElement.prototype, "load").mockImplementation(() => undefined);
+    vi.spyOn(window.HTMLMediaElement.prototype, "pause").mockImplementation(() => undefined);
+
+    const { unmount } = render(<Hero />);
+    const audio = screen.getByTestId("host-introduction-audio");
+
+    fireEvent.click(screen.getByRole("button", { name: "Hear the host" }));
+    fireEvent.canPlay(audio);
+    await screen.findByRole("button", { name: "Stop introduction" });
+    fireEvent.ended(audio);
+
+    expect(
+      screen.getByRole("button", { name: "Replay introduction" }),
+    ).toBeInTheDocument();
+    audio.currentTime = 7;
+    fireEvent.click(screen.getByRole("button", { name: "Replay introduction" }));
+    expect(audio).toHaveProperty("currentTime", 0);
+    expect(screen.getByRole("button", { name: "Loading introduction" })).toBeDisabled();
+    unmount();
+  });
+
+  it("shows the transcript and a clear fallback when recorded playback is rejected", async () => {
+    setReducedMotion(true);
+    vi.spyOn(window.HTMLMediaElement.prototype, "load").mockImplementation(() => undefined);
+    vi.spyOn(window.HTMLMediaElement.prototype, "play").mockRejectedValue(new Error("blocked"));
+
+    render(<Hero />);
+    const audio = screen.getByTestId("host-introduction-audio");
+    fireEvent.click(screen.getByRole("button", { name: "Hear the host" }));
+    fireEvent.canPlay(audio);
+
+    expect(await screen.findByText("Audio introduction unavailable")).toBeVisible();
+    expect(screen.getByTestId("travel-host-caption")).toHaveTextContent("Namaskara, and welcome to Gamya Sanchari");
+  });
+
+  it("pauses active audio during cleanup while leaving the written introduction available", async () => {
+    setReducedMotion(true);
+    vi.spyOn(window.HTMLMediaElement.prototype, "load").mockImplementation(() => undefined);
+    vi.spyOn(window.HTMLMediaElement.prototype, "play").mockResolvedValue();
+    const pause = vi.spyOn(window.HTMLMediaElement.prototype, "pause").mockImplementation(() => undefined);
+
+    const { unmount } = render(<Hero />);
+    pause.mockClear();
+    const audio = screen.getByTestId("host-introduction-audio");
+    fireEvent.click(screen.getByRole("button", { name: "Hear the host" }));
+    fireEvent.canPlay(audio);
+    await screen.findByRole("button", { name: "Stop introduction" });
+    expect(screen.getByTestId("travel-host-caption")).toBeVisible();
+
+    unmount();
+    expect(pause).toHaveBeenCalledTimes(1);
   });
 
   it("hides a failed video while retaining the poster and readable content", () => {
@@ -153,14 +230,14 @@ describe("Hero", () => {
     ).toBeVisible();
   });
 
-  it("keeps speech opt-in unavailable when the browser has no speech synthesis", () => {
+  it("keeps the written introduction available when recorded audio fails", () => {
     setReducedMotion(true);
-    Reflect.deleteProperty(window, "speechSynthesis");
-    vi.unstubAllGlobals();
 
     render(<Hero />);
+    fireEvent.error(screen.getByTestId("host-introduction-audio"));
 
     expect(screen.queryByRole("button", { name: "Hear the host" })).not.toBeInTheDocument();
+    expect(screen.getByText("Audio introduction unavailable")).toBeVisible();
     expect(screen.getByTestId("travel-host-caption")).toBeVisible();
   });
 

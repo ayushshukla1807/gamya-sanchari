@@ -25,13 +25,14 @@ export default function SiteHeader() {
 
   const links = NAV_LINKS.map((link) => {
     const primary = link.href === "/plan-my-trip/";
+    const compact = link.href === "/group-departures/";
     return (
       <li key={link.href}>
         <a
           className={
             primary
               ? "inline-flex min-h-11 items-center rounded-full bg-[#f06619] px-5 text-sm font-extrabold text-white shadow-lg shadow-[#f06619]/20 transition hover:-translate-y-0.5 hover:bg-white hover:text-[#0b1633] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-              : "inline-flex min-h-11 items-center rounded-full px-4 text-sm font-bold text-white/80 transition hover:bg-white/10 hover:text-white focus-visible:bg-white/10 focus-visible:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#f5ad56]"
+              : `inline-flex min-h-11 items-center rounded-full font-bold text-white/80 transition hover:bg-white/10 hover:text-white focus-visible:bg-white/10 focus-visible:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#f5ad56] ${compact ? "px-3 text-xs" : "px-4 text-sm"}`
           }
           data-primary-action={primary ? "true" : undefined}
           href={link.href}
@@ -69,13 +70,13 @@ export default function SiteHeader() {
           </span>
         </Link>
 
-        <ul className="hidden items-center gap-1 lg:flex">{links}</ul>
+        <ul className="hidden items-center gap-0.5 xl:flex">{links}</ul>
 
         <button
           aria-controls="mobile-navigation"
           aria-expanded={isOpen}
           aria-label={isOpen ? "Close navigation" : "Open navigation"}
-          className="grid min-h-11 min-w-11 place-items-center rounded-full border border-white/15 bg-white/10 transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5ad56] lg:hidden"
+          className="grid min-h-11 min-w-11 place-items-center rounded-full border border-white/15 bg-white/10 transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5ad56] xl:hidden"
           onClick={() => setIsOpen((current) => !current)}
           ref={menuButtonRef}
           type="button"
@@ -87,7 +88,7 @@ export default function SiteHeader() {
       {isOpen ? (
         <nav
           aria-label="Mobile navigation"
-          className="border-t border-white/10 bg-[#081329]/98 px-5 pb-5 pt-3 backdrop-blur-xl lg:hidden"
+          className="border-t border-white/10 bg-[#081329]/98 px-5 pb-5 pt-3 backdrop-blur-xl xl:hidden"
           id="mobile-navigation"
         >
           <ul className="mx-auto grid max-w-[1440px] gap-1">{links}</ul>

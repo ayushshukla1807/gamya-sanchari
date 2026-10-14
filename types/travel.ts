@@ -2,6 +2,16 @@ export type TravelScope = "domestic" | "international";
 
 export type TravelPace = "relaxed" | "balanced" | "full";
 
+export type DepartureStatus = "enquire" | "next-on-request" | "previous";
+
+export type JourneyCategory =
+  | "spiritual"
+  | "group"
+  | "short-break"
+  | "women-only"
+  | "leisure"
+  | "business";
+
 export interface DestinationHighlight {
   readonly title: string;
   readonly description: string;
@@ -33,15 +43,26 @@ export interface Journey {
   readonly slug: string;
   readonly title: string;
   readonly summary: string;
-  readonly duration: string;
+  readonly durationLabel: string;
   readonly route: readonly string[];
+  readonly routeHighlights: readonly string[];
+  readonly inclusions: readonly string[];
   readonly theme: string;
   readonly audience: string;
   readonly heroImage: string;
   readonly destinationSlugs: readonly string[];
   readonly experienceSlugs: readonly string[];
-  readonly days: readonly JourneyDay[];
-  readonly isSample: true;
+  readonly categorySlugs: readonly JourneyCategory[];
+  readonly departureStatus: DepartureStatus;
+  readonly featured: boolean;
+  readonly enquiryTopic: string;
+  readonly historicalContext?: {
+    readonly sourcePeriod: string;
+    readonly note: string;
+  };
+  readonly sourceUrl?: string;
+  readonly days?: readonly JourneyDay[];
+  readonly isSample?: true;
 }
 
 export interface Experience {
@@ -52,6 +73,19 @@ export interface Experience {
   readonly pacing: string;
   readonly destinationSlugs: readonly string[];
   readonly journeySlugs: readonly string[];
+}
+
+export interface TravelIntent {
+  readonly slug: JourneyCategory;
+  readonly title: string;
+  readonly summary: string;
+  readonly href: string;
+}
+
+export interface TravelDeskNote {
+  readonly title: string;
+  readonly summary: string;
+  readonly href: string;
 }
 
 export interface JournalSection {
@@ -73,6 +107,7 @@ export interface JournalArticle {
 export interface PlannerDraft {
   readonly destinationSlug: string;
   readonly journeySlug: string;
+  readonly experienceSlug: string;
   readonly scope: "" | TravelScope | "help-me-choose";
   readonly adults: number;
   readonly children: number;

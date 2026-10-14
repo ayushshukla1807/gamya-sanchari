@@ -1,4 +1,5 @@
 import {
+  buildJourneyWhatsAppUrl,
   buildRequestCallUrl,
   buildWhatsAppUrl,
 } from "./whatsapp";
@@ -76,6 +77,22 @@ describe("buildRequestCallUrl", () => {
     expect(phone).toBe("  +91 80732 54766  ");
     expect(result.message).toBe(
       "Hi Gamya Sanchari! Please call me back on +91 80732 54766.",
+    );
+  });
+});
+
+describe("buildJourneyWhatsAppUrl", () => {
+  it("round-trips Kannada, punctuation, ampersands and line breaks", () => {
+    const result = readMessage(
+      buildJourneyWhatsAppUrl(
+        "ಗಮ್ಯ ಸಂಚಾರಿ & Puri?\nFamily group",
+        "Please share the next departure",
+      ),
+    );
+
+    expect(result.number).toBe("918073254766");
+    expect(result.message).toBe(
+      "Hi Gamya Sanchari! I’m interested in ಗಮ್ಯ ಸಂಚಾರಿ & Puri?\nFamily group. Please share the next departure.",
     );
   });
 });

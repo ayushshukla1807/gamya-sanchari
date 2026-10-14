@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Map, Volume2, VolumeX } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { BRAND } from "@/constants/brand";
 import { useMotionPolicy } from "@/components/motion/MotionProvider";
@@ -18,7 +18,9 @@ const WHATSAPP_CTA =
   "https://wa.me/918073254766?text=Hi%20Gamya%20Sanchari!%20I%20want%20to%20plan%20a%20trip.";
 
 const HOST_INTRODUCTION =
-  "Namaskara! Welcome to Gamya Sanchari. Tell us where you want to go, and we'll bring your flights, stays, transfers and experiences together — your way.";
+  "Namaskara, and welcome to Gamya Sanchari. Tell us how you dream of travelling. We'll thoughtfully bring together your flights, stays, transfers, and experiences, so your journey feels truly yours.";
+
+const HOST_AUDIO = "/audio/gamya-host-introduction.mp3";
 
 function AnnouncementSequence({
   onComplete,
@@ -73,42 +75,61 @@ function AnnouncementSequence({
 
 function TravelHost() {
   const policy = useMotionPolicy();
-  const [canSpeak, setCanSpeak] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [audioState, setAudioState] = useState<
+    "idle" | "loading" | "playing" | "error"
+  >("idle");
+  const [hasPlayed, setHasPlayed] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioActiveRef = useRef(false);
+  const mountedRef = useRef(true);
 
   useEffect(() => {
-    setCanSpeak(
-      "speechSynthesis" in window && "SpeechSynthesisUtterance" in window,
-    );
-
-    return () => window.speechSynthesis?.cancel();
+    const audio = audioRef.current;
+    return () => {
+      mountedRef.current = false;
+      if (audioActiveRef.current) audio?.pause();
+    };
   }, []);
 
-  function toggleSpeech() {
-    if (!canSpeak) return;
+  function toggleAudio() {
+    const audio = audioRef.current;
+    if (!audio || audioState === "error" || audioState === "loading") return;
 
-    if (isSpeaking) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
+    if (audioState === "playing") {
+      audio.pause();
+      audio.currentTime = 0;
+      audioActiveRef.current = false;
+      setHasPlayed(false);
+      setAudioState("idle");
       return;
     }
 
-    window.speechSynthesis.cancel();
-    const message = new SpeechSynthesisUtterance(HOST_INTRODUCTION);
-    message.lang = "en-IN";
-    message.rate = 0.94;
-    message.pitch = 1.02;
-    message.onend = () => setIsSpeaking(false);
-    message.onerror = () => setIsSpeaking(false);
-    window.speechSynthesis.speak(message);
-    setIsSpeaking(true);
+    if (hasPlayed) audio.currentTime = 0;
+    audioActiveRef.current = true;
+    setAudioState("loading");
+    audio.load();
+  }
+
+  function playWhenReady() {
+    const audio = audioRef.current;
+    if (!audio || audioState !== "loading") return;
+
+    void audio
+      .play()
+      .then(() => {
+        if (mountedRef.current) setAudioState("playing");
+      })
+      .catch(() => {
+        audioActiveRef.current = false;
+        if (mountedRef.current) setAudioState("error");
+      });
   }
 
   return (
     <motion.aside
       animate={{ opacity: 1, x: 0 }}
       aria-label="Gamya Sanchari travel host"
-      className="absolute inset-x-0 bottom-0 z-20 grid min-h-56 grid-cols-[minmax(108px,0.42fr)_minmax(0,1fr)] items-end overflow-hidden rounded-[2rem] border border-white/15 bg-[#071027]/90 shadow-2xl backdrop-blur-md sm:min-h-64 sm:grid-cols-[minmax(160px,0.45fr)_minmax(0,1fr)] lg:relative lg:inset-auto lg:z-auto lg:mt-0 lg:block lg:min-h-[64svh] lg:overflow-visible lg:border-0 lg:bg-transparent lg:shadow-none lg:backdrop-blur-none"
+      className="relative z-20 mt-8 grid min-h-56 grid-cols-[minmax(108px,0.42fr)_minmax(0,1fr)] items-end overflow-hidden rounded-[2rem] border border-white/15 bg-[#071027]/90 shadow-2xl backdrop-blur-md max-[380px]:grid-cols-1 sm:min-h-64 sm:grid-cols-[minmax(160px,0.45fr)_minmax(0,1fr)] lg:inset-auto lg:z-auto lg:mt-0 lg:block lg:min-h-[64svh] lg:overflow-visible lg:border-0 lg:bg-transparent lg:shadow-none lg:backdrop-blur-none"
       data-testid="travel-host"
       initial={policy.reduced ? false : { opacity: 0, x: 120 }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
@@ -124,7 +145,7 @@ function TravelHost() {
         />
       </div>
 
-      <div className="relative z-10 m-3 ml-0 rounded-3xl border border-white/15 bg-white/95 p-4 text-[#212121] shadow-2xl sm:m-5 sm:ml-0 sm:p-5 lg:absolute lg:left-0 lg:top-[17%] lg:m-0 lg:w-[62%]">
+      <div className="relative z-10 m-3 ml-0 rounded-3xl border border-white/15 bg-white/95 p-4 text-[#212121] shadow-2xl max-[380px]:ml-3 sm:m-5 sm:ml-0 sm:p-5 lg:absolute lg:left-0 lg:top-[17%] lg:m-0 lg:w-[62%]">
         <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#1844ef]">
           Your personal travel host
         </p>
@@ -134,21 +155,56 @@ function TravelHost() {
         >
           {HOST_INTRODUCTION}
         </p>
-        {canSpeak ? (
+        <audio
+          data-testid="host-introduction-audio"
+          onCanPlay={playWhenReady}
+          onEnded={() => {
+            audioActiveRef.current = false;
+            setHasPlayed(true);
+            setAudioState("idle");
+          }}
+          onError={() => {
+            audioActiveRef.current = false;
+            setAudioState("error");
+          }}
+          preload="none"
+          ref={audioRef}
+          src={HOST_AUDIO}
+        />
+        {audioState !== "error" ? (
           <button
-            aria-label={isSpeaking ? "Stop introduction" : "Hear the host"}
+            aria-label={
+              audioState === "loading"
+                ? "Loading introduction"
+                : audioState === "playing"
+                  ? "Stop introduction"
+                  : hasPlayed
+                    ? "Replay introduction"
+                    : "Hear the host"
+            }
             className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1844ef] px-4 py-2 text-sm font-extrabold text-white transition hover:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
-            onClick={toggleSpeech}
+            disabled={audioState === "loading"}
+            onClick={toggleAudio}
             type="button"
           >
-            {isSpeaking ? (
+            {audioState === "playing" ? (
               <VolumeX aria-hidden="true" size={17} />
             ) : (
               <Volume2 aria-hidden="true" size={17} />
             )}
-            {isSpeaking ? "Stop" : "Hear the host"}
+            {audioState === "loading"
+              ? "Loading…"
+              : audioState === "playing"
+                ? "Stop"
+                : hasPlayed
+                  ? "Replay"
+                  : "Hear the host"}
           </button>
-        ) : null}
+        ) : (
+          <p className="mt-3 text-xs font-bold text-[#5b6476]">
+            Audio introduction unavailable
+          </p>
+        )}
         <a
           className="mt-3 inline-flex min-h-11 items-center justify-center rounded-full border border-[#1844ef]/20 px-4 py-2 text-sm font-extrabold text-[#1844ef] transition hover:border-[#f06619] hover:text-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
           href={WHATSAPP_CTA}
@@ -163,8 +219,17 @@ function TravelHost() {
 }
 
 export default function Hero() {
+  const policy = useMotionPolicy();
   const [videoFailed, setVideoFailed] = useState(false);
   const [showHost, setShowHost] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (!policy.reduced || !videoRef.current) return;
+    videoRef.current.removeAttribute("autoplay");
+    videoRef.current.removeAttribute("loop");
+    videoRef.current.pause();
+  }, [policy.reduced]);
 
   return (
     <>
@@ -179,14 +244,15 @@ export default function Hero() {
         >
           <video
             aria-hidden="true"
-            autoPlay
+            autoPlay={!policy.reduced}
             className={`h-full w-full object-cover ${videoFailed ? "hidden" : "hidden sm:block"}`}
-            loop
+            loop={!policy.reduced}
             muted
             onError={() => setVideoFailed(true)}
             playsInline
             poster="/images/hero-poster.webp"
             preload="metadata"
+            ref={videoRef}
           >
             <source
               media="(min-width: 640px)"

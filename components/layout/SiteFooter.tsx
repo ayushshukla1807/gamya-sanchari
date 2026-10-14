@@ -18,7 +18,7 @@ export default function SiteFooter() {
             <p className="mt-6 max-w-sm text-sm leading-7 text-white/65">Bengaluru-based travel planning for journeys that fit your people, pace and priorities.</p>
             <p className="mt-5 max-w-sm font-bold leading-7 text-white/85">{BRAND.blessing}</p>
             <div className="mt-6 flex gap-3">
-              <a aria-label="Instagram" className="grid min-h-11 min-w-11 place-items-center rounded-full border border-white/15 transition hover:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2" href={BRAND.instagram} rel="noreferrer" target="_blank"><Instagram aria-hidden="true" size={19} /></a>
+              <a aria-label="Active campaigns & trip moments" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/15 px-4 text-xs font-bold transition hover:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2" href={BRAND.instagram} rel="noreferrer" target="_blank"><Instagram aria-hidden="true" size={19} />Instagram</a>
               <a aria-label="WhatsApp" className="grid min-h-11 min-w-11 place-items-center rounded-full border border-white/15 transition hover:bg-[#25d366] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2" href={BRAND.whatsappHref} rel="noreferrer" target="_blank"><MessageCircle aria-hidden="true" size={19} /></a>
             </div>
           </div>

@@ -3,54 +3,43 @@ import userEvent from "@testing-library/user-event";
 
 import { EnquiryProvider } from "@/components/enquiry/EnquiryProvider";
 import PlannerPreview from "@/components/home/PlannerPreview";
-import { DESTINATIONS, EXPERIENCES, JOURNEYS } from "@/constants/travel";
+import { BRAND } from "@/constants/brand";
 
 import Home from "@/app/page";
 
 describe("guided home journey", () => {
-  it("orders the discovery narrative and links to real destination pages", () => {
+  it("orders discovery around intent, real journeys, proof and the travel desk", () => {
     render(<EnquiryProvider><Home /></EnquiryProvider>);
 
     const headings = screen.getAllByRole("heading", { level: 2 });
     const names = headings.map((heading) => heading.textContent);
-    expect(names.indexOf("Choose a direction")).toBeLessThan(
-      names.indexOf("Travel by feeling"),
-    );
-    expect(names.indexOf("Travel by feeling")).toBeLessThan(
-      names.indexOf("See a journey take shape"),
-    );
-    expect(names.indexOf("See a journey take shape")).toBeLessThan(
-      names.indexOf("How we shape your journey"),
-    );
-
-    for (const destination of DESTINATIONS) {
-      expect(
-        screen.getByRole("link", {
-          name: new RegExp(`Discover ${destination.title}`, "i"),
-        }),
-      ).toHaveAttribute("href", `/destinations/${destination.slug}/`);
+    const narrative = [
+      "What kind of journey are you looking for?",
+      "Journeys with a real story behind them",
+      "What we can coordinate",
+      "Previous departures, thoughtfully continued",
+      "At the travel desk",
+      "How we shape your journey",
+    ];
+    for (let index = 0; index < narrative.length - 1; index += 1) {
+      expect(names.indexOf(narrative[index])).toBeLessThan(
+        names.indexOf(narrative[index + 1]),
+      );
     }
   });
 
-  it("shows six experience portals, four honest samples and the planning method", () => {
-    render(<EnquiryProvider><Home /></EnquiryProvider>);
+  it("shows intent links, concrete coordination, historical proof and community", () => {
+    const { container } = render(<EnquiryProvider><Home /></EnquiryProvider>);
 
-    for (const experience of EXPERIENCES) {
-      expect(screen.getByRole("heading", { name: experience.title })).toBeVisible();
+    for (const intent of ["Spiritual Journeys", "Group Departures", "Short Trips", "Island Escapes", "Women-only Travel", "Business Travel"]) {
+      expect(screen.getByRole("heading", { name: intent })).toBeVisible();
     }
-    expect(screen.getAllByText("Sample journey—customizable")).toHaveLength(
-      JOURNEYS.length,
-    );
-    for (const step of ["Listen", "Shape", "Refine", "Support"]) {
-      expect(screen.getByText(step)).toBeVisible();
+    for (const inclusion of ["Transport", "Stays", "Applicable meals", "Sightseeing", "Local coordination", "Tour-manager or guide support"]) {
+      expect(screen.getByText(inclusion)).toBeVisible();
     }
-    expect(
-      screen.getByRole("heading", { name: "Travel, with someone listening" }),
-    ).toBeVisible();
-    expect(screen.getByRole("link", { name: "Talk to a Planner" })).toHaveAttribute(
-      "href",
-      "/contact/",
-    );
+    expect(container.querySelectorAll('[data-departure-status="previous"]').length).toBeGreaterThanOrEqual(3);
+    expect(screen.getByText(/Tiranga Darshan/i)).toBeVisible();
+    expect(screen.getByRole("link", { name: /active campaigns and trip moments/i })).toHaveAttribute("href", BRAND.instagram);
   });
 });
 

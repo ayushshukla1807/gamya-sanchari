@@ -31,3 +31,12 @@ export function buildRequestCallUrl(phone: string): string {
     `Hi Gamya Sanchari! Please call me back on ${phone.trim()}.`,
   );
 }
+
+export function buildJourneyWhatsAppUrl(
+  topic: string,
+  intent: string,
+): string {
+  return withMessage(
+    `Hi Gamya Sanchari! I’m interested in ${topic.trim()}. ${intent.trim()}.`,
+  );
+}

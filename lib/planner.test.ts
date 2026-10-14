@@ -54,6 +54,7 @@ describe("planner summaries and context", () => {
       normalizePlannerDraft({
         destinationSlug: "bali",
         journeySlug: "bali-beautifully-unhurried",
+        experienceSlug: "women-only",
         adults: 2,
         children: 1,
         partyType: "Couple and child",
@@ -73,6 +74,7 @@ describe("planner summaries and context", () => {
         "Personalized trip request",
         "Destination: Bali",
         "Starting journey: Bali, beautifully unhurried",
+        "Experience: Women-only travel",
         "Travellers: 2 adults, 1 child",
         "Travel party: Couple and child",
         "Timing: September · 6 days · Dates flexible",
@@ -90,10 +92,12 @@ describe("planner summaries and context", () => {
     expect(summary).not.toContain("Budget comfort:");
     expect(summary).not.toContain("Notes:");
     expect(summary).not.toContain("Starting journey:");
+    expect(summary).not.toContain("Experience:");
   });
 
   test("reads only valid destination or journey query context", () => {
     expect(readPlannerContext(new URLSearchParams("destination=kerala"))).toEqual({
+      journeySlug: "",
       destinationSlug: "kerala",
       scope: "domestic",
     });
@@ -108,6 +112,40 @@ describe("planner summaries and context", () => {
     });
   });
 
+  test("retains valid experience context for the review and WhatsApp handoff", () => {
+    const context = readPlannerContext(
+      new URLSearchParams("experience=women-only"),
+    );
+
+    expect(context).toEqual({ experienceSlug: "women-only" });
+    expect(buildPlannerSummary(normalizePlannerDraft(context))).toContain(
+      "Experience: Women-only travel",
+    );
+  });
+
+  test("clears a restored journey when an explicit destination or scope is requested", () => {
+    const stored = normalizePlannerDraft({
+      destinationSlug: "bali",
+      journeySlug: "bali-beautifully-unhurried",
+    });
+
+    const destinationContext = readPlannerContext(
+      new URLSearchParams("destination=kerala"),
+    );
+    expect(
+      normalizePlannerDraft({ ...stored, ...destinationContext }),
+    ).toMatchObject({ destinationSlug: "kerala", journeySlug: "" });
+
+    const scopeContext = readPlannerContext(
+      new URLSearchParams("scope=domestic"),
+    );
+    expect(normalizePlannerDraft({ ...stored, ...scopeContext })).toMatchObject({
+      destinationSlug: "",
+      journeySlug: "",
+      scope: "domestic",
+    });
+  });
+
   test("carries safe home-preview party and month context into the planner", () => {
     expect(
       readPlannerContext(
@@ -116,6 +154,7 @@ describe("planner summaries and context", () => {
         ),
       ),
     ).toEqual({
+      journeySlug: "",
       destinationSlug: "kerala",
       scope: "domestic",
       partyType: "Family",
