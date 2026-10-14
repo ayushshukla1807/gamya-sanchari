@@ -42,4 +42,28 @@ describe("PackageFilters", () => {
       screen.getByText(`${JOURNEYS.length} sample journeys found`),
     ).toBeVisible();
   });
+
+  it("filters audited journeys by spiritual, women-only and business category", async () => {
+    const user = userEvent.setup();
+    render(<PackageFilters journeys={JOURNEYS} />);
+
+    const category = screen.getByLabelText("Category");
+    await user.selectOptions(category, "spiritual");
+    expect(screen.getByText("7 sample journeys found")).toBeVisible();
+    expect(
+      screen.getByRole("link", { name: "View Puri, Jagannath & Konark" }),
+    ).toBeVisible();
+
+    await user.selectOptions(category, "women-only");
+    expect(screen.getByText("1 sample journey found")).toBeVisible();
+    expect(
+      screen.getByRole("link", { name: "View Andaman Island Escape" }),
+    ).toBeVisible();
+
+    await user.selectOptions(category, "business");
+    expect(screen.getByText("1 sample journey found")).toBeVisible();
+    expect(
+      screen.getByRole("link", { name: "View Canton Fair Business Visit" }),
+    ).toBeVisible();
+  });
 });

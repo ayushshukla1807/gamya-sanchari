@@ -32,13 +32,13 @@ describe("guided home journey", () => {
     }
   });
 
-  it("shows six experience portals, four honest samples and the planning method", () => {
-    render(<EnquiryProvider><Home /></EnquiryProvider>);
+  it("shows specialist experience portals, honest journey statuses and the planning method", () => {
+    const { container } = render(<EnquiryProvider><Home /></EnquiryProvider>);
 
     for (const experience of EXPERIENCES) {
       expect(screen.getByRole("heading", { name: experience.title })).toBeVisible();
     }
-    expect(screen.getAllByText("Sample journey—customizable")).toHaveLength(
+    expect(container.querySelectorAll("[data-departure-status]")).toHaveLength(
       JOURNEYS.length,
     );
     for (const step of ["Listen", "Shape", "Refine", "Support"]) {

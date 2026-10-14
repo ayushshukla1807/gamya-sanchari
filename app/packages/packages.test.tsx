@@ -11,13 +11,13 @@ import JourneyPage, {
 } from "./[slug]/page";
 
 describe("package routes", () => {
-  it("labels all inspiration as customizable sample journeys", () => {
-    render(<PackagesPage />);
+  it("labels every journey with its honest availability status", () => {
+    const { container } = render(<PackagesPage />);
 
     expect(
       screen.getByRole("heading", { level: 1, name: /journeys to make your own/i }),
     ).toBeVisible();
-    expect(screen.getAllByText("Sample journey—customizable")).toHaveLength(
+    expect(container.querySelectorAll("[data-departure-status]")).toHaveLength(
       JOURNEYS.length,
     );
   });
