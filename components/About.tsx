@@ -13,7 +13,7 @@ export default function About() {
         <MotionReveal className="relative">
           <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] bg-[#dce3f8] shadow-2xl shadow-[#1844ef]/10 sm:aspect-[5/4] lg:aspect-[4/5]">
             <Image
-              alt="Traveller looking across a peaceful mountain landscape"
+              alt="Lush tea plantations rolling across the hills of Munnar"
               className="object-cover"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
