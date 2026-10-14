@@ -34,12 +34,18 @@ describe("guided home journey", () => {
     for (const intent of ["Spiritual Journeys", "Group Departures", "Short Trips", "Island Escapes", "Women-only Travel", "Business Travel"]) {
       expect(screen.getByRole("heading", { name: intent })).toBeVisible();
     }
+    expect(
+      screen.getByRole("link", { name: /Spiritual Journeys/ }),
+    ).toHaveClass("block", "h-full");
     for (const inclusion of ["Transport", "Stays", "Applicable meals", "Sightseeing", "Local coordination", "Tour-manager or guide support"]) {
       expect(screen.getByText(inclusion)).toBeVisible();
     }
     expect(container.querySelectorAll('[data-departure-status="previous"]').length).toBeGreaterThanOrEqual(3);
     expect(screen.getByText(/Tiranga Darshan/i)).toBeVisible();
     expect(screen.getByRole("link", { name: /active campaigns and trip moments/i })).toHaveAttribute("href", BRAND.instagram);
+    expect(
+      container.querySelectorAll('[data-motion^="reveal-"]').length,
+    ).toBeGreaterThanOrEqual(12);
   });
 });
 

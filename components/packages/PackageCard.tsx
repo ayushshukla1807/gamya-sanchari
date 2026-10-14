@@ -1,12 +1,27 @@
+"use client";
+
+import { motion } from "framer-motion";
 import Image from "next/image";
 
+import { useMotionPolicy } from "@/components/motion/MotionProvider";
 import JourneyEnquiryLink from "@/components/journeys/JourneyEnquiryLink";
 import JourneyStatusBadge from "@/components/journeys/JourneyStatusBadge";
 import type { Journey } from "@/types/travel";
 
 export default function PackageCard({ journey }: { journey: Journey }) {
+  const policy = useMotionPolicy();
+  const canReveal = !policy.reduced && typeof IntersectionObserver !== "undefined";
   return (
-    <article className="group overflow-hidden rounded-[2rem] border border-[#0b1633]/10 bg-white shadow-[var(--shadow-soft)]">
+    <motion.article
+      className="group overflow-hidden rounded-[2rem] border border-[#0b1633]/10 bg-white shadow-[var(--shadow-soft)]"
+      data-motion="journey-card"
+      data-motion-engine="framer-motion"
+      initial={canReveal ? { opacity: 0, y: 24, scale: 0.985 } : false}
+      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ amount: 0.18, once: true }}
+      whileHover={policy.reduced ? undefined : { y: -8, scale: 1.008 }}
+      whileInView={canReveal ? { opacity: 1, y: 0, scale: 1 } : undefined}
+    >
       <div className="relative aspect-[16/10] overflow-hidden">
         <Image alt="" className="object-cover transition duration-700 group-hover:scale-105 motion-reduce:transition-none" fill sizes="(min-width: 1024px) 50vw, 100vw" src={journey.heroImage} />
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#081329]/80 to-transparent" />
@@ -24,6 +39,6 @@ export default function PackageCard({ journey }: { journey: Journey }) {
           <JourneyEnquiryLink journey={journey} />
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }

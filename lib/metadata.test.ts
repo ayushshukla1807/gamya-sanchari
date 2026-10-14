@@ -1,5 +1,5 @@
 import sitemap from "@/app/sitemap";
-import { travelAgencySchema } from "@/app/siteMetadata";
+import { metadata, travelAgencySchema } from "@/app/siteMetadata";
 import { BRAND } from "@/constants/brand";
 import {
   buildBreadcrumbSchema,
@@ -9,6 +9,19 @@ import {
 } from "@/lib/metadata";
 
 describe("published metadata", () => {
+  test("uses the official identity for browser and social branding", () => {
+    expect(metadata.icons).toEqual({
+      icon: "/images/brand/gamya-sanchari-icon-192.png",
+      apple: "/images/brand/gamya-sanchari-icon-512.png",
+    });
+    expect(travelAgencySchema.logo).toBe(
+      `${BRAND.siteUrl}/images/brand/gamya-sanchari-lockup.png`,
+    );
+    expect(metadata.openGraph?.images).toEqual([
+      { url: `${BRAND.siteUrl}/images/brand/gamya-sanchari-social.png` },
+    ]);
+  });
+
   test("every route has unique complete metadata and one canonical origin", () => {
     const pages = getPublishedPages();
     const metadata = pages.map(buildPageMetadata);

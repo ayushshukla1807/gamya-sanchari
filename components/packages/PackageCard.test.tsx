@@ -9,7 +9,16 @@ describe("PackageCard availability", () => {
       ({ slug }) => slug === "puri-jagannath-konark",
     )!;
 
-    render(<PackageCard journey={journey} />);
+    const { container } = render(<PackageCard journey={journey} />);
+
+    expect(container.firstElementChild).toHaveAttribute(
+      "data-motion",
+      "journey-card",
+    );
+    expect(container.firstElementChild).toHaveAttribute(
+      "data-motion-engine",
+      "framer-motion",
+    );
 
     expect(screen.getByText("Previous departure")).toBeVisible();
     const enquiry = screen.getByRole("link", {

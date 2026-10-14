@@ -14,8 +14,9 @@ import ArticlePage, {
 
 describe("supporting routes", () => {
   it("explains the brand promise and complete planning method", () => {
-    render(<AboutPage />);
+    const { container } = render(<AboutPage />);
 
+    expect(container.querySelector('[data-motion="editorial-hero"]')).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { level: 1, name: BRAND.promise }),
     ).toBeVisible();
@@ -64,6 +65,10 @@ describe("supporting routes", () => {
   it("links specialist discovery and active Instagram moments from the footer", () => {
     render(<SiteFooter />);
 
+    expect(screen.getByRole("img", { name: "Gamya Sanchari — Your Journey Awaits" })).toHaveAttribute(
+      "src",
+      expect.stringContaining("gamya-sanchari-lockup"),
+    );
     expect(screen.getByRole("link", { name: "Spiritual Journeys" })).toHaveAttribute("href", "/spiritual-journeys");
     expect(screen.getByRole("link", { name: "Group Departures" })).toHaveAttribute("href", "/group-departures");
     expect(screen.getByRole("link", { name: "Active campaigns & trip moments" })).toHaveAttribute("href", BRAND.instagram);

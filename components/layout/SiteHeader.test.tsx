@@ -19,11 +19,15 @@ const expectedLinks = [
 
 describe("SiteHeader", () => {
   test("links every primary destination and emphasizes the trip planner", () => {
-    render(<SiteHeader />);
+    const { container } = render(<SiteHeader />);
 
     const desktop = screen.getByRole("navigation", {
       name: "Primary navigation",
     });
+    const emblem = container.querySelector(
+      'img[src*="gamya-sanchari-emblem"]',
+    );
+    expect(emblem).toHaveAttribute("alt", "");
     for (const [label, href] of expectedLinks) {
       expect(within(desktop).getByRole("link", { name: label })).toHaveAttribute(
         "href",
@@ -103,6 +107,14 @@ describe("shared editorial navigation primitives", () => {
   test("keeps route labels readable independently of animation", () => {
     render(<RouteLine stops={["Listen", "Shape", "Refine", "Support"]} />);
 
+    expect(screen.getByTestId("route-progress")).toHaveAttribute(
+      "data-motion-engine",
+      "framer-motion",
+    );
+    expect(screen.getByTestId("route-progress")).toHaveAttribute(
+      "data-motion-trigger",
+      "while-in-view",
+    );
     for (const stop of ["Listen", "Shape", "Refine", "Support"]) {
       expect(screen.getByText(stop)).toBeVisible();
     }
