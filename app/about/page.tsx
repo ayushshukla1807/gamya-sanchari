@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 import EditorialHero from "@/components/ui/EditorialHero";
 import { BRAND } from "@/constants/brand";
@@ -25,15 +26,31 @@ export default function AboutPage() {
         title={BRAND.promise}
       />
 
-      <section className="section-shell grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+      <section className="section-shell grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-16">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] bg-[#dce3f8] shadow-[var(--shadow-soft)] sm:aspect-[5/4] lg:aspect-[4/5]">
+          <Image
+            alt="Tea-covered hills in Munnar, Kerala"
+            className="object-cover"
+            fill
+            sizes="(min-width: 1024px) 42vw, 100vw"
+            src="/images/about.webp"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-t from-[#081329]/55 via-transparent to-transparent"
+          />
+          <p className="absolute inset-x-6 bottom-6 text-2xl font-extrabold leading-tight text-white sm:inset-x-8 sm:bottom-8 sm:text-3xl">
+            Your people. Your pace. Your journey.
+          </p>
+        </div>
         <div>
           <p className="eyebrow text-[#f06619]">Why Gamya Sanchari</p>
           <h2 className="mt-4 text-3xl font-extrabold leading-tight text-[#0b1633] sm:text-5xl">Travel planning with a human point of view</h2>
-        </div>
-        <div className="grid gap-6 text-lg leading-8 text-[#566073]">
-          <p>Every group carries its own rhythm: early risers and slow starters, first-time explorers and seasoned travellers, celebration plans and quiet escapes. We design around that reality.</p>
-          <p>Our role is to turn many possibilities into a clear, comfortable journey—one that makes practical sense while still leaving space for discovery.</p>
-          <blockquote className="rounded-[2rem] bg-[#fffaf0] p-7 font-bold text-[#0b1633]">“{BRAND.blessing}”</blockquote>
+          <div className="mt-7 grid gap-6 text-lg leading-8 text-[#566073]">
+            <p>Every group carries its own rhythm: early risers and slow starters, first-time explorers and seasoned travellers, celebration plans and quiet escapes. We design around that reality.</p>
+            <p>Our role is to turn many possibilities into a clear, comfortable journey—one that makes practical sense while still leaving space for discovery.</p>
+            <blockquote className="rounded-[2rem] bg-[#fffaf0] p-7 font-bold text-[#0b1633]">“{BRAND.blessing}”</blockquote>
+          </div>
         </div>
       </section>
 

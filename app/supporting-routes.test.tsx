@@ -20,6 +20,11 @@ describe("supporting routes", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: BRAND.promise }),
     ).toBeVisible();
+    expect(
+      screen.getByRole("img", {
+        name: "Tea-covered hills in Munnar, Kerala",
+      }),
+    ).toHaveAttribute("src", expect.stringContaining("about.webp"));
     for (const step of ["Listen", "Shape", "Refine", "Support"]) {
       expect(screen.getByRole("heading", { name: step })).toBeVisible();
     }

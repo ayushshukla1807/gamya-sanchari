@@ -1,4 +1,6 @@
 import { describe, expect, test } from "vitest";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 
 import {
   DESTINATIONS,
@@ -112,6 +114,19 @@ describe("travel content contracts", () => {
           destinationSlugs.has(slug),
         ),
       ).toBe(true);
+    }
+  });
+
+  test("gives every destination and journey authentic, dedicated imagery", () => {
+    const destinationImages = DESTINATIONS.map(({ image }) => image);
+    const journeyImages = JOURNEYS.map(({ heroImage }) => heroImage);
+
+    expect(new Set(destinationImages).size).toBe(DESTINATIONS.length);
+    expect(new Set(journeyImages).size).toBe(JOURNEYS.length);
+
+    for (const image of [...destinationImages, ...journeyImages]) {
+      expect(image).toMatch(/^\/images\/destinations\/[a-z0-9-]+\.webp$/);
+      expect(existsSync(join(process.cwd(), "public", image))).toBe(true);
     }
   });
 });

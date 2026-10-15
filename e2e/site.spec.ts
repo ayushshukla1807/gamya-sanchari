@@ -149,6 +149,50 @@ test("reduced motion keeps package imagery static on hover", async ({ page }, te
   await expect(image).toHaveCSS("transform", "none");
 });
 
+test("destination imagery is distinct, loaded and correctly placed", async ({ page }) => {
+  await page.goto("/packages/");
+  const packageImages = page.locator('[data-motion="journey-card"] img');
+  await expect(packageImages).toHaveCount(14);
+
+  for (let index = 0; index < 14; index += 1) {
+    const image = packageImages.nth(index);
+    await image.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() =>
+        image.evaluate(
+          (element: HTMLImageElement) =>
+            element.complete && element.naturalWidth > 0,
+        ),
+      )
+      .toBe(true);
+  }
+
+  const sourceImages = await packageImages.evaluateAll((images) =>
+    images.map((image) => {
+      const source = image.getAttribute("src") ?? "";
+      const url = new URL(source, window.location.origin);
+      return url.searchParams.get("url") ?? url.pathname;
+    }),
+  );
+  expect(new Set(sourceImages).size).toBe(sourceImages.length);
+  expect(sourceImages).toContain(
+    "/images/destinations/varanasi-ayodhya-prayagraj.webp",
+  );
+  expect(sourceImages).toContain("/images/destinations/char-dham-yatra.webp");
+
+  await page.goto("/about/");
+  const aboutImage = page.getByAltText("Tea-covered hills in Munnar, Kerala");
+  await expect(aboutImage).toBeVisible();
+  await expect
+    .poll(() =>
+      aboutImage.evaluate(
+        (element: HTMLImageElement) =>
+          element.complete && element.naturalWidth > 0,
+      ),
+    )
+    .toBe(true);
+});
+
 test("official brand artwork and enhanced motion render in normal-motion mode", async ({ page }, testInfo) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");
