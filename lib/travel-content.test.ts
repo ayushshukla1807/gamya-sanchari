@@ -53,6 +53,43 @@ const instagramGroundedJourneySlugs = [
   "canton-fair-business-visit",
 ];
 
+const expectedDestinationImages = {
+  kerala: "/images/destinations/kerala.webp",
+  kashmir: "/images/destinations/kashmir.webp",
+  rajasthan: "/images/destinations/rajasthan.webp",
+  dubai: "/images/destinations/dubai.webp",
+  bali: "/images/destinations/bali.webp",
+  "odisha-puri": "/images/destinations/puri-odisha.webp",
+  tirupati: "/images/destinations/tirupati.webp",
+  ujjain: "/images/destinations/ujjain.webp",
+  "varanasi-ayodhya-prayagraj":
+    "/images/destinations/varanasi-ayodhya-prayagraj.webp",
+  "uttarakhand-yatra": "/images/destinations/char-dham-yatra.webp",
+  shirdi: "/images/destinations/shirdi.webp",
+  andaman: "/images/destinations/andaman.webp",
+  "ooty-mysuru": "/images/destinations/ooty-mysuru.webp",
+  "guangzhou-business": "/images/destinations/guangzhou-business.webp",
+};
+
+const expectedJourneyImages = {
+  "kerala-easy-pace": "/images/destinations/kerala.webp",
+  "kashmir-valley-moments": "/images/destinations/kashmir.webp",
+  "dubai-first-timer-favourites": "/images/destinations/dubai.webp",
+  "bali-beautifully-unhurried": "/images/destinations/bali.webp",
+  "puri-jagannath-konark": "/images/destinations/puri-odisha.webp",
+  "tirupati-darshan": "/images/destinations/tirupati.webp",
+  "ujjain-mahakaleshwar": "/images/destinations/ujjain.webp",
+  "varanasi-ayodhya-prayagraj":
+    "/images/destinations/varanasi-ayodhya-prayagraj.webp",
+  "char-dham-yatra": "/images/destinations/char-dham-yatra.webp",
+  "kedarnath-yatra": "/images/destinations/kedarnath-yatra.webp",
+  "shirdi-sai-darshan": "/images/destinations/shirdi.webp",
+  "andaman-island-escape": "/images/destinations/andaman.webp",
+  "ooty-mysuru-short-break": "/images/destinations/ooty-mysuru.webp",
+  "canton-fair-business-visit":
+    "/images/destinations/guangzhou-business.webp",
+};
+
 describe("travel content contracts", () => {
   test("publishes unique non-empty slugs for every collection", () => {
     expect(() => assertUniqueTravelSlugs()).not.toThrow();
@@ -120,6 +157,15 @@ describe("travel content contracts", () => {
   test("gives every destination and journey authentic, dedicated imagery", () => {
     const destinationImages = DESTINATIONS.map(({ image }) => image);
     const journeyImages = JOURNEYS.map(({ heroImage }) => heroImage);
+
+    expect(
+      Object.fromEntries(DESTINATIONS.map(({ slug, image }) => [slug, image])),
+    ).toEqual(expectedDestinationImages);
+    expect(
+      Object.fromEntries(
+        JOURNEYS.map(({ slug, heroImage }) => [slug, heroImage]),
+      ),
+    ).toEqual(expectedJourneyImages);
 
     expect(new Set(destinationImages).size).toBe(DESTINATIONS.length);
     expect(new Set(journeyImages).size).toBe(JOURNEYS.length);

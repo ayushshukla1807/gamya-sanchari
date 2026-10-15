@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { DESTINATIONS, JOURNEYS } from "../constants/travel";
+
 test.beforeEach(async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
 });
@@ -152,9 +154,9 @@ test("reduced motion keeps package imagery static on hover", async ({ page }, te
 test("destination imagery is distinct, loaded and correctly placed", async ({ page }) => {
   await page.goto("/packages/");
   const packageImages = page.locator('[data-motion="journey-card"] img');
-  await expect(packageImages).toHaveCount(14);
+  await expect(packageImages).toHaveCount(JOURNEYS.length);
 
-  for (let index = 0; index < 14; index += 1) {
+  for (let index = 0; index < JOURNEYS.length; index += 1) {
     const image = packageImages.nth(index);
     await image.scrollIntoViewIfNeeded();
     await expect
@@ -174,11 +176,35 @@ test("destination imagery is distinct, loaded and correctly placed", async ({ pa
       return url.searchParams.get("url") ?? url.pathname;
     }),
   );
-  expect(new Set(sourceImages).size).toBe(sourceImages.length);
-  expect(sourceImages).toContain(
-    "/images/destinations/varanasi-ayodhya-prayagraj.webp",
+  expect(sourceImages).toEqual(JOURNEYS.map(({ heroImage }) => heroImage));
+  expect(new Set(sourceImages).size).toBe(JOURNEYS.length);
+
+  await page.goto("/destinations/");
+  const destinationImages = page.locator("main article img");
+  await expect(destinationImages).toHaveCount(DESTINATIONS.length);
+  for (let index = 0; index < DESTINATIONS.length; index += 1) {
+    const image = destinationImages.nth(index);
+    await image.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() =>
+        image.evaluate(
+          (element: HTMLImageElement) =>
+            element.complete && element.naturalWidth > 0,
+        ),
+      )
+      .toBe(true);
+  }
+  const destinationSources = await destinationImages.evaluateAll((images) =>
+    images.map((image) => {
+      const source = image.getAttribute("src") ?? "";
+      const url = new URL(source, window.location.origin);
+      return url.searchParams.get("url") ?? url.pathname;
+    }),
   );
-  expect(sourceImages).toContain("/images/destinations/char-dham-yatra.webp");
+  expect(destinationSources).toEqual(
+    DESTINATIONS.map(({ image }) => image),
+  );
+  expect(new Set(destinationSources).size).toBe(DESTINATIONS.length);
 
   await page.goto("/about/");
   const aboutImage = page.getByAltText("Tea-covered hills in Munnar, Kerala");
