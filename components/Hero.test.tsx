@@ -137,14 +137,14 @@ describe("Hero", () => {
     expect(pause).toHaveBeenCalledTimes(1);
   });
 
-  it("starts local ambient music and the recorded welcome when the host appears", async () => {
-    setReducedMotion(true);
+  it("starts local ambient music and the recorded welcome before the host appears", async () => {
     const play = vi.mocked(window.HTMLMediaElement.prototype.play);
     play.mockResolvedValue(undefined);
 
     render(<Hero />);
 
     expect(screen.getByTestId("welcome-sound")).toBeVisible();
+    expect(screen.queryByTestId("travel-host")).not.toBeInTheDocument();
     expect(screen.getByTestId("ambient-music-audio")).toHaveAttribute(
       "src",
       "/audio/gamya-ambient-journey.mp3",
