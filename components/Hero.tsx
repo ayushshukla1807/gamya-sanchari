@@ -106,7 +106,6 @@ function TravelHost() {
         >
           {HOST_INTRODUCTION}
         </p>
-        <WelcomeSound active />
         <a
           className="mt-3 inline-flex min-h-11 items-center justify-center rounded-full border border-[#1844ef]/20 px-4 py-2 text-sm font-extrabold text-[#1844ef] transition hover:border-[#f06619] hover:text-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
           href={WHATSAPP_CTA}
@@ -219,6 +218,7 @@ export default function Hero() {
         </div>
       </section>
       <AnnouncementSequence onComplete={setShowHost} />
+      <WelcomeSound active />
     </>
   );
 }

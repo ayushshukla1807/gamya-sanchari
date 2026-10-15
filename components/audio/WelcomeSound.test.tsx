@@ -58,7 +58,19 @@ describe("WelcomeSound", () => {
     expect(screen.getByRole("button", { name: "Mute sound" })).toBeVisible();
   });
 
-  it("recovers blocked autoplay on the first visitor gesture outside its controls", async () => {
+  it("supports media implementations whose play method returns no promise", async () => {
+    vi.spyOn(window.HTMLMediaElement.prototype, "play").mockImplementation(
+      () => undefined as unknown as Promise<void>,
+    );
+
+    render(<WelcomeSound active />);
+
+    expect(
+      await screen.findByRole("button", { name: "Mute sound" }),
+    ).toBeVisible();
+  });
+
+  it("offers an explicit sound entry without hijacking unrelated gestures", async () => {
     const blocked = new DOMException("Autoplay blocked", "NotAllowedError");
     const play = vi
       .spyOn(window.HTMLMediaElement.prototype, "play")
@@ -73,16 +85,25 @@ describe("WelcomeSound", () => {
     );
 
     expect(
-      await screen.findByRole("button", { name: "Tap to hear welcome" }),
+      await screen.findByRole("button", { name: "Enter with sound" }),
     ).toBeVisible();
     expect(
-      screen.getByText("Sound is ready — tap once to hear your welcome."),
+      screen.getByText(
+        "Begin with the spoken welcome and soft ambient music.",
+      ),
     ).toBeVisible();
     play.mockResolvedValue(undefined);
     fireEvent.click(screen.getByRole("button", { name: "Explore trips" }));
+    await Promise.resolve();
+    expect(play).toHaveBeenCalledTimes(2);
+    expect(screen.getByRole("button", { name: "Enter with sound" })).toBeVisible();
+
+    fireEvent.click(screen.getByRole("button", { name: "Enter with sound" }));
 
     await waitFor(() => expect(play).toHaveBeenCalledTimes(4));
-    expect(screen.getByRole("button", { name: "Mute sound" })).toBeVisible();
+    const mute = screen.getByRole("button", { name: "Mute sound" });
+    expect(mute).toBeVisible();
+    expect(screen.getByTestId("sound-dock")).toContainElement(mute);
   });
 
   it("keeps permission rejection recoverable across more than one gesture", async () => {
@@ -98,16 +119,16 @@ describe("WelcomeSound", () => {
       </>,
     );
 
-    await screen.findByRole("button", { name: "Tap to hear welcome" });
-    fireEvent.click(screen.getByRole("button", { name: "Explore trips" }));
+    await screen.findByRole("button", { name: "Enter with sound" });
+    fireEvent.click(screen.getByRole("button", { name: "Enter with sound" }));
     await waitFor(() => expect(play).toHaveBeenCalledTimes(4));
     expect(
-      screen.getByRole("button", { name: "Tap to hear welcome" }),
+      screen.getByRole("button", { name: "Enter with sound" }),
     ).toBeVisible();
 
     play.mockResolvedValue(undefined);
     fireEvent.click(
-      screen.getByRole("button", { name: "Tap to hear welcome" }),
+      screen.getByRole("button", { name: "Enter with sound" }),
     );
     await waitFor(() => expect(play).toHaveBeenCalledTimes(6));
     expect(screen.getByRole("button", { name: "Mute sound" })).toBeVisible();

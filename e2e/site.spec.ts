@@ -64,7 +64,7 @@ test("skip navigation, reduced motion and media fallbacks preserve all content",
   await expect(page.getByTestId("travel-host")).toBeVisible();
   await expect(
     page.getByRole("button", {
-      name: /Mute sound|Tap to hear welcome/,
+      name: /Mute sound|Enter with sound/,
     }),
   ).toBeVisible();
   expect(await page.evaluate(() => "speechSynthesis" in window)).toBe(false);
@@ -77,7 +77,7 @@ test("skip navigation, reduced motion and media fallbacks preserve all content",
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 });
 
-test("blocked welcome audio starts on the first intentional visitor gesture", async ({ page }) => {
+test("blocked welcome audio starts from the explicit sound entry", async ({ page }) => {
   await page.addInitScript(() => {
     let attempts = 0;
     HTMLMediaElement.prototype.play = function play() {
@@ -93,15 +93,15 @@ test("blocked welcome audio starts on the first intentional visitor gesture", as
   await page.goto("/");
 
   await expect(
-    page.getByRole("button", { name: "Tap to hear welcome" }),
+    page.getByRole("button", { name: "Enter with sound" }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Tap to hear welcome" }),
+    page.getByRole("button", { name: "Enter with sound" }),
   ).toBeInViewport();
   await expect(
-    page.getByText("Sound is ready — tap once to hear your welcome."),
+    page.getByText("Begin with the spoken welcome and soft ambient music."),
   ).toBeVisible();
-  await page.getByTestId("travel-host-caption").click();
+  await page.getByRole("button", { name: "Enter with sound" }).click();
   await expect(page.getByRole("button", { name: "Mute sound" })).toBeVisible();
   expect(
     await page.evaluate(() =>
@@ -293,7 +293,7 @@ test("360px layouts never overflow and sticky actions stay reachable", async ({ 
   expect(hostBox!.y).toBeGreaterThanOrEqual(heroActionBox!.y + heroActionBox!.height);
   await expect(
     page.getByRole("button", {
-      name: /Mute sound|Tap to hear welcome/,
+      name: /Mute sound|Enter with sound/,
     }),
   ).toBeVisible();
   for (const path of ["/", "/destinations/", "/spiritual-journeys/", "/group-departures/", "/packages/puri-jagannath-konark/", "/plan-my-trip/", "/contact/"]) {

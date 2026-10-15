@@ -115,7 +115,7 @@ export default function WelcomeSound({
       ) => {
         let playback: Promise<void>;
         try {
-          playback = media.play();
+          playback = Promise.resolve(media.play());
         } catch {
           blockAttempt();
           return;
@@ -191,28 +191,6 @@ export default function WelcomeSound({
     };
   }, [active, startExperience, transitionIntroduction, transitionSound]);
 
-  useEffect(() => {
-    if (soundState !== "blocked") return;
-
-    const retry = (event: MouseEvent | KeyboardEvent) => {
-      const target = event.target;
-      if (
-        target instanceof Element &&
-        target.closest("[data-sound-control]")
-      ) {
-        return;
-      }
-      startExperience();
-    };
-
-    document.addEventListener("click", retry, { once: true });
-    document.addEventListener("keydown", retry, { once: true });
-    return () => {
-      document.removeEventListener("click", retry);
-      document.removeEventListener("keydown", retry);
-    };
-  }, [soundState, startExperience]);
-
   function toggleSound() {
     const music = musicRef.current;
     const narration = narrationRef.current;
@@ -266,7 +244,7 @@ export default function WelcomeSound({
 
   const buttonLabel =
     soundState === "blocked"
-      ? "Tap to hear welcome"
+      ? "Enter with sound"
       : soundState === "muted" || soundState === "idle"
         ? "Turn sound on"
         : "Mute sound";
@@ -307,16 +285,25 @@ export default function WelcomeSound({
       </div>
     );
 
-  const blockedPrompt = (
-    <div className="fixed inset-x-4 bottom-5 z-[90] mx-auto max-w-sm rounded-[1.5rem] border border-white/40 bg-white/95 p-3 shadow-[0_24px_80px_rgba(7,16,39,0.34)] backdrop-blur-xl sm:inset-x-auto sm:right-6 sm:mx-0">
+  const soundDock = (
+    <div
+      className={
+        soundState === "blocked"
+          ? "fixed inset-x-4 bottom-5 z-[90] mx-auto max-w-sm rounded-[1.5rem] border border-white/40 bg-white/95 p-3 shadow-[0_24px_80px_rgba(7,16,39,0.34)] backdrop-blur-xl sm:inset-x-auto sm:right-6 sm:mx-0"
+          : "fixed bottom-5 right-4 z-[90] rounded-full border border-white/40 bg-white/95 p-2 shadow-[0_18px_56px_rgba(7,16,39,0.28)] backdrop-blur-xl sm:right-6"
+      }
+      data-testid="sound-dock"
+    >
       {soundControls}
-      <p
-        aria-live="assertive"
-        className="mt-2 text-xs font-semibold text-[#5b6476]"
-        role="status"
-      >
-        Sound is ready — tap once to hear your welcome.
-      </p>
+      {soundState === "blocked" ? (
+        <p
+          aria-live="assertive"
+          className="mt-2 text-xs font-semibold text-[#5b6476]"
+          role="status"
+        >
+          Begin with the spoken welcome and soft ambient music.
+        </p>
+      ) : null}
     </div>
   );
 
@@ -342,9 +329,14 @@ export default function WelcomeSound({
         src={HOST_AUDIO}
       />
 
-      {soundState === "blocked" && typeof document !== "undefined"
-        ? createPortal(blockedPrompt, document.body)
-        : soundControls}
+      {active &&
+      soundState !== "idle" &&
+      soundState !== "error" &&
+      typeof document !== "undefined"
+        ? createPortal(soundDock, document.body)
+        : soundState === "error"
+          ? soundControls
+          : null}
       {introductionState === "error" ? (
         <p className="mt-2 text-xs font-semibold text-[#5b6476]" role="status">
           Spoken welcome unavailable
