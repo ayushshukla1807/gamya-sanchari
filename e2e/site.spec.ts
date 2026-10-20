@@ -44,6 +44,12 @@ test("nested routes render directly and navigation works on desktop and mobile",
 });
 
 test("skip navigation, reduced motion and media fallbacks preserve all content", async ({ page }) => {
+  const heroVideoRequests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().includes("/videos/hero.mp4")) {
+      heroVideoRequests.push(request.url());
+    }
+  });
   await page.addInitScript(() => {
     Reflect.deleteProperty(window, "speechSynthesis");
     Reflect.deleteProperty(window, "SpeechSynthesisUtterance");
@@ -60,6 +66,7 @@ test("skip navigation, reduced motion and media fallbacks preserve all content",
   await expect(page.locator("video")).not.toHaveAttribute("autoplay", "");
   await expect(page.locator("video")).not.toHaveAttribute("loop", "");
   expect(await page.locator("video").evaluate((element: HTMLVideoElement) => element.paused)).toBe(true);
+  expect(heroVideoRequests).toEqual([]);
   await expect(page.locator("#main-content")).toHaveCSS("opacity", "1");
   await expect(page.locator("#main-content")).toHaveCSS("transform", "none");
   await expect(page.getByTestId("announcement-message")).toHaveCount(0);
@@ -222,6 +229,42 @@ test("destination imagery is distinct, loaded and correctly placed", async ({ pa
 test("official brand artwork and enhanced motion render in normal-motion mode", async ({ page }, testInfo) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");
+
+  const heroVideo = page.locator("video");
+  await expect(heroVideo).toBeVisible();
+  await expect(heroVideo.locator("source")).toHaveAttribute(
+    "media",
+    "(prefers-reduced-motion: no-preference)",
+  );
+  await expect(heroVideo.locator("source")).toHaveAttribute(
+    "src",
+    "/videos/hero.mp4",
+  );
+  await expect
+    .poll(() =>
+      heroVideo.evaluate(
+        (element: HTMLVideoElement) =>
+          element.readyState >= HTMLMediaElement.HAVE_METADATA,
+      ),
+    )
+    .toBe(true);
+  await expect
+    .poll(() =>
+      heroVideo.evaluate((element: HTMLVideoElement) => !element.paused),
+    )
+    .toBe(true);
+  const initialTime = await heroVideo.evaluate(
+    (element: HTMLVideoElement) => element.currentTime,
+  );
+  await expect
+    .poll(() =>
+      heroVideo.evaluate(
+        (element: HTMLVideoElement, startTime) =>
+          element.currentTime > startTime + 0.1,
+        initialTime,
+      ),
+    )
+    .toBe(true);
 
   await expect(
     page.locator('header img[src*="gamya-sanchari-emblem"]'),

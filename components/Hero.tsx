@@ -147,7 +147,7 @@ export default function Hero() {
           <video
             aria-hidden="true"
             autoPlay={!policy.reduced}
-            className={`h-full w-full object-cover ${videoFailed ? "hidden" : "hidden sm:block"}`}
+            className={`h-full w-full object-cover ${videoFailed ? "hidden" : "block"}`}
             loop={!policy.reduced}
             muted
             onError={() => setVideoFailed(true)}
@@ -157,7 +157,7 @@ export default function Hero() {
             ref={videoRef}
           >
             <source
-              media="(min-width: 640px)"
+              media="(prefers-reduced-motion: no-preference)"
               src="/videos/hero.mp4"
               type="video/mp4"
             />

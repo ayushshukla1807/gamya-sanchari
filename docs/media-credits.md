@@ -1,11 +1,11 @@
 # Media Credits
 
-Gamya Sanchari uses locally hosted, optimized derivatives of the following media. Pexels permits these assets to be used and modified for free under the [Pexels license](https://www.pexels.com/license/).
+Gamya Sanchari uses locally hosted, optimized media from permission-based, original, client-supplied, and Pexels sources. Only the Pexels-sourced rows below are covered by the [Pexels license](https://www.pexels.com/license/).
 
 | Local asset | Creator | Source |
 | --- | --- | --- |
-| `public/videos/hero.mp4` | Michel Rothstein | [Airplane Landing at the Airport](https://www.pexels.com/video/airplane-landing-at-the-airport-5237591/) |
-| `public/images/hero-poster.webp` | Michel Rothstein | Still derived from [Airplane Landing at the Airport](https://www.pexels.com/video/airplane-landing-at-the-airport-5237591/) |
+| `public/videos/hero.mp4` | Rayare Holidays, reused with permission | Web-optimized silent derivative of [Rayare Holidays on Vimeo](https://vimeo.com/927926521) |
+| `public/images/hero-poster.webp` | Rayare Holidays, reused with permission | Still derived from the licensed [Rayare Holidays video](https://vimeo.com/927926521) |
 | `public/images/about.webp` | Jebakumar Samuel | [Scenic Tea Plantations in Munnar, Kerala](https://www.pexels.com/photo/scenic-tea-plantations-in-munnar-kerala-29023410/) |
 | `public/images/destinations/south-india.webp` | Anil Donoji | [Kerala](https://www.pexels.com/photo/kerala-18625307/) |
 | `public/images/destinations/west-india.webp` | Suket Dedhia | [White Building](https://www.pexels.com/photo/white-building-570031/) |
@@ -37,4 +37,4 @@ Gamya Sanchari uses locally hosted, optimized derivatives of the following media
 | `public/images/brand/gamya-sanchari-social.png` | Gamya Sanchari | Social-sharing derivative of client-supplied official brand artwork |
 | `public/audio/gamya-ambient-journey.mp3` | Gamya Sanchari project | Original synthesized ambient composition created locally for this website |
 
-The Gamya Sanchari favicon is derived from the client-supplied official brand artwork. The spokesperson, destination scenes, graphic overlays, and ambient composition are original project artwork.
+The Gamya Sanchari favicon is derived from the client-supplied official brand artwork. The hero montage is reused with the user's confirmed permission; the spokesperson, destination scenes, graphic overlays, and ambient composition are original project artwork.
