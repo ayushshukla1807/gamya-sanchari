@@ -223,6 +223,22 @@ test("official brand artwork and enhanced motion render in normal-motion mode", 
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");
 
+  const heroVideo = page.locator("video");
+  await expect(heroVideo).toBeVisible();
+  await expect(heroVideo.locator("source")).not.toHaveAttribute("media");
+  await expect(heroVideo.locator("source")).toHaveAttribute(
+    "src",
+    "/videos/hero.mp4",
+  );
+  await expect
+    .poll(() =>
+      heroVideo.evaluate(
+        (element: HTMLVideoElement) =>
+          element.readyState >= HTMLMediaElement.HAVE_METADATA,
+      ),
+    )
+    .toBe(true);
+
   await expect(
     page.locator('header img[src*="gamya-sanchari-emblem"]'),
   ).toBeVisible();

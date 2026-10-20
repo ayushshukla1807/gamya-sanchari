@@ -39,9 +39,10 @@ afterEach(async () => {
 });
 
 describe("Hero", () => {
-  it("renders a metadata-preloaded inline muted video over a persistent poster", () => {
+  it("renders the licensed travel montage as a full-bleed video on every viewport", () => {
     const { container } = render(<Hero />);
     const video = container.querySelector("video");
+    const source = video?.querySelector("source");
 
     expect(video).not.toBeNull();
     expect(video).toHaveAttribute("poster", "/images/hero-poster.webp");
@@ -50,9 +51,12 @@ describe("Hero", () => {
     expect(video).toHaveAttribute("loop");
     expect(video).toHaveAttribute("autoplay");
     expect(video).toHaveProperty("muted", true);
-    expect(video?.querySelector("source")).toHaveAttribute(
-      "media",
-      "(min-width: 640px)",
+    expect(video).toHaveClass("block");
+    expect(video).not.toHaveClass("hidden");
+    expect(source).not.toHaveAttribute("media");
+    expect(source).toHaveAttribute(
+      "src",
+      "/videos/hero.mp4",
     );
     expect(screen.getByTestId("hero-media")).toHaveStyle({
       backgroundImage: 'url("/images/hero-poster.webp")',
