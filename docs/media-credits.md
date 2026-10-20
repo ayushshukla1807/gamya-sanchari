@@ -1,6 +1,6 @@
 # Media Credits
 
-Gamya Sanchari uses locally hosted, optimized derivatives of the following media. Pexels permits these assets to be used and modified for free under the [Pexels license](https://www.pexels.com/license/).
+Gamya Sanchari uses locally hosted, optimized media from permission-based, original, client-supplied, and Pexels sources. Only the Pexels-sourced rows below are covered by the [Pexels license](https://www.pexels.com/license/).
 
 | Local asset | Creator | Source |
 | --- | --- | --- |

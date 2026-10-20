@@ -156,7 +156,11 @@ export default function Hero() {
             preload="metadata"
             ref={videoRef}
           >
-            <source src="/videos/hero.mp4" type="video/mp4" />
+            <source
+              media="(prefers-reduced-motion: no-preference)"
+              src="/videos/hero.mp4"
+              type="video/mp4"
+            />
           </video>
         </div>
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,8,20,0.25)_0%,rgba(3,8,20,0.52)_44%,rgba(3,8,20,0.94)_100%)]" />

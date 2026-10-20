@@ -8,7 +8,7 @@ An accessible, cinematic multi-page travel website for Gamya Sanchari, a Bengalu
 
 - Twenty published routes across destinations, sample journeys, experiences, planning, journal, brand and contact content
 - Responsive, keyboard-operable destination and journey filters from 360 px upward
-- Local, optimized hero video with poster fallback and a poster-first mobile experience
+- Local, optimized hero video on desktop and mobile, with poster and reduced-motion fallbacks
 - Timed plane-to-host welcome with captions, opt-in browser speech, and reduced-motion handling
 - Customizable sample journeys with day-by-day accordions, contextual planner handoff and persistent mobile actions
 - Six-step trip planner with safe session restoration, edit/review flow and explicit WhatsApp handoff

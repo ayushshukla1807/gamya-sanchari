@@ -53,7 +53,10 @@ describe("Hero", () => {
     expect(video).toHaveProperty("muted", true);
     expect(video).toHaveClass("block");
     expect(video).not.toHaveClass("hidden");
-    expect(source).not.toHaveAttribute("media");
+    expect(source).toHaveAttribute(
+      "media",
+      "(prefers-reduced-motion: no-preference)",
+    );
     expect(source).toHaveAttribute(
       "src",
       "/videos/hero.mp4",
@@ -122,6 +125,10 @@ describe("Hero", () => {
     expect(screen.getByTestId("travel-host")).toBeInTheDocument();
     expect(video).not.toHaveAttribute("autoplay");
     expect(video).not.toHaveAttribute("loop");
+    expect(video?.querySelector("source")).toHaveAttribute(
+      "media",
+      "(prefers-reduced-motion: no-preference)",
+    );
     expect(
       screen.getByRole("heading", {
         name: "Enjoy your holidays with GAMYA SANCHARI",
