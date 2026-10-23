@@ -139,6 +139,11 @@ describe("marketing sections", () => {
       "href",
       BRAND.instagram,
     );
+    expect(
+      screen.getByText(
+        "ARCHITECTED, BUILT, DEPLOYED, MAINTAINED BY AYUSH SHUKLA, CTO, VERITON AI TECHNOLOGIES",
+      ),
+    ).toBeVisible();
   });
 });
 

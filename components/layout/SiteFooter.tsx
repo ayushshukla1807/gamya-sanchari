@@ -49,6 +49,12 @@ export default function SiteFooter() {
         </div>
         <div className="flex flex-col gap-3 pt-7 text-xs text-white/45 sm:flex-row sm:justify-between"><p>© 2026 Gamya Sanchari. All rights reserved.</p><p>Made with care in Bengaluru, Karnataka, India.</p></div>
       </div>
+      <div className="border-t border-[#3f2a20]/10 bg-[#fff8ec] px-5 py-5 text-center text-[0.68rem] font-bold uppercase leading-5 tracking-[0.22em] text-[#6a594b] sm:px-8 sm:text-left lg:px-12">
+        <p className="mx-auto max-w-[1440px]">
+          ARCHITECTED, BUILT, DEPLOYED, MAINTAINED BY AYUSH SHUKLA, CTO,
+          VERITON AI TECHNOLOGIES
+        </p>
+      </div>
     </footer>
   );
 }
