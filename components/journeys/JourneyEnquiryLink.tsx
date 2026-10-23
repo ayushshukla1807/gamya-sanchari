@@ -4,7 +4,7 @@ import type { Journey } from "@/types/travel";
 
 export default function JourneyEnquiryLink({
   journey,
-  className = "inline-flex min-h-11 items-center justify-center rounded-full bg-[#1844ef] px-5 text-sm font-extrabold text-white transition hover:bg-[#f06619]",
+  className = "inline-flex min-h-11 items-center justify-center rounded-full bg-[#a63d24] px-5 text-sm font-extrabold text-white transition hover:bg-[#f06619]",
 }: {
   journey: Journey;
   className?: string;

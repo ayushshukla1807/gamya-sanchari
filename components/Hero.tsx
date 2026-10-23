@@ -11,8 +11,8 @@ import KineticText from "@/components/motion/KineticText";
 import { useMotionPolicy } from "@/components/motion/MotionProvider";
 
 const ANNOUNCEMENTS = [
-  "✈️ Ladies and gentlemen, this is your captain speaking…",
-  "We are now beginning our descent into your dream destination.",
+  "✈️ Welcome to India. Your journey begins in Karnataka.",
+  "From Hampi's stone stories to India's living traditions.",
   "ಗಮ್ಯ ಸಂಚಾರಿ — Your Journey Awaits.",
 ] as const;
 
@@ -59,7 +59,7 @@ function AnnouncementSequence({
     <div className="pointer-events-none fixed inset-x-0 top-24 z-[60] flex justify-center px-5 sm:top-28 sm:px-8">
       <motion.div
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-3xl rounded-full border border-white/15 bg-[#071027]/70 px-5 py-3 text-center shadow-2xl backdrop-blur-md sm:px-8 sm:py-4"
+        className="max-w-3xl rounded-full border border-white/15 bg-[#27372c]/70 px-5 py-3 text-center shadow-2xl backdrop-blur-md sm:px-8 sm:py-4"
         data-testid="announcement-message"
         initial={{ opacity: 0, y: 18 }}
         key={announcement}
@@ -80,7 +80,7 @@ function TravelHost() {
     <motion.aside
       animate={{ opacity: 1, x: 0 }}
       aria-label="Gamya Sanchari travel host"
-      className="premium-surface relative z-20 mt-8 grid min-h-56 grid-cols-[minmax(108px,0.42fr)_minmax(0,1fr)] items-end overflow-hidden rounded-[2rem] bg-[#071027]/90 shadow-2xl backdrop-blur-md max-[380px]:grid-cols-1 sm:min-h-64 sm:grid-cols-[minmax(160px,0.45fr)_minmax(0,1fr)] lg:inset-auto lg:z-auto lg:mt-0 lg:block lg:min-h-[64svh] lg:overflow-visible lg:border-0 lg:bg-transparent lg:shadow-none lg:backdrop-blur-none lg:[box-shadow:none]"
+      className="premium-surface relative z-20 mt-8 grid min-h-56 grid-cols-[minmax(108px,0.42fr)_minmax(0,1fr)] items-end overflow-hidden rounded-[2rem] bg-[#27372c]/90 shadow-2xl backdrop-blur-md max-[380px]:grid-cols-1 sm:min-h-64 sm:grid-cols-[minmax(160px,0.45fr)_minmax(0,1fr)] lg:inset-auto lg:z-auto lg:mt-0 lg:block lg:min-h-[64svh] lg:overflow-visible lg:border-0 lg:bg-transparent lg:shadow-none lg:backdrop-blur-none lg:[box-shadow:none]"
       data-testid="travel-host"
       initial={policy.reduced ? false : { opacity: 0, x: 120 }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
@@ -96,8 +96,8 @@ function TravelHost() {
         />
       </div>
 
-      <div className="relative z-10 m-3 ml-0 rounded-3xl border border-white/15 bg-white/95 p-4 text-[#212121] shadow-2xl max-[380px]:ml-3 sm:m-5 sm:ml-0 sm:p-5 lg:absolute lg:left-0 lg:top-[17%] lg:m-0 lg:w-[62%]">
-        <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#1844ef]">
+      <div className="relative z-10 m-3 ml-0 rounded-3xl border border-white/15 bg-white/95 p-4 text-[#3f2a20] shadow-2xl max-[380px]:ml-3 sm:m-5 sm:ml-0 sm:p-5 lg:absolute lg:left-0 lg:top-[17%] lg:m-0 lg:w-[62%]">
+        <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#a63d24]">
           Your personal travel host
         </p>
         <p
@@ -107,7 +107,7 @@ function TravelHost() {
           {HOST_INTRODUCTION}
         </p>
         <a
-          className="mt-3 inline-flex min-h-11 items-center justify-center rounded-full border border-[#1844ef]/20 px-4 py-2 text-sm font-extrabold text-[#1844ef] transition hover:border-[#f06619] hover:text-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
+          className="mt-3 inline-flex min-h-11 items-center justify-center rounded-full border border-[#a63d24]/20 px-4 py-2 text-sm font-extrabold text-[#a63d24] transition hover:border-[#f06619] hover:text-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a63d24]"
           href={WHATSAPP_CTA}
           rel="noreferrer"
           target="_blank"
@@ -135,7 +135,7 @@ export default function Hero() {
   return (
     <>
       <section
-        className="relative isolate flex min-h-[100svh] items-end overflow-hidden bg-[#10182a] text-white"
+        className="relative isolate flex min-h-[100svh] items-end overflow-hidden bg-[#27372c] text-white"
         data-material="hero-stage"
         id="home"
       >
@@ -163,12 +163,12 @@ export default function Hero() {
             />
           </video>
         </div>
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,8,20,0.25)_0%,rgba(3,8,20,0.52)_44%,rgba(3,8,20,0.94)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(39,55,44,0.25)_0%,rgba(39,55,44,0.52)_44%,rgba(39,55,44,0.94)_100%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(240,102,25,0.22),transparent_38%)]" />
         <motion.div
           animate={policy.reduced ? undefined : { rotate: 360, scale: [1, 1.08, 1] }}
           aria-hidden="true"
-          className="pointer-events-none absolute -right-32 top-24 size-[28rem] rounded-full border border-white/10 opacity-40 shadow-[0_0_120px_rgba(24,68,239,0.2)]"
+          className="pointer-events-none absolute -right-32 top-24 size-[28rem] rounded-full border border-white/10 opacity-40 shadow-[0_0_120px_rgba(166,61,36,0.2)]"
           transition={{ duration: 24, ease: "linear", repeat: Infinity }}
         />
         <motion.div
@@ -182,24 +182,25 @@ export default function Hero() {
           <div className="max-w-4xl lg:pb-8">
             <p className="mb-5 flex items-center gap-3 text-sm font-extrabold uppercase tracking-[0.22em] text-white/75">
               <span className="h-px w-10 bg-[#f06619]" />
-              {BRAND.nameKannada} · Bengaluru
+              Karnataka, India · locally planned from Bengaluru
             </p>
             <KineticText
-              accentWords={["GAMYA", "SANCHARI"]}
+              accentWords={["India,", "Karnataka"]}
               as="h1"
               className="text-balance text-4xl font-extrabold leading-[0.98] tracking-[-0.04em] sm:text-6xl lg:text-6xl xl:text-7xl"
-              text="Enjoy your holidays with GAMYA SANCHARI"
+              text="Discover India, beginning in Karnataka"
             />
             <p className="mt-6 text-base font-bold uppercase tracking-[0.18em] text-white/80 sm:text-lg">
-              Domestic | International | Experiences
+              Hampi&apos;s stone stories, Karnataka&apos;s living landscapes, India beyond the obvious
             </p>
             <p className="mt-5 max-w-2xl text-base leading-7 text-white/75 sm:text-lg">
-              We listen first, then plan—bringing flights, stays, transfers and
-              experiences together around the way you want to travel.
+              Travel with a Bengaluru-based team that understands the route on
+              the ground. We connect arrivals, stays, private transfers, local
+              guides and experiences around your pace.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
-                className="premium-button inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1844ef] px-7 py-3 font-extrabold text-white shadow-xl shadow-[#1844ef]/20 hover:bg-[#f06619] focus-visible:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                className="premium-button inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#a63d24] px-7 py-3 font-extrabold text-white shadow-xl shadow-[#a63d24]/20 hover:bg-[#f06619] focus-visible:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                 href="/plan-my-trip/"
               >
                 Plan My Trip
@@ -207,10 +208,10 @@ export default function Hero() {
               </a>
               <a
                 className="premium-button inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-7 py-3 font-extrabold text-white backdrop-blur-md hover:border-[#f06619] hover:bg-[#f06619] focus-visible:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-                href="/destinations/"
+                href="/destinations/hampi/"
               >
                 <Map aria-hidden="true" size={19} />
-                Explore Destinations
+                Explore Hampi
               </a>
             </div>
           </div>

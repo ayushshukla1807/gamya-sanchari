@@ -12,14 +12,14 @@ const ITEMS = [
 
 export default function HandledInclusions() {
   return (
-    <section className="section-atmosphere bg-[#eaf0f6]" data-material="premium-section">
+    <section className="section-atmosphere bg-[#f2e8d8]" data-material="premium-section">
       <div className="section-shell">
         <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
-          <div><p className="eyebrow text-[#1844ef]">Details, connected</p><KineticText as="h2" className="mt-4 text-4xl font-extrabold text-[#0b1633] sm:text-6xl" text="What we can coordinate" /></div>
-          <p className="max-w-2xl text-lg leading-8 text-[#566073]">Every inclusion is confirmed for your journey. Nothing is assumed from an old poster or an earlier departure.</p>
+          <div><p className="eyebrow text-[#a63d24]">Details, connected</p><KineticText as="h2" className="mt-4 text-4xl font-extrabold text-[#3f2a20] sm:text-6xl" text="What we can coordinate" /></div>
+          <p className="max-w-2xl text-lg leading-8 text-[#6a594b]">Every inclusion is confirmed for your journey. Nothing is assumed from an old poster or an earlier departure.</p>
         </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {ITEMS.map(([title, description], index) => <MotionReveal delay={index * 0.05} direction="scale" hoverLift key={title}><article className="premium-card rounded-[1.5rem] bg-white p-6" data-material="premium-card"><h3 className="text-xl font-extrabold text-[#0b1633]">{title}</h3><p className="mt-2 text-sm leading-6 text-[#566073]">{description}</p></article></MotionReveal>)}
+          {ITEMS.map(([title, description], index) => <MotionReveal delay={index * 0.05} direction="scale" hoverLift key={title}><article className="premium-card rounded-[1.5rem] bg-white p-6" data-material="premium-card"><h3 className="text-xl font-extrabold text-[#3f2a20]">{title}</h3><p className="mt-2 text-sm leading-6 text-[#6a594b]">{description}</p></article></MotionReveal>)}
         </div>
       </div>
     </section>

@@ -58,6 +58,24 @@ if (existsSync(heroPath) && statSync(heroPath).size >= 6_000_000) {
 }
 
 const allSource = sourceFiles.map(({ contents }) => contents).join("\n");
+const retiredThemeValues = [
+  "#1844ef",
+  "#0b1633",
+  "#071027",
+  "#071126",
+  "#081329",
+  "#10182a",
+  "rgb(24 68 239",
+  "rgb(8 19 41",
+  "rgb(11 22 51",
+];
+for (const value of retiredThemeValues) {
+  for (const { path, contents } of sourceFiles) {
+    if (contents.toLowerCase().includes(value)) {
+      errors.push(`Retired blue/navy theme value in ${relative(root, path)}: ${value}`);
+    }
+  }
+}
 const ids = new Set(Array.from(allSource.matchAll(/\bid=["']([^"']+)["']/g), (match) => match[1]));
 for (const { path, contents } of sourceFiles) {
   for (const match of contents.matchAll(/href=["']#([^"']*)["']/g)) {

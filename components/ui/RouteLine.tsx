@@ -12,7 +12,7 @@ export default function RouteLine({ stops }: { stops: readonly string[] }) {
     <div className="relative" data-motion="route-line">
       <motion.span
         aria-hidden="true"
-        className="absolute left-4 right-4 top-4 h-px origin-left bg-gradient-to-r from-[#1844ef] via-[#f5ad56] to-[#f06619]"
+        className="absolute left-4 right-4 top-4 h-px origin-left bg-gradient-to-r from-[#a63d24] via-[#f5ad56] to-[#f06619]"
         data-motion-engine="framer-motion"
         data-motion-trigger="while-in-view"
         data-testid="route-progress"
@@ -24,14 +24,14 @@ export default function RouteLine({ stops }: { stops: readonly string[] }) {
       <ol className="relative grid gap-5 sm:grid-flow-col sm:auto-cols-fr">
         {stops.map((stop, index) => (
           <motion.li
-            className="grid gap-3 text-sm font-extrabold text-[#0b1633]"
+            className="grid gap-3 text-sm font-extrabold text-[#3f2a20]"
             initial={canAnimate ? { opacity: 0, y: 12 } : false}
             key={stop}
             transition={{ delay: 0.18 + index * 0.1, duration: 0.45 }}
             viewport={{ amount: 0.6, once: true }}
             whileInView={canAnimate ? { opacity: 1, y: 0 } : undefined}
           >
-            <span aria-hidden="true" className="grid size-8 place-items-center rounded-full border border-[#1844ef]/20 bg-white text-xs text-[#1844ef] shadow-[var(--shadow-soft)]">
+            <span aria-hidden="true" className="grid size-8 place-items-center rounded-full border border-[#a63d24]/20 bg-white text-xs text-[#a63d24] shadow-[var(--shadow-soft)]">
               {index + 1}
             </span>
             <span>{stop}</span>

@@ -7,7 +7,7 @@ import SiteHeader from "@/components/layout/SiteHeader";
 import RouteLine from "@/components/ui/RouteLine";
 
 const expectedLinks = [
-  ["Destinations", "/destinations/"],
+  ["Karnataka & India", "/destinations/"],
   ["Packages", "/packages/"],
   ["Experiences", "/experiences/"],
   ["Spiritual Journeys", "/spiritual-journeys/"],

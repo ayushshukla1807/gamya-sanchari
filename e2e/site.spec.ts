@@ -8,6 +8,7 @@ test.beforeEach(async ({ page }) => {
 
 test("nested routes render directly and navigation works on desktop and mobile", async ({ page }, testInfo) => {
   for (const [path, heading] of [
+    ["/destinations/hampi/", "Hampi"],
     ["/destinations/kerala/", "Kerala"],
     ["/packages/kerala-easy-pace/", "Kerala at an easy pace"],
     ["/journal/how-to-pace-a-kerala-trip/", "How to pace a Kerala trip without rushing it"],
@@ -132,7 +133,7 @@ test("kinetic headings preserve visible word spacing", async ({ page }) => {
   const firstHeadingWords = page
     .getByRole("heading", {
       level: 1,
-      name: "Enjoy your holidays with GAMYA SANCHARI",
+      name: "Discover India, beginning in Karnataka",
     })
     .locator('[data-motion="kinetic-word"]');
 
@@ -143,6 +144,40 @@ test("kinetic headings preserve visible word spacing", async ({ page }) => {
   });
 
   expect(gap).toBeGreaterThan(1);
+});
+
+test("Karnataka leads the inbound journey and Hampi imagery loads", async ({ page }) => {
+  await page.goto("/");
+
+  await expect(
+    page.getByRole("heading", {
+      level: 1,
+      name: "Discover India, beginning in Karnataka",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      level: 2,
+      name: "Karnataka is your first chapter",
+    }),
+  ).toBeVisible();
+
+  const hampiLink = page.getByRole("link", { name: /Explore Hampi/ }).first();
+  await expect(hampiLink).toHaveAttribute("href", "/destinations/hampi/");
+  await hampiLink.click();
+  await expect(page).toHaveURL(/\/destinations\/hampi\/?$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Hampi" })).toBeVisible();
+
+  const image = page.getByAltText(/Stone Chariot at Hampi/i).first();
+  await expect(image).toBeVisible();
+  await expect
+    .poll(() =>
+      image.evaluate(
+        (element: HTMLImageElement) =>
+          element.complete && element.naturalWidth > 0,
+      ),
+    )
+    .toBe(true);
 });
 
 test("reduced motion keeps package imagery static on hover", async ({ page }, testInfo) => {
@@ -313,7 +348,7 @@ test("destination and package filters expose empty and reset states by keyboard"
   await expect(page.getByRole("heading", { name: "Andaman Island Escape" })).toBeVisible();
 
   await page.goto("/destinations/");
-  await page.getByRole("button", { name: "International" }).focus();
+  await page.getByRole("button", { name: "Beyond India" }).focus();
   await page.keyboard.press("Enter");
   await page.getByLabel("Region").selectOption({ label: "South India" });
   await expect(page.getByRole("heading", { name: "No destinations match that combination" })).toBeVisible();
@@ -321,7 +356,7 @@ test("destination and package filters expose empty and reset states by keyboard"
   await expect(page.getByText(/destinations found/)).toBeVisible();
 
   await page.goto("/packages/");
-  await page.getByRole("button", { name: "International" }).click();
+  await page.getByRole("button", { name: "Beyond India" }).click();
   await page.getByLabel("Destination").selectOption("kerala");
   await expect(page.getByRole("heading", { name: "No sample journeys match those choices" })).toBeVisible();
   await page.getByRole("button", { name: "Reset filters" }).click();

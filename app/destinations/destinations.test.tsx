@@ -15,7 +15,10 @@ describe("destination routes", () => {
     render(<DestinationsPage />);
 
     expect(
-      screen.getByRole("heading", { level: 1, name: /find your direction/i }),
+      screen.getByRole("heading", {
+        level: 1,
+        name: /begin with Karnataka, then discover India/i,
+      }),
     ).toBeVisible();
     for (const destination of DESTINATIONS) {
       expect(

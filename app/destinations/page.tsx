@@ -8,7 +8,7 @@ export const metadata = metadataForPath("/destinations/");
 export default function DestinationsPage() {
   return (
     <main>
-      <EditorialHero eyebrow="Destination atlas" title="Find your direction" summary="Browse places by region, season and travel style. Every idea is a starting point—we shape the final journey around you." primary={{ href: "/plan-my-trip/", label: "Plan My Trip" }} secondary={{ href: "/packages/", label: "See Sample Journeys" }} />
+      <EditorialHero eyebrow="Karnataka first · India beyond" title="Begin with Karnataka, then discover India" summary="Start with Hampi, Mysuru, Coorg and the Western Ghats, then connect the India journey that suits your season, interests and pace." primary={{ href: "/plan-my-trip/?destination=hampi", label: "Plan Hampi & Karnataka" }} secondary={{ href: "/packages/", label: "See India Journeys" }} />
       <section className="section-shell"><DestinationFilters destinations={DESTINATIONS} /></section>
     </main>
   );

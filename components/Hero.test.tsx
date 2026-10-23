@@ -71,15 +71,17 @@ describe("Hero", () => {
 
     const heading =
       screen.getByRole("heading", {
-        name: "Enjoy your holidays with GAMYA SANCHARI",
+        name: "Discover India, beginning in Karnataka",
       });
     expect(heading).toBeVisible();
     expect(heading).toHaveAttribute("data-motion", "kinetic-text");
     expect(container.querySelector('[data-material="hero-stage"]')).toBeVisible();
-    expect(screen.getByText("Domestic | International | Experiences")).toBeVisible();
-    expect(screen.getByRole("link", { name: "Explore Destinations" })).toHaveAttribute(
+    expect(
+      screen.getByText(/Hampi's stone stories, Karnataka's living landscapes/i),
+    ).toBeVisible();
+    expect(screen.getByRole("link", { name: "Explore Hampi" })).toHaveAttribute(
       "href",
-      "/destinations/",
+      "/destinations/hampi/",
     );
     expect(screen.getByRole("link", { name: "Plan My Trip" })).toHaveAttribute(
       "href",
@@ -95,12 +97,12 @@ describe("Hero", () => {
     render(<Hero />);
 
     expect(screen.getByTestId("announcement-message")).toHaveTextContent(
-      "Ladies and gentlemen, this is your captain speaking",
+      "Welcome to India. Your journey begins in Karnataka",
     );
 
     act(() => vi.advanceTimersByTime(2200));
     expect(screen.getByTestId("announcement-message")).toHaveTextContent(
-      "beginning our descent into your dream destination",
+      "Hampi's stone stories to India's living traditions",
     );
 
     act(() => vi.advanceTimersByTime(2200));
@@ -131,7 +133,7 @@ describe("Hero", () => {
     );
     expect(
       screen.getByRole("heading", {
-        name: "Enjoy your holidays with GAMYA SANCHARI",
+        name: "Discover India, beginning in Karnataka",
       }),
     ).toBeVisible();
   });
@@ -180,7 +182,7 @@ describe("Hero", () => {
     });
     expect(
       screen.getByRole("heading", {
-        name: "Enjoy your holidays with GAMYA SANCHARI",
+        name: "Discover India, beginning in Karnataka",
       }),
     ).toBeVisible();
   });

@@ -6,6 +6,7 @@ Gamya Sanchari uses locally hosted, optimized media from permission-based, origi
 | --- | --- | --- |
 | `public/videos/hero.mp4` | Rayare Holidays, reused with permission | Web-optimized silent derivative of [Rayare Holidays on Vimeo](https://vimeo.com/927926521) |
 | `public/images/hero-poster.webp` | Rayare Holidays, reused with permission | Still derived from the licensed [Rayare Holidays video](https://vimeo.com/927926521) |
+| `public/images/destinations/hampi.webp` | OpenAI image generation | Original destination artwork created for Gamya Sanchari: Hampi's Stone Chariot and boulder landscape at sunrise |
 | `public/images/about.webp` | Jebakumar Samuel | [Scenic Tea Plantations in Munnar, Kerala](https://www.pexels.com/photo/scenic-tea-plantations-in-munnar-kerala-29023410/) |
 | `public/images/destinations/south-india.webp` | Anil Donoji | [Kerala](https://www.pexels.com/photo/kerala-18625307/) |
 | `public/images/destinations/west-india.webp` | Suket Dedhia | [White Building](https://www.pexels.com/photo/white-building-570031/) |

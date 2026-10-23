@@ -25,7 +25,7 @@ const icons: Partial<Record<IconName, LucideIcon>> = {
 
 export default function WhyUs() {
   return (
-    <section className="scroll-mt-20 bg-[#101a35] py-20 text-white sm:py-28" id="why-us">
+    <section className="scroll-mt-20 bg-[#33483a] py-20 text-white sm:py-28" id="why-us">
       <div className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
         <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
           <div>

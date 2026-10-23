@@ -9,6 +9,15 @@ import {
 } from "@/lib/metadata";
 
 describe("published metadata", () => {
+  test("positions the site for international travellers discovering Karnataka and India", () => {
+    const home = metadataForPath("/");
+
+    expect(home.title).toMatch(/Karnataka|India/i);
+    expect(home.description).toMatch(/international travellers/i);
+    expect(home.description).toMatch(/Karnataka/i);
+    expect(JSON.stringify(metadata.keywords)).toMatch(/Hampi/i);
+  });
+
   test("uses the official identity for browser and social branding", () => {
     expect(metadata.icons).toEqual({
       icon: "/images/brand/gamya-sanchari-icon-192.png",
@@ -18,7 +27,7 @@ describe("published metadata", () => {
       `${BRAND.siteUrl}/images/brand/gamya-sanchari-lockup.png`,
     );
     expect(metadata.openGraph?.images).toEqual([
-      { url: `${BRAND.siteUrl}/images/brand/gamya-sanchari-social.png` },
+      { url: `${BRAND.siteUrl}/images/destinations/hampi.webp` },
     ]);
   });
 

@@ -20,7 +20,7 @@ describe("DestinationFilters", () => {
     );
 
     const international = screen.getByRole("button", {
-      name: "International",
+      name: "Beyond India",
     });
     international.focus();
     await user.keyboard("{Enter}");
@@ -41,7 +41,7 @@ describe("DestinationFilters", () => {
     const user = userEvent.setup();
     render(<DestinationFilters destinations={DESTINATIONS} />);
 
-    await user.click(screen.getByRole("button", { name: "International" }));
+    await user.click(screen.getByRole("button", { name: "Beyond India" }));
     await user.selectOptions(screen.getByLabelText("Region"), "North India");
 
     expect(screen.getByText("0 destinations found")).toBeVisible();

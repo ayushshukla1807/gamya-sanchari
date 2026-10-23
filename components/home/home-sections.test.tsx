@@ -14,6 +14,7 @@ describe("guided home journey", () => {
     const headings = screen.getAllByRole("heading", { level: 2 });
     const names = headings.map((heading) => heading.textContent);
     const narrative = [
+      "Karnataka is your first chapter",
       "What kind of journey are you looking for?",
       "Journeys with a real story behind them",
       "What we can coordinate",
@@ -47,6 +48,12 @@ describe("guided home journey", () => {
       container.querySelectorAll('[data-motion^="reveal-"]').length,
     ).toBeGreaterThanOrEqual(12);
     expect(screen.getByTestId("scroll-progress")).toBeInTheDocument();
+    expect(
+      screen
+        .getAllByRole("link", { name: /Explore Hampi/i })
+        .every((link) => link.getAttribute("href") === "/destinations/hampi/"),
+    ).toBe(true);
+    expect(screen.getByText(/Bengaluru arrivals/i)).toBeVisible();
     expect(
       container.querySelectorAll('[data-material="premium-section"]').length,
     ).toBeGreaterThanOrEqual(7);

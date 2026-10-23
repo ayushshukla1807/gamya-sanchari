@@ -251,14 +251,14 @@ export default function WelcomeSound({
 
   const soundControls =
     soundState === "error" ? (
-      <p className="text-xs font-bold text-[#5b6476]" role="status">
+      <p className="text-xs font-bold text-[#6a594b]" role="status">
         Audio unavailable
       </p>
     ) : (
       <div className="flex flex-wrap items-center gap-2">
         <button
           aria-label={buttonLabel}
-          className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1844ef] px-4 py-2 text-sm font-extrabold text-white transition hover:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef] disabled:cursor-wait disabled:opacity-70"
+          className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#a63d24] px-4 py-2 text-sm font-extrabold text-white transition hover:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a63d24] disabled:cursor-wait disabled:opacity-70"
           data-sound-control
           onClick={toggleSound}
           type="button"
@@ -273,7 +273,7 @@ export default function WelcomeSound({
         {introductionState === "played" ? (
           <button
             aria-label="Replay welcome"
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#1844ef]/20 px-4 py-2 text-sm font-extrabold text-[#1844ef] transition hover:border-[#f06619] hover:text-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1844ef]"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#a63d24]/20 px-4 py-2 text-sm font-extrabold text-[#a63d24] transition hover:border-[#f06619] hover:text-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a63d24]"
             data-sound-control
             onClick={replayIntroduction}
             type="button"
@@ -289,8 +289,8 @@ export default function WelcomeSound({
     <div
       className={
         soundState === "blocked"
-          ? "fixed inset-x-4 bottom-5 z-[90] mx-auto max-w-sm rounded-[1.5rem] border border-white/40 bg-white/95 p-3 shadow-[0_24px_80px_rgba(7,16,39,0.34)] backdrop-blur-xl sm:inset-x-auto sm:right-6 sm:mx-0"
-          : "fixed bottom-5 right-4 z-[90] rounded-full border border-white/40 bg-white/95 p-2 shadow-[0_18px_56px_rgba(7,16,39,0.28)] backdrop-blur-xl sm:right-6"
+          ? "fixed inset-x-4 bottom-5 z-[90] mx-auto max-w-sm rounded-[1.5rem] border border-white/40 bg-white/95 p-3 shadow-[0_24px_80px_rgba(63,42,32,0.34)] backdrop-blur-xl sm:inset-x-auto sm:right-6 sm:mx-0"
+          : "fixed bottom-5 right-4 z-[90] rounded-full border border-white/40 bg-white/95 p-2 shadow-[0_18px_56px_rgba(63,42,32,0.28)] backdrop-blur-xl sm:right-6"
       }
       data-testid="sound-dock"
     >
@@ -298,7 +298,7 @@ export default function WelcomeSound({
       {soundState === "blocked" ? (
         <p
           aria-live="assertive"
-          className="mt-2 text-xs font-semibold text-[#5b6476]"
+          className="mt-2 text-xs font-semibold text-[#6a594b]"
           role="status"
         >
           Begin with the spoken welcome and soft ambient music.
@@ -338,7 +338,7 @@ export default function WelcomeSound({
           ? soundControls
           : null}
       {introductionState === "error" ? (
-        <p className="mt-2 text-xs font-semibold text-[#5b6476]" role="status">
+        <p className="mt-2 text-xs font-semibold text-[#6a594b]" role="status">
           Spoken welcome unavailable
         </p>
       ) : null}

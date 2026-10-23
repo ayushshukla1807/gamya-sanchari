@@ -3,6 +3,7 @@ import ConfidenceClose from "@/components/home/ConfidenceClose";
 import ExperienceShowcase from "@/components/home/ExperienceShowcase";
 import FeaturedJourneys from "@/components/home/FeaturedJourneys";
 import HandledInclusions from "@/components/home/HandledInclusions";
+import KarnatakaGateway from "@/components/home/KarnatakaGateway";
 import PlannerPreview from "@/components/home/PlannerPreview";
 import PlanningRoute from "@/components/home/PlanningRoute";
 import PreviousDepartures from "@/components/home/PreviousDepartures";
@@ -14,6 +15,7 @@ export default function Home() {
     <main className="overflow-hidden">
       <ScrollProgress />
       <Hero />
+      <KarnatakaGateway />
       <ExperienceShowcase />
       <FeaturedJourneys />
       <HandledInclusions />

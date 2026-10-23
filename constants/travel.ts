@@ -9,6 +9,42 @@ import type {
 
 export const DESTINATIONS = [
   {
+    slug: "hampi",
+    title: "Hampi",
+    region: "Karnataka",
+    scope: "domestic",
+    eyebrow: "Vijayanagara stonework, boulder country and unhurried discovery",
+    summary:
+      "Begin in Bengaluru, then slow down among Hampi's temple complexes, river landscapes and remarkable granite terrain before continuing into North Karnataka.",
+    image: "/images/destinations/hampi.webp",
+    alt: "Stone Chariot at Hampi's Vittala Temple in warm sunrise light",
+    bestMonths: ["October", "November", "December", "January", "February"],
+    suggestedDuration: "4–6 days",
+    styleSlugs: ["culture", "family", "adventure"],
+    highlights: [
+      {
+        title: "Vijayanagara at human pace",
+        description:
+          "Give the temple complexes and royal enclosures enough time for their craft, scale and stories to register.",
+      },
+      {
+        title: "Boulder-country light",
+        description:
+          "Early mornings and gentle evenings reveal the landscape beyond the headline monuments.",
+      },
+      {
+        title: "A wider Karnataka chapter",
+        description:
+          "Connect Hampi with Badami, Aihole or Pattadakal when your time and interests allow.",
+      },
+    ],
+    sampleRoute: ["Bengaluru", "Hampi", "Badami"],
+    planningNotes: [
+      "Plan outdoor exploration around the heat and keep a generous midday pause.",
+      "Choose an expert local guide for historical context without turning the day into a checklist.",
+    ],
+  },
+  {
     slug: "kerala",
     title: "Kerala",
     region: "South India",

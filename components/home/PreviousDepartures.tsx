@@ -13,7 +13,7 @@ export default function PreviousDepartures() {
   );
 
   return (
-    <section className="section-atmosphere bg-[#081329] text-white" data-material="premium-section">
+    <section className="section-atmosphere bg-[#27372c] text-white" data-material="premium-section">
       <div className="section-shell">
         <p className="eyebrow text-[#f5ad56]">Proof, with the date kept honest</p>
         <KineticText as="h2" className="mt-4 max-w-4xl text-4xl font-extrabold sm:text-6xl" text="Previous departures, thoughtfully continued" />
