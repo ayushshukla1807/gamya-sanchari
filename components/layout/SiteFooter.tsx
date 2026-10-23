@@ -8,7 +8,7 @@ import { NAV_LINKS } from "@/constants/content";
 
 export default function SiteFooter() {
   return (
-    <footer className="bg-[#071126] text-white" id="contact">
+    <footer className="bg-[#27372c] text-white" id="contact">
       <div className="mx-auto max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12">
         <div className="grid gap-12 border-b border-white/10 pb-14 lg:grid-cols-[1.2fr_0.75fr_0.8fr_1.05fr]">
           <div>
@@ -21,7 +21,7 @@ export default function SiteFooter() {
                 width={714}
               />
             </Link>
-            <p className="mt-6 max-w-sm text-sm leading-7 text-white/65">Bengaluru-based travel planning for journeys that fit your people, pace and priorities.</p>
+            <p className="mt-6 max-w-sm text-sm leading-7 text-white/65">Bengaluru-based inbound travel planning for international visitors discovering Karnataka and India at a thoughtful pace.</p>
             <p className="mt-5 max-w-sm font-bold leading-7 text-white/85">{BRAND.blessing}</p>
             <div className="mt-6 flex gap-3">
               <a aria-label="Active campaigns & trip moments" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/15 px-4 text-xs font-bold transition hover:bg-[#f06619] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2" href={BRAND.instagram} rel="noreferrer" target="_blank"><Instagram aria-hidden="true" size={19} />Instagram</a>

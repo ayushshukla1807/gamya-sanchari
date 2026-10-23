@@ -13,14 +13,14 @@ export interface PublishedPage {
 }
 
 export const SITE_DESCRIPTION =
-  "Personalized domestic and international travel planning from Bengaluru, shaped around your people, pace and priorities.";
+  "Bengaluru-based travel planning for international travellers discovering Karnataka and India, shaped around your interests, pace and priorities.";
 
 const STATIC_PAGES: readonly PublishedPage[] = [
-  { path: "/", title: "Gamya Sanchari | Your Journey Awaits", description: SITE_DESCRIPTION, image: "/images/brand/gamya-sanchari-social.png", priority: 1 },
-  { path: "/destinations/", title: "Thoughtful Travel Destinations | Gamya Sanchari", description: "Explore domestic and international destinations by region, season and travel style, then shape one around your pace.", priority: 0.9 },
+  { path: "/", title: "Karnataka & India Travel for International Visitors | Gamya Sanchari", description: SITE_DESCRIPTION, image: "/images/destinations/hampi.webp", priority: 1 },
+  { path: "/destinations/", title: "Karnataka & India Travel Destinations | Gamya Sanchari", description: "Begin with Hampi and Karnataka, then explore thoughtful journeys across India by region, season and travel style.", priority: 0.9 },
   { path: "/spiritual-journeys/", title: "Supported Spiritual Journeys & Yatras | Gamya Sanchari", description: "Explore spiritual journeys and pilgrimage routes with responsible pacing, practical yatra preparation and current departure verification.", priority: 0.9 },
   { path: "/group-departures/", title: "Supported Group Departures | Gamya Sanchari", description: "Explore group departure routes with coordinated transport, stays, applicable inclusions and honest, request-based availability.", priority: 0.9 },
-  { path: "/packages/", title: "Customizable Sample Journeys | Gamya Sanchari", description: "Browse flexible sample journeys across India and abroad, designed as thoughtful starting points rather than fixed packages.", priority: 0.9 },
+  { path: "/packages/", title: "Customizable India Journeys | Gamya Sanchari", description: "Browse flexible journeys through Karnataka and India, with selected outbound routes available as a secondary service.", priority: 0.9 },
   { path: "/experiences/", title: "Travel Experiences for Every Rhythm | Gamya Sanchari", description: "Find family, honeymoon, cultural, adventure, wellness and reflective journeys by the feeling and pace they need.", priority: 0.8 },
   { path: "/plan-my-trip/", title: "Plan Your Personalized Trip | Gamya Sanchari", description: "Build a private travel brief in six calm steps, then choose whether to continue the conversation in WhatsApp.", priority: 0.95 },
   { path: "/about/", title: "About Our Human Travel Planning | Gamya Sanchari", description: "Meet the Bengaluru travel planners and the Listen, Shape, Refine and Support method behind every personalized journey.", priority: 0.7 },

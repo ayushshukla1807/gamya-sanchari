@@ -20,10 +20,10 @@ export default function ContactPage() {
       <section className="section-shell grid gap-10 lg:grid-cols-[1.15fr_0.85fr]">
         <div>
           <p className="eyebrow text-[#f06619]">Choose your channel</p>
-          <h2 className="mt-4 text-3xl font-extrabold text-[#0b1633] sm:text-5xl">Reach us in the way that feels easiest</h2>
+          <h2 className="mt-4 text-3xl font-extrabold text-[#3f2a20] sm:text-5xl">Reach us in the way that feels easiest</h2>
           <div className="mt-8"><ContactOptions /></div>
         </div>
-        <aside className="rounded-[2rem] bg-[#081329] p-7 text-white sm:p-9">
+        <aside className="rounded-[2rem] bg-[#27372c] p-7 text-white sm:p-9">
           <p className="eyebrow text-[#f5ad56]">Prefer a callback?</p>
           <h2 className="mt-4 text-3xl font-extrabold">Send the number through WhatsApp</h2>
           <p className="mt-4 leading-7 text-white/70">This opens WhatsApp with a prepared callback message. Nothing is submitted to or stored on this website.</p>

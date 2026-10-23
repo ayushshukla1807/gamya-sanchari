@@ -11,7 +11,7 @@ describe("Navbar", () => {
     expect(screen.getByText("ಗಮ್ಯ ಸಂಚಾರಿ · Travel Planners")).toBeVisible();
 
     const expected = [
-      ["Destinations", "/destinations/"],
+      ["Karnataka & India", "/destinations/"],
       ["Packages", "/packages/"],
       ["Experiences", "/experiences/"],
       ["Plan My Trip", "/plan-my-trip/"],

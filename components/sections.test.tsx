@@ -145,7 +145,7 @@ describe("marketing sections", () => {
 describe("SEO metadata", () => {
   it("publishes the exact Open Graph title and canonical URL", () => {
     expect(metadata.openGraph).toMatchObject({
-      title: "Gamya Sanchari | Your Journey Awaits",
+      title: "Karnataka & India Travel for International Visitors | Gamya Sanchari",
       url: "https://gamya-sanchari.vercel.app/",
     });
     expect(metadata.alternates).toMatchObject({

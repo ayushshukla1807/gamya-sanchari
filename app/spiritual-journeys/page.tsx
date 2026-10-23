@@ -26,17 +26,17 @@ export default function SpiritualJourneysPage() {
       />
       <section className="section-shell">
         <p className="eyebrow text-[#f06619]">Audited journey history</p>
-        <h2 className="mt-4 max-w-3xl text-4xl font-extrabold text-[#0b1633] sm:text-6xl">Routes we understand, dates we verify</h2>
-        <p className="mt-5 max-w-3xl text-lg leading-8 text-[#566073]">Previous departures show experience, not current availability. Ask us to confirm the next supported date for your people.</p>
+        <h2 className="mt-4 max-w-3xl text-4xl font-extrabold text-[#3f2a20] sm:text-6xl">Routes we understand, dates we verify</h2>
+        <p className="mt-5 max-w-3xl text-lg leading-8 text-[#6a594b]">Previous departures show experience, not current availability. Ask us to confirm the next supported date for your people.</p>
         <div className="mt-10"><JourneyCollection headingLevel={2} journeys={journeys} /></div>
       </section>
       <section className="bg-[#fff5e7]"><div className="section-shell">
         <p className="eyebrow text-[#f06619]">Prepared, not pressured</p>
-        <h2 className="mt-4 text-4xl font-extrabold text-[#0b1633] sm:text-5xl">How we support your yatra</h2>
+        <h2 className="mt-4 text-4xl font-extrabold text-[#3f2a20] sm:text-5xl">How we support your yatra</h2>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
-          {["Route and rest rhythm", "Stay and transport coordination", "Practical pre-travel guidance"].map((item) => <div className="rounded-[1.5rem] bg-white p-6 font-extrabold text-[#0b1633] shadow-sm" key={item}>{item}</div>)}
+          {["Route and rest rhythm", "Stay and transport coordination", "Practical pre-travel guidance"].map((item) => <div className="rounded-[1.5rem] bg-white p-6 font-extrabold text-[#3f2a20] shadow-sm" key={item}>{item}</div>)}
         </div>
-        <div className="mt-10 grid gap-4">{FAQS.map((faq) => <details className="rounded-2xl border border-[#0b1633]/10 bg-white p-5" key={faq.question}><summary className="cursor-pointer font-extrabold text-[#0b1633]">{faq.question}</summary><p className="mt-3 max-w-3xl leading-7 text-[#566073]">{faq.answer}</p></details>)}</div>
+        <div className="mt-10 grid gap-4">{FAQS.map((faq) => <details className="rounded-2xl border border-[#3f2a20]/10 bg-white p-5" key={faq.question}><summary className="cursor-pointer font-extrabold text-[#3f2a20]">{faq.question}</summary><p className="mt-3 max-w-3xl leading-7 text-[#6a594b]">{faq.answer}</p></details>)}</div>
       </div></section>
     </main>
   );

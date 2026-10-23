@@ -20,7 +20,7 @@ describe("DestinationFilters", () => {
     );
 
     const international = screen.getByRole("button", {
-      name: "International",
+      name: "Beyond India",
     });
     international.focus();
     await user.keyboard("{Enter}");
@@ -41,7 +41,7 @@ describe("DestinationFilters", () => {
     const user = userEvent.setup();
     render(<DestinationFilters destinations={DESTINATIONS} />);
 
-    await user.click(screen.getByRole("button", { name: "International" }));
+    await user.click(screen.getByRole("button", { name: "Beyond India" }));
     await user.selectOptions(screen.getByLabelText("Region"), "North India");
 
     expect(screen.getByText("0 destinations found")).toBeVisible();
@@ -56,6 +56,18 @@ describe("DestinationFilters", () => {
     await user.click(screen.getByRole("button", { name: "Reset filters" }));
     expect(
       screen.getByText(`${DESTINATIONS.length} destinations found`),
+    ).toBeVisible();
+  });
+
+  it("keeps Karnataka destinations discoverable within South India", async () => {
+    const user = userEvent.setup();
+    render(<DestinationFilters destinations={DESTINATIONS} />);
+
+    await user.selectOptions(screen.getByLabelText("Region"), "South India");
+
+    expect(screen.getByRole("link", { name: /Explore Hampi/i })).toBeVisible();
+    expect(
+      screen.getByRole("link", { name: /Explore Ooty & Mysuru/i }),
     ).toBeVisible();
   });
 });

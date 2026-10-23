@@ -9,7 +9,7 @@ import type {
 import { JOURNEYS } from "@/constants/travel";
 
 export const NAV_LINKS: NavigationLink[] = [
-  { href: "/destinations/", label: "Destinations" },
+  { href: "/destinations/", label: "Karnataka & India" },
   { href: "/spiritual-journeys/", label: "Spiritual Journeys" },
   { href: "/group-departures/", label: "Group Departures" },
   { href: "/packages/", label: "Packages" },
@@ -20,6 +20,12 @@ export const NAV_LINKS: NavigationLink[] = [
 ];
 
 export const DESTINATIONS: Destination[] = [
+  {
+    title: "Karnataka",
+    places: ["Hampi", "Mysuru", "Coorg", "Chikmagalur"],
+    image: "/images/destinations/hampi.webp",
+    alt: "Stone Chariot at Hampi's Vittala Temple at sunrise",
+  },
   {
     title: "South India",
     places: ["Kerala", "Coorg", "Chikmagalur", "Mysuru"],
@@ -45,7 +51,7 @@ export const DESTINATIONS: Destination[] = [
     alt: "Green mountain landscape in Northeast India",
   },
   {
-    title: "International",
+    title: "Beyond India",
     places: ["Dubai", "Thailand", "Singapore", "Bali", "Maldives"],
     image: "/images/destinations/international.webp",
     alt: "Tropical island resort surrounded by clear blue water",
@@ -63,14 +69,14 @@ export const SAMPLE_JOURNEYS: SampleJourney[] = JOURNEYS.map(
 
 export const SERVICES: Service[] = [
   {
-    title: "International Trips",
-    description: "Thoughtful itineraries that make exploring abroad feel simple.",
-    icon: "plane",
+    title: "Inbound India Journeys",
+    description: "India journeys shaped for international travellers around context, comfort and pace.",
+    icon: "map",
   },
   {
-    title: "Domestic Trips",
-    description: "India journeys shaped around your time, pace and interests.",
-    icon: "map",
+    title: "Karnataka Specialists",
+    description: "Hampi, Mysuru, Coorg and the Western Ghats connected from our Bengaluru base.",
+    icon: "plane",
   },
   {
     title: "Air Tickets",

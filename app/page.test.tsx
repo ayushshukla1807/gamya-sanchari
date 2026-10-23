@@ -40,11 +40,11 @@ describe("Home", () => {
     render(<EnquiryProvider><Home /></EnquiryProvider>);
 
     for (const journey of [
-      "Puri, Jagannath & Konark",
-      "Tirupati Darshan from Bengaluru",
-      "Char Dham Yatra",
+      "Kerala at an easy pace",
+      "Kashmir valley moments",
       "Andaman Island Escape",
       "Varanasi, Ayodhya & Prayagraj",
+      "Ooty & Mysuru Short Break",
     ]) {
       expect(screen.getAllByRole("heading", { name: journey })[0]).toBeVisible();
     }

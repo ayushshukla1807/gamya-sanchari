@@ -4,20 +4,20 @@
 
 :root {
   color-scheme: light;
-  --primary: #1844ef;
+  --primary: #a63d24;
   --accent: #f06619;
-  --dark: #212121;
-  --body: #656565;
+  --dark: #3f2a20;
+  --body: #6a594b;
   --surface: #f3f3f3;
-  --midnight: #081329;
+  --midnight: #27372c;
   --ivory: #fffaf0;
   --sand: #eadbc4;
-  --mist: #eaf0f6;
+  --mist: #f2e8d8;
   --gold: #b97918;
-  --route-stroke: #6f89ee;
+  --route-stroke: #d48a32;
   --focus-ring: #f5ad56;
-  --shadow-soft: 0 18px 60px rgb(8 19 41 / 0.12);
-  --shadow-premium: 0 30px 90px rgb(8 19 41 / 0.16), 0 10px 30px rgb(24 68 239 / 0.08);
+  --shadow-soft: 0 18px 60px rgb(63 42 32 / 0.12);
+  --shadow-premium: 0 30px 90px rgb(63 42 32 / 0.16), 0 10px 30px rgb(166 61 36 / 0.08);
   --glass-border: rgb(255 255 255 / 0.42);
   --glass-highlight: rgb(255 255 255 / 0.74);
   --surface-gloss: linear-gradient(145deg, rgb(255 255 255 / 0.96), rgb(244 248 255 / 0.82));
@@ -52,7 +52,7 @@ body {
 }
 
 ::selection {
-  background: #1844ef;
+  background: #a63d24;
   color: white;
 }
 
@@ -91,8 +91,8 @@ button {
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    border: 1px solid rgb(11 22 51 / 0.1);
-    box-shadow: 0 16px 50px rgb(8 19 41 / 0.1), inset 0 1px 0 rgb(255 255 255 / 0.75);
+    border: 1px solid rgb(63 42 32 / 0.1);
+    box-shadow: 0 16px 50px rgb(63 42 32 / 0.1), inset 0 1px 0 rgb(255 255 255 / 0.75);
     transition: transform var(--motion-base) var(--ease-travel),
       border-color var(--motion-base) ease,
       box-shadow var(--motion-base) var(--ease-travel);
@@ -115,7 +115,7 @@ button {
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    box-shadow: 0 12px 34px rgb(24 68 239 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.35);
+    box-shadow: 0 12px 34px rgb(166 61 36 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.35);
     transition: transform var(--motion-fast) var(--ease-travel),
       box-shadow var(--motion-base) ease,
       background-color var(--motion-base) ease;
@@ -143,7 +143,7 @@ button {
     content: "";
     pointer-events: none;
     background:
-      radial-gradient(circle at 12% 18%, rgb(24 68 239 / 0.1), transparent 28%),
+      radial-gradient(circle at 12% 18%, rgb(166 61 36 / 0.1), transparent 28%),
       radial-gradient(circle at 88% 82%, rgb(240 102 25 / 0.1), transparent 30%);
   }
 
@@ -154,8 +154,8 @@ button {
     content: "";
     pointer-events: none;
     opacity: 0.16;
-    background-image: repeating-linear-gradient(118deg, transparent 0 18px, rgb(8 19 41 / 0.045) 19px 20px);
-    mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+    background-image: repeating-linear-gradient(118deg, transparent 0 18px, rgb(63 42 32 / 0.045) 19px 20px);
+    mask-image: linear-gradient(to bottom, transparent, #3f2a20 20%, #3f2a20 80%, transparent);
   }
 
   .text-shimmer {
@@ -170,8 +170,8 @@ button {
 @media (hover: hover) and (pointer: fine) {
   .premium-card:hover {
     transform: translateY(-7px);
-    border-color: rgb(24 68 239 / 0.24);
-    box-shadow: 0 28px 80px rgb(8 19 41 / 0.16), 0 10px 26px rgb(24 68 239 / 0.08), inset 0 1px 0 white;
+    border-color: rgb(166 61 36 / 0.24);
+    box-shadow: 0 28px 80px rgb(63 42 32 / 0.16), 0 10px 26px rgb(166 61 36 / 0.08), inset 0 1px 0 white;
   }
 
   .premium-card:hover::before {
@@ -181,7 +181,7 @@ button {
 
   .premium-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 18px 42px rgb(24 68 239 / 0.3), inset 0 1px 0 rgb(255 255 255 / 0.4);
+    box-shadow: 0 18px 42px rgb(166 61 36 / 0.3), inset 0 1px 0 rgb(255 255 255 / 0.4);
   }
 }
 

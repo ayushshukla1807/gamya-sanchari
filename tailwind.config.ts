@@ -9,15 +9,15 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          blue: "#1844ef",
-          orange: "#f06619",
-          dark: "#212121",
-          body: "#656565",
+          terracotta: "#a63d24",
+          saffron: "#f06619",
+          dark: "#3f2a20",
+          body: "#6a594b",
           surface: "#f3f3f3",
-          midnight: "#081329",
+          midnight: "#27372c",
           ivory: "#fffaf0",
           sand: "#eadbc4",
-          mist: "#eaf0f6",
+          mist: "#f2e8d8",
           gold: "#b97918",
         },
       },

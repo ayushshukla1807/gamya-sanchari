@@ -18,6 +18,7 @@ import {
 } from "@/lib/travel-content";
 
 const expectedDestinationSlugs = [
+  "hampi",
   "kerala",
   "kashmir",
   "rajasthan",
@@ -54,6 +55,7 @@ const instagramGroundedJourneySlugs = [
 ];
 
 const expectedDestinationImages = {
+  hampi: "/images/destinations/hampi.webp",
   kerala: "/images/destinations/kerala.webp",
   kashmir: "/images/destinations/kashmir.webp",
   rajasthan: "/images/destinations/rajasthan.webp",
@@ -91,6 +93,19 @@ const expectedJourneyImages = {
 };
 
 describe("travel content contracts", () => {
+  test("leads destination discovery with Hampi in South India", () => {
+    expect(DESTINATIONS[0]).toMatchObject({
+      slug: "hampi",
+      region: "South India",
+      scope: "domestic",
+    });
+    expect(DESTINATIONS[0].sampleRoute).toEqual([
+      "Bengaluru",
+      "Hampi",
+      "Badami",
+    ]);
+  });
+
   test("publishes unique non-empty slugs for every collection", () => {
     expect(() => assertUniqueTravelSlugs()).not.toThrow();
 

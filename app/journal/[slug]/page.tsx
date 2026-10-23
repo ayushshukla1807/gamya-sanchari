@@ -31,9 +31,9 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
   return (
     <main>
       <article>
-        <header className="relative isolate overflow-hidden bg-[#081329] pb-16 pt-32 text-white sm:pb-24 sm:pt-40">
+        <header className="relative isolate overflow-hidden bg-[#27372c] pb-16 pt-32 text-white sm:pb-24 sm:pt-40">
           <Image alt={article.alt} className="-z-20 object-cover opacity-45" fill priority sizes="100vw" src={article.image} />
-          <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#081329] via-[#081329]/90 to-[#081329]/45" />
+          <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-r from-[#27372c] via-[#27372c]/90 to-[#27372c]/45" />
           <div className="mx-auto grid max-w-[1000px] gap-7 px-5 sm:px-8">
             <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Journal", href: "/journal/" }, { label: article.title }]} />
             <Stamp>{article.readingTime}</Stamp>
@@ -44,8 +44,8 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
         <div className="mx-auto grid max-w-[820px] gap-10 px-5 py-20 sm:px-8 sm:py-28">
           {article.sections.map((section) => (
             <section key={section.heading}>
-              <h2 className="text-3xl font-extrabold text-[#0b1633]">{section.heading}</h2>
-              <div className="mt-5 grid gap-5 text-lg leading-8 text-[#566073]">
+              <h2 className="text-3xl font-extrabold text-[#3f2a20]">{section.heading}</h2>
+              <div className="mt-5 grid gap-5 text-lg leading-8 text-[#6a594b]">
                 {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
               </div>
             </section>
@@ -54,11 +54,11 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
       </article>
 
       {primaryDestination ? (
-        <section className="bg-[#eaf0f6]">
+        <section className="bg-[#f2e8d8]">
           <div className="section-shell grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
-              <p className="eyebrow text-[#1844ef]">Continue exploring</p>
-              <h2 className="mt-4 text-3xl font-extrabold text-[#0b1633] sm:text-5xl">Take the next step with {primaryDestination.title}</h2>
+              <p className="eyebrow text-[#a63d24]">Continue exploring</p>
+              <h2 className="mt-4 text-3xl font-extrabold text-[#3f2a20] sm:text-5xl">Take the next step with {primaryDestination.title}</h2>
             </div>
             <CtaGroup
               primary={{ href: `/plan-my-trip/?destination=${primaryDestination.slug}`, label: `Plan a ${primaryDestination.title} Trip` }}

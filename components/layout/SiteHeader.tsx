@@ -37,7 +37,7 @@ export default function SiteHeader() {
         <a
           className={
             primary
-              ? "inline-flex min-h-11 items-center rounded-full bg-[#f06619] px-5 text-sm font-extrabold text-white shadow-lg shadow-[#f06619]/20 transition hover:-translate-y-0.5 hover:bg-white hover:text-[#0b1633] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+              ? "inline-flex min-h-11 items-center rounded-full bg-[#f06619] px-5 text-sm font-extrabold text-white shadow-lg shadow-[#f06619]/20 transition hover:-translate-y-0.5 hover:bg-white hover:text-[#3f2a20] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
               : `inline-flex min-h-11 items-center rounded-full font-bold text-white/80 transition hover:bg-white/10 hover:text-white focus-visible:bg-white/10 focus-visible:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#f5ad56] ${compact ? "px-3 text-xs" : "px-4 text-sm"}`
           }
           data-primary-action={primary ? "true" : undefined}
@@ -51,7 +51,7 @@ export default function SiteHeader() {
   });
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#081329]/80 text-white shadow-lg shadow-black/5 backdrop-blur-xl">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-[#27372c]/80 text-white shadow-lg shadow-[#3f2a20]/5 backdrop-blur-xl">
       <nav
         aria-label="Primary navigation"
         className="mx-auto flex min-h-20 max-w-[1440px] items-center justify-between gap-5 px-5 sm:px-8 lg:px-12"
@@ -61,7 +61,7 @@ export default function SiteHeader() {
           href="/"
         >
           <motion.span
-            className="grid size-12 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-1 shadow-lg shadow-[#1844ef]/20"
+            className="grid size-12 shrink-0 place-items-center overflow-hidden rounded-xl bg-white p-1 shadow-lg shadow-[#a63d24]/20"
             whileHover={policy.reduced ? undefined : { rotate: -4, scale: 1.06 }}
           >
             <Image
@@ -102,7 +102,7 @@ export default function SiteHeader() {
         <motion.nav
           animate={{ opacity: 1, y: 0 }}
           aria-label="Mobile navigation"
-          className="border-t border-white/10 bg-[#081329]/98 px-5 pb-5 pt-3 backdrop-blur-xl xl:hidden"
+          className="border-t border-white/10 bg-[#27372c]/98 px-5 pb-5 pt-3 backdrop-blur-xl xl:hidden"
           id="mobile-navigation"
           initial={canAnimateMenu ? { opacity: 0, y: -10 } : false}
           transition={{ duration: 0.22 }}

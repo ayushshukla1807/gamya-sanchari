@@ -5,7 +5,7 @@
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f3f3f3",
-  "theme_color": "#1844ef",
+  "theme_color": "#a63d24",
   "icons": [
     {
       "src": "/images/brand/gamya-sanchari-icon-192.png",
