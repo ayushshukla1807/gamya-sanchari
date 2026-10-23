@@ -49,7 +49,7 @@ export default function KarnatakaGateway() {
         <div className="mt-10 grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
           <MotionReveal direction="scale">
             <a
-              className="premium-card group relative block min-h-[34rem] overflow-hidden rounded-[2.25rem]"
+              className="premium-card group relative block min-h-[34rem] overflow-hidden rounded-[2.25rem] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#3f2a20]"
               data-material="premium-card"
               href="/destinations/hampi/"
             >
@@ -82,7 +82,7 @@ export default function KarnatakaGateway() {
                   className="premium-card h-full rounded-[1.75rem] bg-white p-6 sm:p-7"
                   data-material="premium-card"
                 >
-                  <span className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#c47b2a]">
+                  <span className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#a63d24]">
                     0{index + 1}
                   </span>
                   <h3 className="mt-3 text-2xl font-extrabold text-[#3f2a20]">

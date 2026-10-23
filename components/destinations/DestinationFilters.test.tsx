@@ -58,4 +58,16 @@ describe("DestinationFilters", () => {
       screen.getByText(`${DESTINATIONS.length} destinations found`),
     ).toBeVisible();
   });
+
+  it("keeps Karnataka destinations discoverable within South India", async () => {
+    const user = userEvent.setup();
+    render(<DestinationFilters destinations={DESTINATIONS} />);
+
+    await user.selectOptions(screen.getByLabelText("Region"), "South India");
+
+    expect(screen.getByRole("link", { name: /Explore Hampi/i })).toBeVisible();
+    expect(
+      screen.getByRole("link", { name: /Explore Ooty & Mysuru/i }),
+    ).toBeVisible();
+  });
 });

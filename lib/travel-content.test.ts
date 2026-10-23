@@ -93,10 +93,10 @@ const expectedJourneyImages = {
 };
 
 describe("travel content contracts", () => {
-  test("leads destination discovery with Hampi in Karnataka", () => {
+  test("leads destination discovery with Hampi in South India", () => {
     expect(DESTINATIONS[0]).toMatchObject({
       slug: "hampi",
-      region: "Karnataka",
+      region: "South India",
       scope: "domestic",
     });
     expect(DESTINATIONS[0].sampleRoute).toEqual([

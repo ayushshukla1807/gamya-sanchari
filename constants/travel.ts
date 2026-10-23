@@ -11,7 +11,7 @@ export const DESTINATIONS = [
   {
     slug: "hampi",
     title: "Hampi",
-    region: "Karnataka",
+    region: "South India",
     scope: "domestic",
     eyebrow: "Vijayanagara stonework, boulder country and unhurried discovery",
     summary:

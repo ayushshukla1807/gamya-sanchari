@@ -54,6 +54,16 @@ describe("guided home journey", () => {
         .every((link) => link.getAttribute("href") === "/destinations/hampi/"),
     ).toBe(true);
     expect(screen.getByText(/Bengaluru arrivals/i)).toBeVisible();
+    expect(screen.getAllByText(/^0[1-3]$/)).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ className: expect.stringContaining("text-[#a63d24]") }),
+      ]),
+    );
+    expect(
+      screen
+        .getAllByRole("link", { name: /Explore Hampi/i })
+        .find((link) => link.classList.contains("premium-card")),
+    ).toHaveClass("focus-visible:outline-[#3f2a20]");
     expect(
       container.querySelectorAll('[data-material="premium-section"]').length,
     ).toBeGreaterThanOrEqual(7);
